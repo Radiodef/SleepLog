@@ -5,7 +5,7 @@ import javafx.stage.*;
 
 public final class SleepLogApp extends Application {
     static void launch() {
-        Log.note("launching");
+        Log.enter();
         launch(SleepLogApp.class, SleepLogMain.getArguments().toArray(new String[0]));
     }
     
