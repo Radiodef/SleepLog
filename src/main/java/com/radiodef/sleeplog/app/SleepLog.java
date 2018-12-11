@@ -10,6 +10,8 @@ public final class SleepLog extends Application {
     
     @Override
     public void start(Stage primaryStage) {
+        setUserAgentStylesheet(STYLESHEET_MODENA);
+        
         primaryStage.show();
     }
 }
