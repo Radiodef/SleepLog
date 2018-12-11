@@ -1,5 +1,5 @@
 module sleeplog {
-    requires javafx.graphics;
+    requires javafx.controls;
     
     exports com.radiodef.sleeplog.app;
 }
