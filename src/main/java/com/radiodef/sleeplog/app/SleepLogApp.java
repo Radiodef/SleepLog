@@ -3,9 +3,9 @@ package com.radiodef.sleeplog.app;
 import javafx.application.*;
 import javafx.stage.*;
 
-public final class SleepLog extends Application {
-    public static void main(String[] args) {
-        launch(args);
+public final class SleepLogApp extends Application {
+    static void launch() {
+        launch(SleepLogApp.class, SleepLogMain.getArguments().toArray(new String[0]));
     }
     
     @Override
