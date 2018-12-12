@@ -2,6 +2,7 @@ package com.radiodef.sleeplog.app;
 
 import javafx.application.*;
 import javafx.stage.*;
+import javafx.scene.*;
 
 public final class SleepLogApp extends Application {
     static void launch() {
@@ -12,6 +13,9 @@ public final class SleepLogApp extends Application {
     @Override
     public void start(Stage primaryStage) {
         setUserAgentStylesheet(STYLESHEET_MODENA);
+        
+        var scene = new Scene(new TimerPane());
+        primaryStage.setScene(scene);
         
         configure(primaryStage);
         primaryStage.show();
