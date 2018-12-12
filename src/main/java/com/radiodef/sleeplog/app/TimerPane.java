@@ -1,6 +1,32 @@
 package com.radiodef.sleeplog.app;
 
 import javafx.scene.layout.*;
+import javafx.scene.control.*;
+import javafx.geometry.*;
 
 class TimerPane extends BorderPane {
+    private final Label startTime;
+    private final Label elapsedTime;
+    
+    private final Button startButton;
+    
+    TimerPane() {
+        startTime = new Label("--");
+        elapsedTime = new Label("--");
+        
+        startButton = new Button("Start");
+        
+        var rows = new VBox();
+        rows.setSpacing(10);
+        rows.setAlignment(Pos.CENTER);
+        
+        rows.getChildren()
+            .addAll(new Label("Start Time:"),
+                    startTime,
+                    new Label("Elapsed Time:"),
+                    elapsedTime,
+                    startButton);
+        
+        setCenter(rows);
+    }
 }
