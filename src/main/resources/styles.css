@@ -9,4 +9,5 @@
 .time-label {
     -fx-alignment: center;
     -fx-font-size: 3em;
+    -fx-max-width: Infinity;
 }

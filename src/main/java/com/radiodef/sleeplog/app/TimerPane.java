@@ -20,7 +20,6 @@ class TimerPane extends BorderPane {
     private static Label createTimeLabel() {
         var l = new Label("--");
         l.getStyleClass().add("time-label");
-        l.setMaxWidth(Double.MAX_VALUE);
         return l;
     }
     
