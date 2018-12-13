@@ -17,9 +17,18 @@ class TimerPane extends BorderPane {
     
     private final SleepTimer timer;
     
+    private static Label createTimeLabel() {
+        var l = new Label("--");
+        l.getStyleClass().add("time-label");
+        l.setMaxWidth(Double.MAX_VALUE);
+        return l;
+    }
+    
     TimerPane() {
-        startTime = new Label("--");
-        duration = new Label("--");
+        getStyleClass().add("timer-pane");
+        
+        startTime = createTimeLabel();
+        duration = createTimeLabel();
         
         startButton = new Button("Start");
         
