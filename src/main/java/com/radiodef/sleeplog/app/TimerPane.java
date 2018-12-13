@@ -54,7 +54,7 @@ class TimerPane extends BorderPane {
         return START_FORMATTER.format(LocalTime.ofInstant(i, ZoneId.systemDefault()));
     }
     private static String formatDuration(Duration d) {
-        return DurationFormatUtils.formatDuration(d.toMillis(), "HH:MM:ss");
+        return DurationFormatUtils.formatDuration(d.toMillis(), "HH:mm:ss");
     }
     
     private void timerTicked(Instant start, Instant current) {
