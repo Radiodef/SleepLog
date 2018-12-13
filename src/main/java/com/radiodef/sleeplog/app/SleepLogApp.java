@@ -15,6 +15,7 @@ public final class SleepLogApp extends Application {
         setUserAgentStylesheet(STYLESHEET_MODENA);
         
         var scene = new Scene(new TimerPane());
+        scene.getStylesheets().add("styles.css");
         primaryStage.setScene(scene);
         
         configure(primaryStage);
