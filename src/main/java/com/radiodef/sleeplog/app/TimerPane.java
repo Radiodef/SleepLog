@@ -3,6 +3,7 @@ package com.radiodef.sleeplog.app;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
 import javafx.geometry.*;
+import javafx.event.*;
 
 class TimerPane extends BorderPane {
     private final Label startTime;
@@ -28,5 +29,11 @@ class TimerPane extends BorderPane {
                     startButton);
         
         setCenter(rows);
+        
+        startButton.setOnAction(this::startClicked);
+    }
+    
+    private void startClicked(ActionEvent e) {
+        Log.enter();
     }
 }
