@@ -5,6 +5,8 @@ import javafx.scene.control.*;
 import javafx.geometry.*;
 import javafx.event.*;
 
+import java.time.*;
+
 class TimerPane extends BorderPane {
     private final Label startTime;
     private final Label duration;
@@ -33,6 +35,7 @@ class TimerPane extends BorderPane {
         setCenter(rows);
         
         timer = new SleepTimer();
+        timer.addListener(this::timerTicked);
         startButton.setOnAction(this::startClicked);
     }
     
@@ -41,5 +44,10 @@ class TimerPane extends BorderPane {
         
         timer.toggle();
         startButton.setText(timer.isRunning() ? "Stop" : "Start");
+    }
+    
+    private void timerTicked(LocalDateTime start, LocalDateTime current) {
+        startTime.setText(start.toString());
+        duration.setText(Duration.between(start, current).toString());
     }
 }
