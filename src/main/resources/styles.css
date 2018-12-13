@@ -1,4 +1,11 @@
+.root {
+    -fx-font-family: monospace;
+}
+
+.timer-pane {
+}
+
 .time-label {
-    -fx-background-color: black;
-    -fx-text-fill: lime;
+    -fx-alignment: center;
+    -fx-font-size: 3em;
 }
