@@ -32,9 +32,8 @@ class TimerPane extends BorderPane {
         
         setCenter(rows);
         
-        startButton.setOnAction(this::startClicked);
-        
         timer = new SleepTimer();
+        startButton.setOnAction(this::startClicked);
     }
     
     private void startClicked(ActionEvent e) {
