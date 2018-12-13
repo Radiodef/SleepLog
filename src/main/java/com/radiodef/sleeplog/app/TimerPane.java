@@ -7,7 +7,7 @@ import javafx.event.*;
 
 class TimerPane extends BorderPane {
     private final Label startTime;
-    private final Label elapsedTime;
+    private final Label duration;
     
     private final Button startButton;
     
@@ -15,7 +15,7 @@ class TimerPane extends BorderPane {
     
     TimerPane() {
         startTime = new Label("--");
-        elapsedTime = new Label("--");
+        duration = new Label("--");
         
         startButton = new Button("Start");
         
@@ -26,8 +26,8 @@ class TimerPane extends BorderPane {
         rows.getChildren()
             .addAll(new Label("Start Time:"),
                     startTime,
-                    new Label("Elapsed Time:"),
-                    elapsedTime,
+                    new Label("Duration:"),
+                    duration,
                     startButton);
         
         setCenter(rows);
