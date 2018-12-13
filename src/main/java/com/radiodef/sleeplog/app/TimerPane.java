@@ -6,6 +6,8 @@ import javafx.geometry.*;
 import javafx.event.*;
 
 import java.time.*;
+import java.time.format.*;
+import org.apache.commons.lang3.time.*;
 
 class TimerPane extends BorderPane {
     private final Label startTime;
@@ -46,8 +48,14 @@ class TimerPane extends BorderPane {
         startButton.setText(timer.isRunning() ? "Stop" : "Start");
     }
     
+    private static final DateTimeFormatter START_FORMATTER =
+        DateTimeFormatter.ofPattern("hh:mm a");
+    private static String formatDuration(Duration dur) {
+        return DurationFormatUtils.formatDuration(dur.toMillis(), "HH:MM:ss");
+    }
+    
     private void timerTicked(LocalDateTime start, LocalDateTime current) {
-        startTime.setText(start.toString());
-        duration.setText(Duration.between(start, current).toString());
+        startTime.setText(START_FORMATTER.format(start));
+        duration.setText(formatDuration(Duration.between(start, current)));
     }
 }
