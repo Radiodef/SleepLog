@@ -12,10 +12,10 @@ class SleepTimer {
     
     private final Timeline timeline;
     
-    private final Set<BiConsumer<LocalDateTime, LocalDateTime>> listeners = new LinkedHashSet<>();
+    private final Set<BiConsumer<Instant, Instant>> listeners = new LinkedHashSet<>();
     
-    private LocalDateTime start;
-    private LocalDateTime current;
+    private Instant start;
+    private Instant current;
     
     SleepTimer() {
         this(TICKS_PER_SECOND);
@@ -27,7 +27,7 @@ class SleepTimer {
         timeline.setCycleCount(Timeline.INDEFINITE);
     }
     
-    void addListener(BiConsumer<LocalDateTime, LocalDateTime> l) {
+    void addListener(BiConsumer<Instant, Instant> l) {
         listeners.add(Objects.requireNonNull(l));
     }
     
@@ -42,7 +42,7 @@ class SleepTimer {
     private void setRunning(boolean isRunning) {
         if (isRunning != isRunning()) {
             if (isRunning) {
-                start = current = LocalDateTime.now();
+                start = current = Instant.now();
                 notifyListeners();
                 timeline.play();
             } else {
@@ -58,7 +58,7 @@ class SleepTimer {
     
     private void tick(ActionEvent e) {
 //        Log.enter();
-        current = LocalDateTime.now();
+        current = Instant.now();
         notifyListeners();
     }
 }

@@ -50,15 +50,15 @@ class TimerPane extends BorderPane {
     
     private static final DateTimeFormatter START_FORMATTER =
         DateTimeFormatter.ofPattern("hh:mm a");
-    private static String formatDateTime(LocalDateTime t) {
-        return START_FORMATTER.format(t);
+    private static String formatInstant(Instant i) {
+        return START_FORMATTER.format(LocalTime.ofInstant(i, ZoneId.systemDefault()));
     }
     private static String formatDuration(Duration d) {
         return DurationFormatUtils.formatDuration(d.toMillis(), "HH:MM:ss");
     }
     
-    private void timerTicked(LocalDateTime start, LocalDateTime current) {
-        startTime.setText(formatDateTime(start));
+    private void timerTicked(Instant start, Instant current) {
+        startTime.setText(formatInstant(start));
         duration.setText(formatDuration(Duration.between(start, current)));
     }
 }
