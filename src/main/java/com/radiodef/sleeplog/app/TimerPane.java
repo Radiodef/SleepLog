@@ -2,7 +2,6 @@ package com.radiodef.sleeplog.app;
 
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
-import javafx.geometry.*;
 import javafx.event.*;
 
 import java.time.*;
