@@ -1,8 +1,9 @@
-.root {
+.text {
     -fx-font-family: monospace;
 }
 
 .timer-pane {
+    -fx-background-color: white;
 }
 
 .time-label {
