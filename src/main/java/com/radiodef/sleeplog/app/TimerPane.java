@@ -32,8 +32,7 @@ class TimerPane extends BorderPane {
         startButton = new Button("Start");
         
         var rows = new VBox();
-        rows.setSpacing(10);
-        rows.setAlignment(Pos.CENTER);
+        rows.getStyleClass().add("timer-rows");
         
         rows.getChildren()
             .addAll(new Label("Start Time:"),

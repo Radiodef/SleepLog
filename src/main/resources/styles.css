@@ -6,6 +6,11 @@
     -fx-background-color: white;
 }
 
+.timer-rows {
+    -fx-alignment: center;
+    -fx-spacing: 1em;
+}
+
 .time-label {
     -fx-alignment: center;
     -fx-font-size: 3em;
