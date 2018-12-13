@@ -49,7 +49,7 @@ class TimerPane extends BorderPane {
     }
     
     private static final DateTimeFormatter START_FORMATTER =
-        DateTimeFormatter.ofPattern("hh:mm a");
+        DateTimeFormatter.ofPattern("h:mm a");
     private static String formatInstant(Instant i) {
         return START_FORMATTER.format(LocalTime.ofInstant(i, ZoneId.systemDefault()));
     }
