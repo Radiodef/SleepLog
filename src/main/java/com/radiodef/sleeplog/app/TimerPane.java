@@ -11,6 +11,8 @@ class TimerPane extends BorderPane {
     
     private final Button startButton;
     
+    private final SleepTimer timer;
+    
     TimerPane() {
         startTime = new Label("--");
         elapsedTime = new Label("--");
@@ -31,9 +33,14 @@ class TimerPane extends BorderPane {
         setCenter(rows);
         
         startButton.setOnAction(this::startClicked);
+        
+        timer = new SleepTimer();
     }
     
     private void startClicked(ActionEvent e) {
         Log.enter();
+        
+        timer.toggle();
+        startButton.setText(timer.isRunning() ? "Stop" : "Start");
     }
 }
