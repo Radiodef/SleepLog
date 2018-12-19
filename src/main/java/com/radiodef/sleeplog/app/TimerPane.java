@@ -7,6 +7,7 @@ import javafx.scene.control.*;
 import javafx.event.*;
 
 import java.time.*;
+import java.util.*;
 
 class TimerPane extends BorderPane {
     private final Label startTime;
@@ -15,6 +16,8 @@ class TimerPane extends BorderPane {
     private final Button startButton;
     
     private final SleepTimer timer;
+    
+    private final Set<InstantBiConsumer> listeners = new LinkedHashSet<>();
     
     private static Label createTimeLabel() {
         var l = new Label("--");
@@ -47,11 +50,22 @@ class TimerPane extends BorderPane {
         startButton.setOnAction(this::startClicked);
     }
     
+    void addSleepPeriodListener(InstantBiConsumer l) {
+        listeners.add(Objects.requireNonNull(l));
+    }
+    
     private void startClicked(ActionEvent e) {
         Log.enter();
         
         timer.toggle();
         startButton.setText(timer.isRunning() ? "Stop" : "Start");
+        
+        if (!timer.isRunning()) {
+            var start = timer.getStart();
+            var end = timer.getEnd();
+            
+            listeners.forEach(l -> l.accept(start, end));
+        }
     }
     
     private void timerTicked(Instant start, Instant current) {
