@@ -1,5 +1,7 @@
 package com.radiodef.sleeplog.app;
 
+import com.radiodef.sleeplog.util.*;
+
 import javafx.animation.*;
 import javafx.event.*;
 
@@ -49,6 +51,14 @@ class SleepTimer {
             }
             Log.note("isRunning = %b", isRunning());
         }
+    }
+    
+    Instant getStart() {
+        return Tools.requireNonNullState(start, "start");
+    }
+    
+    Instant getEnd() {
+        return Tools.requireNonNullState(current, "current");
     }
     
     private void notifyListeners() {
