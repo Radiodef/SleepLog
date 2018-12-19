@@ -6,7 +6,7 @@ import com.radiodef.sleeplog.util.*;
 import java.sql.*;
 import java.time.*;
 
-public class Database implements AutoCloseable {
+public final class Database implements AutoCloseable {
     private static final String DB_NAME = "sleeplog-db";
     private static final String DATES_TABLE = "sleeplog_dates";
     
@@ -15,6 +15,8 @@ public class Database implements AutoCloseable {
     private static final String END_COL = "end_instant";
     
     private final Connection conn;
+    
+    private final PreparedStatement insertPeriodRow;
     
     public Database() {
         Log.enter();
@@ -32,6 +34,8 @@ public class Database implements AutoCloseable {
                          && createDatesTable()) {
             printAllRows();
         }
+        
+        this.insertPeriodRow = prepareInsertPeriodRow();
     }
     
     public boolean didConnect() {
@@ -105,7 +109,22 @@ public class Database implements AutoCloseable {
         return "X0Y32".equals(x.getSQLState());
     }
     
-    private void printAllRows() {
+    private PreparedStatement prepareInsertPeriodRow() {
+        try {
+            if (didConnect()) {
+                final var insertPeriodRowStatement =
+                    "INSERT INTO " + DATES_TABLE
+                    + " (" + START_COL + ", " + END_COL + ")"
+                    + " VALUES (?, ?)";
+                return conn.prepareStatement(insertPeriodRowStatement);
+            }
+        } catch (SQLException x) {
+            Log.caught(x);
+        }
+        return null;
+    }
+    
+    public void printAllRows() {
         if (didConnect()) {
             try (var statement = conn.createStatement()) {
                 var rs = statement.executeQuery("SELECT * FROM " + DATES_TABLE);
@@ -128,6 +147,35 @@ public class Database implements AutoCloseable {
                 Log.caught(x);
             }
         }
+    }
+    
+    public boolean insertNewPeriod(Instant start, Instant end) {
+        Log.enter();
+        if (!didConnect() || insertPeriodRow == null)
+            return false;
+        
+        boolean success;
+        
+        try {
+            insertPeriodRow.setObject(1, start);
+            insertPeriodRow.setObject(2, end);
+            
+            insertPeriodRow.execute();
+            success = true;
+            
+        } catch (SQLException x) {
+            Log.caught(x);
+            success = false;
+        } finally {
+            try {
+                insertPeriodRow.clearParameters();
+            } catch (SQLException x) {
+                Log.caught(x);
+            }
+        }
+        
+        Log.note("success = %b", success);
+        return success;
     }
     
     @Override
