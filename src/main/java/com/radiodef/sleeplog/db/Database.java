@@ -4,7 +4,7 @@ import com.radiodef.sleeplog.app.*;
 
 import java.sql.*;
 
-public class Database {
+public class Database implements AutoCloseable {
     private static final String DB_NAME = "sleeplog-db";
     
     private final Connection conn;
@@ -22,7 +22,19 @@ public class Database {
         this.conn = conn;
     }
     
-    public boolean connected() {
+    public boolean didConnect() {
         return conn != null;
+    }
+    
+    @Override
+    public void close() {
+        if (didConnect()) {
+            try {
+                if (!conn.isClosed())
+                    conn.close();
+            } catch (SQLException x) {
+                Log.caught(x);
+            }
+        }
     }
 }
