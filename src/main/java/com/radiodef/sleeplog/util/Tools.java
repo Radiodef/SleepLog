@@ -1,7 +1,6 @@
 package com.radiodef.sleeplog.util;
 
 import java.util.*;
-import java.sql.*;
 
 import com.google.common.base.Strings;
 
@@ -32,10 +31,5 @@ public final class Tools {
         }
         
         return s;
-    }
-    
-    public static boolean isDerbyTableAlreadyExistsException(SQLException x) {
-        // https://stackoverflow.com/a/5866339/2891664
-        return "X0Y32".equals(x.getSQLState());
     }
 }
