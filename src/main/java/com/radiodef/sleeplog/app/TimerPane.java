@@ -20,7 +20,7 @@ class TimerPane extends BorderPane {
     private final Set<InstantBiConsumer> listeners = new LinkedHashSet<>();
     
     private static Label createTimeLabel() {
-        var l = new Label("--");
+        var l = new Label("");
         l.getStyleClass().add("time-label");
         return l;
     }
