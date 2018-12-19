@@ -5,14 +5,13 @@ import javafx.event.*;
 
 import java.time.*;
 import java.util.*;
-import java.util.function.*;
 
 class SleepTimer {
     private static final int TICKS_PER_SECOND = 10;
     
     private final Timeline timeline;
     
-    private final Set<BiConsumer<Instant, Instant>> listeners = new LinkedHashSet<>();
+    private final Set<InstantBiConsumer> listeners = new LinkedHashSet<>();
     
     private Instant start;
     private Instant current;
@@ -27,7 +26,7 @@ class SleepTimer {
         timeline.setCycleCount(Timeline.INDEFINITE);
     }
     
-    void addListener(BiConsumer<Instant, Instant> l) {
+    void addListener(InstantBiConsumer l) {
         listeners.add(Objects.requireNonNull(l));
     }
     
