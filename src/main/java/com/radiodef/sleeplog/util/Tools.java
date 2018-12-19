@@ -3,6 +3,9 @@ package com.radiodef.sleeplog.util;
 import java.util.*;
 
 import com.google.common.base.Strings;
+import java.time.*;
+import java.time.format.*;
+import org.apache.commons.lang3.time.*;
 
 public final class Tools {
     private Tools() {
@@ -31,5 +34,16 @@ public final class Tools {
         }
         
         return s;
+    }
+    
+    private static final DateTimeFormatter START_FORMATTER =
+        DateTimeFormatter.ofPattern("h:mm a");
+    
+    public static String formatInstant(Instant i) {
+        return START_FORMATTER.format(LocalTime.ofInstant(i, ZoneId.systemDefault()));
+    }
+    
+    public static String formatDuration(Duration d) {
+        return DurationFormatUtils.formatDuration(d.toMillis(), "HH:mm:ss");
     }
 }
