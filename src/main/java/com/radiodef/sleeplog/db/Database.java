@@ -174,7 +174,6 @@ public final class Database implements AutoCloseable {
             }
         }
         
-        Log.note("success = %b", success);
         return success;
     }
     
