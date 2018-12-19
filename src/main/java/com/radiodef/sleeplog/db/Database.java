@@ -179,6 +179,8 @@ public final class Database implements AutoCloseable {
     
     @Override
     public void close() {
+        Log.enter();
+        
         if (didConnect()) {
             try {
                 if (!conn.isClosed())
