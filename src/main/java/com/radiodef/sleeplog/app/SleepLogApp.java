@@ -6,8 +6,12 @@ import javafx.application.*;
 import javafx.stage.*;
 import javafx.scene.*;
 
+import java.time.*;
+
 public final class SleepLogApp extends Application {
     private Database db;
+    
+    private TimerPane timerPane;
     
     static void launch() {
         Log.enter();
@@ -24,7 +28,10 @@ public final class SleepLogApp extends Application {
         
         setUserAgentStylesheet(STYLESHEET_MODENA);
         
-        var scene = new Scene(new TimerPane());
+        timerPane = new TimerPane();
+        timerPane.addSleepPeriodListener(this::sleepPeriodAdded);
+        
+        var scene = new Scene(timerPane);
         scene.getStylesheets().add("styles.css");
         primaryStage.setScene(scene);
         
@@ -42,5 +49,13 @@ public final class SleepLogApp extends Application {
         
         stage.setX(bounds.getMinX() + (bounds.getWidth() - stage.getWidth()) / 2);
         stage.setY(bounds.getMinY() + (bounds.getHeight() - stage.getHeight()) / 2);
+    }
+    
+    private void sleepPeriodAdded(Instant start, Instant end) {
+        if (db.didConnect()) {
+            if (db.insertNewPeriod(start, end)) {
+//                db.printAllRows();
+            }
+        }
     }
 }
