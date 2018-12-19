@@ -16,7 +16,7 @@ final class SleepLogMain {
     
     public static void main(String[] args) {
         ARGS = List.of(args);
-        Log.note("args = %s", getArguments());
+        Log.notef("args = %s", getArguments());
         
         // https://github.com/javafxports/openjdk-jfx/issues/236#issuecomment-426583174
         SleepLogApp.launch();

@@ -46,7 +46,7 @@ public final class SleepLogApp extends Application {
     
     private void configure(Stage stage) {
         var bounds = Screen.getPrimary().getVisualBounds();
-        Log.note("primary screen bounds = %s", bounds);
+        Log.notef("primary screen bounds = %s", bounds);
         
         final double ratio = 0.5;
         stage.setWidth(ratio * bounds.getWidth());

@@ -49,7 +49,7 @@ class SleepTimer {
             } else {
                 timeline.stop();
             }
-            Log.note("isRunning = %b", isRunning());
+            Log.notef("isRunning = %b", isRunning());
         }
     }
     

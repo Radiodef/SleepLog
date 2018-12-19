@@ -83,6 +83,7 @@ public final class Database implements AutoCloseable {
         
         try (var s = conn.createStatement()) {
             s.execute(statement);
+            Log.note(statement);
             
         } catch (SQLException x) {
             if (Arrays.asList(okStates).contains(x.getSQLState())) {
@@ -124,11 +125,11 @@ public final class Database implements AutoCloseable {
                     var start = (Instant) rs.getObject(START_COL);
                     var end = (Instant) rs.getObject(END_COL);
                     
-                    Log.note("id = %d, start = %s, end = %s",
+                    Log.notef("id = %d, start = %s, end = %s",
                         id, Tools.formatInstant(start), Tools.formatInstant(end));
                 }
                 
-                Log.note("total row count = %d", rows);
+                Log.notef("total row count = %d", rows);
                 
             } catch (SQLException x) {
                 Log.caught(x);
@@ -167,8 +168,8 @@ public final class Database implements AutoCloseable {
     @SuppressWarnings("unused")
     private void wipe() {
         if (didConnect()) {
-            Log.note("table dropped = %b", executeStatement("DROP TABLE " + DATES_TABLE));
-            Log.note("instant dropped = %b", executeStatement("DROP TYPE INSTANT RESTRICT"));
+            Log.notef("table dropped = %b", executeStatement("DROP TABLE " + DATES_TABLE));
+            Log.notef("instant dropped = %b", executeStatement("DROP TYPE INSTANT RESTRICT"));
         }
     }
     
