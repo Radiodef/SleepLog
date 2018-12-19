@@ -47,7 +47,7 @@ public final class Database implements AutoCloseable {
      * @return true if the type was created successfully
      */
     private boolean createInstantType() {
-        final String createTypeStatement =
+        final var createTypeStatement =
             "CREATE TYPE INSTANT EXTERNAL NAME '"
                 + Instant.class.getCanonicalName()
                 + "' LANGUAGE JAVA";
@@ -62,7 +62,7 @@ public final class Database implements AutoCloseable {
      * @return true if the table exists
      */
     private boolean createDatesTable() {
-        final String createTableStatement =
+        final var createTableStatement =
             "CREATE TABLE " + DATES_TABLE
             + "("
             + ID_COL + " INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,"
