@@ -85,7 +85,7 @@ public final class Database implements AutoCloseable {
             + "("
             + ID_COL + " INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,"
             + START_COL + " INSTANT,"
-            + END_COL + "end_instant INSTANT"
+            + END_COL + " INSTANT"
             + ")";
         
         try (var statement = conn.createStatement()) {
