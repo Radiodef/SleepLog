@@ -5,15 +5,19 @@ import com.radiodef.sleeplog.util.*;
 import java.util.*;
 import org.apache.commons.lang3.ArrayUtils;
 
-final class Log {
+public final class Log {
     private Log() {
     }
     
-    static void enter() {
+    public static void enter() {
         note(Tools.getCaller(), "entered", ArrayUtils.EMPTY_OBJECT_ARRAY);
     }
     
-    static void note(String fmt, Object... args) {
+    public static void caught(Throwable x) {
+        x.printStackTrace(System.out);
+    }
+    
+    public static void note(String fmt, Object... args) {
         note(Tools.getCaller(), fmt, args);
     }
     
