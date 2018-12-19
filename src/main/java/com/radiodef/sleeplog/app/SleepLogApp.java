@@ -26,6 +26,13 @@ public final class SleepLogApp extends Application {
         
         setUserAgentStylesheet(STYLESHEET_MODENA);
         
+        Platform.setImplicitExit(false);
+        
+        primaryStage.setOnCloseRequest(e -> {
+            db.close();
+            Platform.exit();
+        });
+        
         var timerPane = new TimerPane();
         timerPane.addSleepPeriodListener(this::sleepPeriodAdded);
         
