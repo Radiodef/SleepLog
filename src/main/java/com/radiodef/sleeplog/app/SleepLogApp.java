@@ -1,10 +1,14 @@
 package com.radiodef.sleeplog.app;
 
+import com.radiodef.sleeplog.db.*;
+
 import javafx.application.*;
 import javafx.stage.*;
 import javafx.scene.*;
 
 public final class SleepLogApp extends Application {
+    private Database db;
+    
     static void launch() {
         Log.enter();
         launch(SleepLogApp.class, SleepLogMain.getArguments().toArray(new String[0]));
@@ -12,6 +16,12 @@ public final class SleepLogApp extends Application {
     
     @Override
     public void start(Stage primaryStage) {
+        db = new Database();
+        
+        if (!db.connected()) {
+            System.exit(0xBAD_DB);
+        }
+        
         setUserAgentStylesheet(STYLESHEET_MODENA);
         
         var scene = new Scene(new TimerPane());
