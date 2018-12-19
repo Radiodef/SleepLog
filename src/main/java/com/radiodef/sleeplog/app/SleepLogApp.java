@@ -54,7 +54,7 @@ public final class SleepLogApp extends Application {
     private void sleepPeriodAdded(Instant start, Instant end) {
         if (db.didConnect()) {
             if (db.insertNewPeriod(start, end)) {
-//                db.printAllRows();
+                db.printAllRows();
             }
         }
     }
