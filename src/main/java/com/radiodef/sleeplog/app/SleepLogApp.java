@@ -18,7 +18,7 @@ public final class SleepLogApp extends Application {
     public void start(Stage primaryStage) {
         db = new Database();
         
-        if (!db.connected()) {
+        if (!db.didConnect()) {
             System.exit(0xBAD_DB);
         }
         
