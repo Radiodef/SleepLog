@@ -11,8 +11,6 @@ import java.time.*;
 public final class SleepLogApp extends Application {
     private Database db;
     
-    private TimerPane timerPane;
-    
     static void launch() {
         Log.enter();
         launch(SleepLogApp.class, SleepLogMain.getArguments().toArray(new String[0]));
@@ -28,7 +26,7 @@ public final class SleepLogApp extends Application {
         
         setUserAgentStylesheet(STYLESHEET_MODENA);
         
-        timerPane = new TimerPane();
+        var timerPane = new TimerPane();
         timerPane.addSleepPeriodListener(this::sleepPeriodAdded);
         
         var scene = new Scene(timerPane);
