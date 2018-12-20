@@ -107,7 +107,7 @@ public final class SleepLogApp extends Application {
     private void sleepPeriodAdded(Instant start, Instant end) {
         if (db.insertNewPeriod(start, end)) {
             Log.note("insertion succeeded");
-            db.printAllRows();
+//            db.printAllRows();
             
             if (tableViewStage != null) {
                 ((DatabaseTablePane) tableViewStage.getScene().getRoot()).update();
