@@ -166,16 +166,22 @@ public final class Database implements AutoCloseable {
     
     public boolean insertNewPeriod(Instant start, Instant end) {
         Log.enter();
-        if (!didConnect() || insertPeriodRow == null)
+        return executePreparedStatement(insertPeriodRow, Map.of(1, start, 2, end));
+    }
+    
+    private boolean executePreparedStatement(PreparedStatement statement,
+                                             Map<Integer, Object> params) {
+        Log.enter();
+        if (!didConnect() || statement == null)
             return false;
         
         boolean success;
         
         try {
-            insertPeriodRow.setObject(1, start);
-            insertPeriodRow.setObject(2, end);
+            for (var e : params.entrySet())
+                statement.setObject(e.getKey(), e.getValue());
             
-            insertPeriodRow.execute();
+            statement.execute();
             success = true;
             
         } catch (SQLException x) {
@@ -183,7 +189,7 @@ public final class Database implements AutoCloseable {
             success = false;
         } finally {
             try {
-                insertPeriodRow.clearParameters();
+                statement.clearParameters();
             } catch (SQLException x) {
                 Log.caught(x);
             }
