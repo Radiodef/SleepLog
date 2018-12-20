@@ -21,6 +21,7 @@ public final class Database implements AutoCloseable {
     private final Connection conn;
     
     private final PreparedStatement insertPeriodRow;
+    private final PreparedStatement deletePeriodRow;
     
     public Database() {
         this(null);
@@ -55,6 +56,7 @@ public final class Database implements AutoCloseable {
         }
         
         this.insertPeriodRow = prepareInsertPeriodRow();
+        this.deletePeriodRow = prepareDeletePeriodRow();
     }
     
     public boolean didConnect() {
@@ -116,14 +118,21 @@ public final class Database implements AutoCloseable {
     }
     
     private PreparedStatement prepareInsertPeriodRow() {
+        final var statement =
+            "INSERT INTO " + DATES_TABLE
+            + " (" + START_COL + ", " + END_COL + ")"
+            + " VALUES (?, ?)";
+        return prepareStatement(statement);
+    }
+    
+    private PreparedStatement prepareDeletePeriodRow() {
+        return prepareStatement("DELETE FROM " + DATES_TABLE + " WHERE id = ?");
+    }
+    
+    private PreparedStatement prepareStatement(String statement) {
         try {
-            if (didConnect()) {
-                final var insertPeriodRowStatement =
-                    "INSERT INTO " + DATES_TABLE
-                    + " (" + START_COL + ", " + END_COL + ")"
-                    + " VALUES (?, ?)";
-                return conn.prepareStatement(insertPeriodRowStatement);
-            }
+            if (didConnect())
+                return conn.prepareStatement(statement);
         } catch (SQLException x) {
             Log.caught(x);
         }
@@ -133,6 +142,11 @@ public final class Database implements AutoCloseable {
     public boolean insertNewPeriod(Instant start, Instant end) {
         Log.enter();
         return executePreparedStatement(insertPeriodRow, Map.of(1, start, 2, end));
+    }
+    
+    public boolean deletePeriod(int id) {
+        Log.enter();
+        return executePreparedStatement(deletePeriodRow, Map.of(1, id));
     }
     
     private boolean executePreparedStatement(PreparedStatement statement,
