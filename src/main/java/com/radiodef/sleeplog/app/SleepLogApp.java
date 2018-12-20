@@ -5,6 +5,7 @@ import com.radiodef.sleeplog.util.*;
 
 import javafx.application.*;
 import javafx.scene.control.*;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.stage.*;
 import javafx.scene.*;
@@ -67,14 +68,27 @@ public final class SleepLogApp extends Application {
             menuBar.useSystemMenuBarProperty().set(true);
             
         } else {
-            var fileMenu = new Menu("File");
-            var exit = new MenuItem("Exit");
+            var fileMenu = new Menu("_File");
+            fileMenu.setMnemonicParsing(true);
             
-            exit.setOnAction(e -> exit());
+            var exitItem = new MenuItem("E_xit");
+            exitItem.setMnemonicParsing(true);
             
-            fileMenu.getItems().add(exit);
+            exitItem.setOnAction(e -> exit());
+            
+            fileMenu.getItems().add(exitItem);
             menuBar.getMenus().add(fileMenu);
         }
+        
+        var windowMenu = new Menu(Tools.isMac() ? "_Window" : "_View");
+        windowMenu.setMnemonicParsing(true);
+        
+        var tableItem = new CheckMenuItem("_Table View");
+        tableItem.setMnemonicParsing(true);
+        tableItem.setAccelerator(KeyCombination.valueOf("Shortcut+T"));
+        
+        windowMenu.getItems().add(tableItem);
+        menuBar.getMenus().add(windowMenu);
         
         return menuBar;
     }
