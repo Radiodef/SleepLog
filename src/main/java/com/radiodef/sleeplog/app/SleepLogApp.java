@@ -9,6 +9,7 @@ import javafx.stage.*;
 import javafx.scene.*;
 
 import java.time.*;
+import java.util.*;
 
 public final class SleepLogApp extends Application {
     private Database db;
@@ -118,9 +119,9 @@ public final class SleepLogApp extends Application {
             Log.note("insertion succeeded");
 //            db.printAllRows();
             
-            if (tableViewStage != null) {
-                ((DatabaseTablePane) tableViewStage.getScene().lookup("#" + DatabaseTablePane.ID)).update();
-            }
+            Optional.ofNullable(tableViewStage.getScene())
+                .map(scene -> (DatabaseTablePane) scene.lookup("#" + DatabaseTablePane.ID))
+                .ifPresent(DatabaseTablePane::update);
             
         } else {
             Log.note("insertion failed");
