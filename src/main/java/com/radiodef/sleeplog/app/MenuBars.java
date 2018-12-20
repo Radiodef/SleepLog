@@ -7,6 +7,7 @@ import java.util.function.*;
 
 import javafx.scene.control.*;
 import javafx.scene.input.*;
+import javafx.stage.*;
 
 final class MenuBars implements Supplier<MenuBar> {
     static final String MENU_BAR_ID = "menu-bar";
@@ -49,11 +50,31 @@ final class MenuBars implements Supplier<MenuBar> {
         tableItem.setAccelerator(KeyCombination.valueOf("Shortcut+T"));
         
         tableItem.setSelected(app.getTableViewStage().isShowing());
-        tableItem.selectedProperty().addListener((p, o, val) -> app.setTableViewVisible(val));
+        tableItem.selectedProperty().addListener((p, o, val) -> setTableViewVisible(val));
+        
+        app.getTableViewStage().setOnCloseRequest(e -> setTableViewVisible(false));
         
         windowMenu.getItems().add(tableItem);
         menuBar.getMenus().add(windowMenu);
         
         return menuBar;
+    }
+    
+    private void setTableViewVisible(boolean visible) {
+        var stage = app.getTableViewStage();
+        
+        if (visible) {
+            stage.show();
+            stage.toFront();
+        } else {
+            stage.hide();
+        }
+        
+        Window.getWindows().stream()
+            .map(w -> (MenuBar) w.getScene().lookup("#" + MenuBars.MENU_BAR_ID))
+            .flatMap(b -> b.getMenus().stream().flatMap(m -> m.getItems().stream()))
+            .filter(CheckMenuItem.class::isInstance)
+            .filter(i -> i.getText().contains("Table"))
+            .forEach(i -> ((CheckMenuItem) i).setSelected(visible));
     }
 }

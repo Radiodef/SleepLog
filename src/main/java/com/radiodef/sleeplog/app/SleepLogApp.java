@@ -4,7 +4,6 @@ import com.radiodef.sleeplog.db.*;
 import com.radiodef.sleeplog.util.*;
 
 import javafx.application.*;
-import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.*;
 import javafx.scene.*;
@@ -108,24 +107,6 @@ public final class SleepLogApp extends Application {
         stage.setY(bounds.getMinY());
         
         stage.setTitle("Data");
-        stage.setOnCloseRequest(e -> setTableViewVisible(false));
-    }
-    
-    void setTableViewVisible(boolean visible) {
-        if (visible) {
-            tableViewStage.show();
-            tableViewStage.toFront();
-        } else {
-            if (tableViewStage != null) {
-                tableViewStage.hide();
-            }
-        }
-        Window.getWindows().stream()
-            .map(w -> (MenuBar) w.getScene().lookup("#" + MenuBars.MENU_BAR_ID))
-            .flatMap(b -> b.getMenus().stream().flatMap(m -> m.getItems().stream()))
-            .filter(CheckMenuItem.class::isInstance)
-            .filter(i -> i.getText().contains("Table"))
-            .forEach(i -> ((CheckMenuItem) i).setSelected(visible));
     }
     
     private void sleepPeriodAdded(Instant start, Instant end) {
