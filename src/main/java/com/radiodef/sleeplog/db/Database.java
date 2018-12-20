@@ -49,10 +49,11 @@ public final class Database implements AutoCloseable {
         }
         
         this.conn = conn;
-        
+    
+        // noinspection StatementWithEmptyBody
         if (conn != null && createInstantType()
                          && createDatesTable()) {
-            printAllRows();
+//            printAllRows();
         }
         
         this.insertPeriodRow = prepareInsertPeriodRow();
@@ -200,6 +201,7 @@ public final class Database implements AutoCloseable {
         return list;
     }
     
+    @SuppressWarnings("unused")
     public void printAllRows() {
         var rows = getAllSleepPeriods();
         Log.notef("total row count = %d", rows.size());
