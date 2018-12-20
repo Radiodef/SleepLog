@@ -36,7 +36,6 @@ public final class SleepLogApp extends Application {
         setUserAgentStylesheet(STYLESHEET_MODENA);
         
         Platform.setImplicitExit(false);
-        
         primaryStage.setOnCloseRequest(e -> exit());
         
         var timerPane = new TimerPane();
@@ -64,6 +63,8 @@ public final class SleepLogApp extends Application {
         
         stage.setX(bounds.getMinX() + (bounds.getWidth() - stage.getWidth()) / 2);
         stage.setY(bounds.getMinY() + (bounds.getHeight() - stage.getHeight()) / 2);
+        
+        stage.setTitle("Sleep Log");
     }
     
     private MenuBar createMenuBar() {
@@ -142,6 +143,8 @@ public final class SleepLogApp extends Application {
         
         stage.setWidth(primaryStage.getWidth());
         stage.setHeight(primaryStage.getHeight());
+        
+        stage.setTitle("Data");
         return stage;
     }
     
