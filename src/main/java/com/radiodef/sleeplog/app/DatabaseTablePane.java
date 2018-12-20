@@ -59,6 +59,6 @@ class DatabaseTablePane extends BorderPane {
         var items = table.getItems();
         var item = items.remove(index);
         
-        // TODO: remove item from db
+        db.deletePeriod(item.getID());
     }
 }
