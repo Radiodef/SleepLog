@@ -6,6 +6,7 @@ import com.radiodef.sleeplog.util.*;
 import java.sql.*;
 import java.time.*;
 import java.util.*;
+import java.nio.file.*;
 
 public final class Database implements AutoCloseable {
     private static final String DB_NAME = "sleeplog-db";
@@ -20,11 +21,29 @@ public final class Database implements AutoCloseable {
     private final PreparedStatement insertPeriodRow;
     
     public Database() {
+        this(null);
+    }
+    
+    public Database(Path dbPath) {
         Log.enter();
         Connection conn = null;
         
+        getConnection:
         try {
-            conn = DriverManager.getConnection("jdbc:derby:" + DB_NAME + ";create=true");
+            String connectionString;
+            if (dbPath != null) {
+                String dir;
+                try {
+                    dir = dbPath.resolve(DB_NAME).toAbsolutePath().toUri().toURL().getPath();
+                } catch (Exception x) {
+                    Log.caught(x);
+                    break getConnection;
+                }
+                connectionString = "jdbc:derby:directory:" + dir + ";create=true";
+            } else {
+                connectionString = "jdbc:derby:" + DB_NAME + ";create=true";
+            }
+            conn = DriverManager.getConnection(connectionString);
         } catch (SQLException x) {
             Log.caught(x);
         }
