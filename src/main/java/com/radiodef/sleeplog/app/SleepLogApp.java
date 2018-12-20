@@ -1,8 +1,11 @@
 package com.radiodef.sleeplog.app;
 
 import com.radiodef.sleeplog.db.*;
+import com.radiodef.sleeplog.util.*;
 
 import javafx.application.*;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 import javafx.stage.*;
 import javafx.scene.*;
 
@@ -36,7 +39,11 @@ public final class SleepLogApp extends Application {
         var timerPane = new TimerPane();
         timerPane.addSleepPeriodListener(this::sleepPeriodAdded);
         
-        var scene = new Scene(timerPane);
+        var content = new BorderPane();
+        content.setTop(createMenuBar());
+        content.setCenter(timerPane);
+        
+        var scene = new Scene(content);
         scene.getStylesheets().add("styles.css");
         primaryStage.setScene(scene);
         
@@ -54,6 +61,16 @@ public final class SleepLogApp extends Application {
         
         stage.setX(bounds.getMinX() + (bounds.getWidth() - stage.getWidth()) / 2);
         stage.setY(bounds.getMinY() + (bounds.getHeight() - stage.getHeight()) / 2);
+    }
+    
+    private MenuBar createMenuBar() {
+        var menuBar = new MenuBar();
+        
+        if (Tools.isMac()) {
+            menuBar.useSystemMenuBarProperty().set(true);
+        }
+        
+        return menuBar;
     }
     
     private void sleepPeriodAdded(Instant start, Instant end) {
