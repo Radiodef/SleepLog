@@ -58,6 +58,10 @@ public final class Tools {
         return StringUtils.contains(SystemUtils.OS_NAME, "OS X");
     }
     
+    public static boolean isWindows() {
+        return StringUtils.contains(SystemUtils.OS_NAME, "Windows");
+    }
+    
     public static void beforeFirstShow(Stage s, Consumer<? super Stage> action) {
         var prev = s.onShowingProperty().get();
         
