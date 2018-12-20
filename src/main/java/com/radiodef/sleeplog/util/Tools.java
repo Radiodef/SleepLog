@@ -51,6 +51,6 @@ public final class Tools {
     public static boolean isMac() {
         // https://developer.apple.com/library/content/technotes/tn2002/tn2110.html
         // http://archive.is/w6JC0
-        return (SystemUtils.OS_NAME != null) && SystemUtils.OS_NAME.contains("OS X");
+        return StringUtils.contains(SystemUtils.OS_NAME, "OS X");
     }
 }
