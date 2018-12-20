@@ -48,6 +48,13 @@ public final class Tools {
         return START_FORMATTER.format(LocalTime.ofInstant(i, ZoneId.systemDefault()));
     }
     
+    private static final DateTimeFormatter DETAIL_FORMATTER =
+        DateTimeFormatter.ofPattern("EEE, d LLL uu, h:mm:ss a");
+    
+    public static String formatDetailedInstant(Instant i) {
+        return DETAIL_FORMATTER.format(LocalDateTime.ofInstant(i, ZoneId.systemDefault()));
+    }
+    
     public static String formatDuration(Duration d) {
         return DurationFormatUtils.formatDuration(d.toMillis(), "HH:mm:ss");
     }
