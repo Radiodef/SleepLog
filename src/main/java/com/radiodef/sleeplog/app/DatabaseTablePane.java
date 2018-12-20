@@ -69,8 +69,6 @@ class DatabaseTablePane extends BorderPane {
     
     private void deleteSelection() {
         var index = table.getSelectionModel().getSelectedIndex();
-        assert index >= 0 : index;
-        
         var items = table.getItems();
         var item = items.remove(index);
         
