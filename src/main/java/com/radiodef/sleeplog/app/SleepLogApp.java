@@ -16,6 +16,7 @@ public final class SleepLogApp extends Application {
     private Database db;
     
     private Stage primaryStage;
+    private Stage tableViewStage;
     
     static void launch() {
         Log.enter();
@@ -116,8 +117,43 @@ public final class SleepLogApp extends Application {
         Platform.exit();
     }
     
+    private Stage createTableViewStage() {
+        var stage = new Stage();
+        var scene = new Scene(new DatabaseTablePane());
+        
+        stage.setScene(scene);
+        stage.initOwner(primaryStage);
+        
+        stage.setOnCloseRequest(e ->
+            ((BorderPane) primaryStage.getScene().getRoot())
+                .getChildren()
+                .stream()
+                .filter(MenuBar.class::isInstance)
+                .findFirst()
+                .ifPresent(bar ->
+                    ((MenuBar) bar).getMenus()
+                        .stream()
+                        .flatMap(menu -> menu.getItems().stream())
+                        .filter(item -> item.getText().contains("Table"))
+                        .findFirst()
+                        .ifPresent(item -> ((CheckMenuItem) item).setSelected(false))
+                )
+        );
+        
+        return stage;
+    }
+    
     private void setTableViewVisible(boolean visible) {
-        // TODO
-        Log.notef("%b", visible);
+        if (visible) {
+            if (tableViewStage == null) {
+                tableViewStage = createTableViewStage();
+            }
+            tableViewStage.show();
+//            tableViewStage.toFront();
+        } else {
+            if (tableViewStage != null) {
+                tableViewStage.hide();
+            }
+        }
     }
 }
