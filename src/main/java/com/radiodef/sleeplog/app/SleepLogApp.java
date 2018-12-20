@@ -125,9 +125,21 @@ public final class SleepLogApp extends Application {
     
     private Stage createTableViewStage() {
         var stage = new Stage();
-        var scene = new Scene(new DatabaseTablePane(db));
+        var content = new BorderPane();
         
-        stage.setScene(scene);
+        content.setCenter(new DatabaseTablePane(db));
+    
+        /*if (Tools.isMac()) {
+            ((BorderPane) primaryStage.getScene().getRoot())
+                .getChildren()
+                .stream()
+                .filter(MenuBar.class::isInstance)
+                .findFirst()
+                .ifPresent(content::setTop)
+            ;
+        }*/
+        
+        stage.setScene(new Scene(content));
         stage.initOwner(primaryStage);
         
         stage.setOnCloseRequest(e ->
