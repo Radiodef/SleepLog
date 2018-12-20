@@ -38,6 +38,8 @@ class DatabaseTablePane extends BorderPane {
              .selectedIndexProperty()
              .addListener((a, b, value) -> deleteButton.setDisable(value.intValue() == -1));
         
+        deleteButton.setOnAction(e -> deleteSelection());
+        
         var tools = new ToolBar();
         tools.setOrientation(Orientation.HORIZONTAL);
         tools.getItems().add(deleteButton);
@@ -48,5 +50,15 @@ class DatabaseTablePane extends BorderPane {
     
     void update() {
         table.setItems(db.getAllSleepPeriods());
+    }
+    
+    private void deleteSelection() {
+        var index = table.getSelectionModel().getSelectedIndex();
+        assert index >= 0 : index;
+        
+        var items = table.getItems();
+        var item = items.remove(index);
+        
+        // TODO: remove item from db
     }
 }
