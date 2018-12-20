@@ -142,6 +142,10 @@ public final class SleepLogApp extends Application {
         stage.setWidth(primaryStage.getWidth());
         stage.setHeight(primaryStage.getHeight());
         
+        var bounds = Screen.getPrimary().getVisualBounds();
+        stage.setX(bounds.getMinX());
+        stage.setY(bounds.getMinY());
+        
         stage.setTitle("Data");
         stage.setOnCloseRequest(e -> setTableViewVisible(false));
         return stage;
