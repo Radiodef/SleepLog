@@ -48,6 +48,8 @@ public final class Tools {
     }
     
     public static boolean isMac() {
-        return System.getProperty("os.name", "Not Mac").startsWith("Mac");
+        // https://developer.apple.com/library/content/technotes/tn2002/tn2110.html
+        // (archive: http://archive.is/w6JC0)
+        return System.getProperty("os.name", "").contains("OS X");
     }
 }
