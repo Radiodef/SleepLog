@@ -5,7 +5,6 @@ import com.radiodef.sleeplog.util.*;
 
 import javafx.application.*;
 import javafx.scene.control.*;
-import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.stage.*;
 import javafx.scene.*;
@@ -14,6 +13,8 @@ import java.time.*;
 
 public final class SleepLogApp extends Application {
     private Database db;
+    
+    private MenuBars menuBars;
     
     private Stage primaryStage;
     private Stage tableViewStage;
@@ -24,36 +25,54 @@ public final class SleepLogApp extends Application {
     }
     
     @Override
-    public void start(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-        
+    public void start(Stage inStage) {
         db = new Database();
         
         if (!db.didConnect()) {
             System.exit(0xBAD_DB);
         }
         
-        setUserAgentStylesheet(STYLESHEET_MODENA);
+        menuBars = new MenuBars(this);
         
+        primaryStage = inStage;
+        tableViewStage = new Stage();
+        
+        setUserAgentStylesheet(STYLESHEET_MODENA);
         Platform.setImplicitExit(false);
-        primaryStage.setOnCloseRequest(e -> exit());
+        
+        configurePrimaryStage(primaryStage);
+        configureTableViewStage(tableViewStage);
+        primaryStage.show();
+    }
+    
+    Stage getPrimaryStage() {
+        return primaryStage;
+    }
+    
+    Stage getTableViewStage() {
+        return tableViewStage;
+    }
+    
+    private void configurePrimaryStage(Stage stage) {
+        // exit listener
+        
+        stage.setOnCloseRequest(e -> exit());
+        
+        // content
         
         var timerPane = new TimerPane();
         timerPane.addSleepPeriodListener(this::sleepPeriodAdded);
         
         var content = new BorderPane();
-        content.setTop(createMenuBar());
+        content.setTop(menuBars.get());
         content.setCenter(timerPane);
         
         var scene = new Scene(content);
         scene.getStylesheets().add("styles.css");
-        primaryStage.setScene(scene);
+        stage.setScene(scene);
         
-        configure(primaryStage);
-        primaryStage.show();
-    }
-    
-    private void configure(Stage stage) {
+        // sizing
+        
         var bounds = Screen.getPrimary().getVisualBounds();
         Log.notef("primary screen bounds = %s", bounds);
         
@@ -64,46 +83,50 @@ public final class SleepLogApp extends Application {
         stage.setX(bounds.getMinX() + (bounds.getWidth() - stage.getWidth()) / 2);
         stage.setY(bounds.getMinY() + (bounds.getHeight() - stage.getHeight()) / 2);
         
+        // title
+        
         stage.setTitle("Sleep Log");
     }
     
-    private MenuBar createMenuBar() {
-        var menuBar = new MenuBar();
-        menuBar.setId("menu-bar");
+    private void configureTableViewStage(Stage stage) {
+        var content = new BorderPane();
+        var table = new DatabaseTablePane(db);
+        table.setId("db-table");
         
+        content.setCenter(table);
+    
         if (Tools.isMac()) {
-            // TODO: figure out what this does on other systems
-            menuBar.setUseSystemMenuBar(true);
-            
-        } else {
-            var fileMenu = new Menu("_File");
-            fileMenu.setMnemonicParsing(true);
-            
-            var exitItem = new MenuItem("E_xit");
-            exitItem.setMnemonicParsing(true);
-            // TODO: find out what the correct key is
-//            exitItem.setAccelerator(KeyCombination.valueOf("Shortcut+X"));
-            
-            exitItem.setOnAction(e -> exit());
-            
-            fileMenu.getItems().add(exitItem);
-            menuBar.getMenus().add(fileMenu);
+            content.setTop(menuBars.get());
         }
         
-        var windowMenu = new Menu(Tools.isMac() ? "_Window" : "_View");
-        windowMenu.setMnemonicParsing(true);
+        stage.setScene(new Scene(content));
         
-        var tableItem = new CheckMenuItem("Database _Table View");
-        tableItem.setMnemonicParsing(true);
-        tableItem.setAccelerator(KeyCombination.valueOf("Shortcut+T"));
+        stage.setWidth(primaryStage.getWidth());
+        stage.setHeight(primaryStage.getHeight());
         
-        tableItem.setSelected(tableViewStage != null && tableViewStage.isShowing());
-        tableItem.selectedProperty().addListener((p, o, val) -> setTableViewVisible(val));
+        var bounds = Screen.getPrimary().getVisualBounds();
+        stage.setX(bounds.getMinX());
+        stage.setY(bounds.getMinY());
         
-        windowMenu.getItems().add(tableItem);
-        menuBar.getMenus().add(windowMenu);
-        
-        return menuBar;
+        stage.setTitle("Data");
+        stage.setOnCloseRequest(e -> setTableViewVisible(false));
+    }
+    
+    void setTableViewVisible(boolean visible) {
+        if (visible) {
+            tableViewStage.show();
+            tableViewStage.toFront();
+        } else {
+            if (tableViewStage != null) {
+                tableViewStage.hide();
+            }
+        }
+        Window.getWindows().stream()
+            .map(w -> (MenuBar) w.getScene().lookup("#" + MenuBars.MENU_BAR_ID))
+            .flatMap(b -> b.getMenus().stream().flatMap(m -> m.getItems().stream()))
+            .filter(CheckMenuItem.class::isInstance)
+            .filter(i -> i.getText().contains("Table"))
+            .forEach(i -> ((CheckMenuItem) i).setSelected(visible));
     }
     
     private void sleepPeriodAdded(Instant start, Instant end) {
@@ -120,54 +143,8 @@ public final class SleepLogApp extends Application {
         }
     }
     
-    private void exit() {
+    void exit() {
         db.close();
         Platform.exit();
-    }
-    
-    private Stage createTableViewStage() {
-        var content = new BorderPane();
-        var table = new DatabaseTablePane(db);
-        table.setId("db-table");
-        
-        content.setCenter(table);
-    
-        if (Tools.isMac()) {
-            content.setTop(createMenuBar());
-        }
-        
-        var stage = new Stage();
-        stage.setScene(new Scene(content));
-        
-        stage.setWidth(primaryStage.getWidth());
-        stage.setHeight(primaryStage.getHeight());
-        
-        var bounds = Screen.getPrimary().getVisualBounds();
-        stage.setX(bounds.getMinX());
-        stage.setY(bounds.getMinY());
-        
-        stage.setTitle("Data");
-        stage.setOnCloseRequest(e -> setTableViewVisible(false));
-        return stage;
-    }
-    
-    private void setTableViewVisible(boolean visible) {
-        if (visible) {
-            if (tableViewStage == null) {
-                tableViewStage = createTableViewStage();
-            }
-            tableViewStage.show();
-            tableViewStage.toFront();
-        } else {
-            if (tableViewStage != null) {
-                tableViewStage.hide();
-            }
-        }
-        Window.getWindows().stream()
-            .map(w -> (MenuBar) w.getScene().lookup("#menu-bar"))
-            .flatMap(b -> b.getMenus().stream().flatMap(m -> m.getItems().stream()))
-            .filter(CheckMenuItem.class::isInstance)
-            .filter(i -> i.getText().contains("Table"))
-            .forEach(i -> ((CheckMenuItem) i).setSelected(visible));
     }
 }
