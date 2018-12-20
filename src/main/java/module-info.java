@@ -6,5 +6,5 @@ module sleeplog {
     
     exports com.radiodef.sleeplog.app;
     
-    opens com.radiodef.sleeplog.db to javafx.base;
+    opens com.radiodef.sleeplog.db to javafx.base, org.apache.commons.lang3;
 }
