@@ -3,11 +3,14 @@ package com.radiodef.sleeplog.app;
 import com.radiodef.sleeplog.db.*;
 import com.radiodef.sleeplog.util.*;
 
+import org.apache.commons.lang3.*;
+
 import javafx.scene.control.*;
 import javafx.scene.control.cell.*;
 import javafx.scene.layout.*;
 import javafx.geometry.*;
 import javafx.util.*;
+import javafx.collections.*;
 
 import java.time.*;
 import java.util.*;
@@ -50,8 +53,10 @@ class DatabaseTablePane extends BorderPane {
         deleteButton.setDisable(true);
         
         table.getSelectionModel()
-             .selectedIndexProperty()
-             .addListener((a, b, value) -> deleteButton.setDisable(value.intValue() == -1));
+             .getSelectedIndices()
+             .addListener((ListChangeListener<Integer>) c -> deleteButton.setDisable(c.getList().isEmpty()));
+        table.getSelectionModel()
+             .setSelectionMode(SelectionMode.MULTIPLE);
         
         deleteButton.setOnAction(e -> deleteSelection());
         
@@ -68,15 +73,17 @@ class DatabaseTablePane extends BorderPane {
     }
     
     private void deleteSelection() {
-        var index = table.getSelectionModel().getSelectedIndex();
-        var items = table.getItems();
-        var item = items.remove(index);
+        var indices = new ArrayList<>(table.getSelectionModel().getSelectedIndices());
+        indices.sort(Comparator.reverseOrder());
         
-        if (db.deletePeriod(item.getID())) {
-            Log.note("deletion succeeded");
-        } else {
-            Log.note("deletion failed");
+        int count = 0;
+        
+        for (int i : indices) {
+            var item = table.getItems().remove(i);
+            count += BooleanUtils.toInteger(db.deletePeriod(item.getID()));
         }
+        
+        Log.notef("deleted %d items", count);
     }
     
     private static final class InstantStringConverter extends StringConverter<Instant> {
