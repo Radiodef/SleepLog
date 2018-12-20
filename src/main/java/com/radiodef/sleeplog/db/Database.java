@@ -8,6 +8,8 @@ import java.time.*;
 import java.util.*;
 import java.nio.file.*;
 
+import javafx.collections.*;
+
 public final class Database implements AutoCloseable {
     private static final String DB_NAME = "sleeplog-db";
     private static final String DATES_TABLE = "sleeplog_dates";
@@ -128,8 +130,8 @@ public final class Database implements AutoCloseable {
         return null;
     }
     
-    public List<SleepPeriod> getAllSleepPeriods() {
-        var list = new ArrayList<SleepPeriod>();
+    public ObservableList<SleepPeriod> getAllSleepPeriods() {
+        var list = FXCollections.<SleepPeriod>observableArrayList();
         
         if (didConnect()) {
             try (var statement = conn.createStatement()) {
