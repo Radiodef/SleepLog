@@ -32,6 +32,7 @@ public final class Database implements AutoCloseable {
             if (dbPath == null)
                 dbPath = Paths.get("");
             
+            // https://db.apache.org/derby/docs/10.8/devguide/cdevdvlp40350.html
             String dir = dbPath.resolve(DB_NAME)
                                .toAbsolutePath()
                                .toUri()
