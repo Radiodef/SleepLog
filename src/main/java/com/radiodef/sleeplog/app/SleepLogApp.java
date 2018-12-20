@@ -83,9 +83,11 @@ public final class SleepLogApp extends Application {
         var windowMenu = new Menu(Tools.isMac() ? "_Window" : "_View");
         windowMenu.setMnemonicParsing(true);
         
-        var tableItem = new CheckMenuItem("_Table View");
+        var tableItem = new CheckMenuItem("Database _Table View");
         tableItem.setMnemonicParsing(true);
         tableItem.setAccelerator(KeyCombination.valueOf("Shortcut+T"));
+        
+        tableItem.selectedProperty().addListener((p, o, val) -> setTableViewVisible(val));
         
         windowMenu.getItems().add(tableItem);
         menuBar.getMenus().add(windowMenu);
@@ -105,5 +107,10 @@ public final class SleepLogApp extends Application {
     private void exit() {
         db.close();
         Platform.exit();
+    }
+    
+    private void setTableViewVisible(boolean visible) {
+        // TODO
+        Log.notef("%b", visible);
     }
 }
