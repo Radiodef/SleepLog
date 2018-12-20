@@ -37,7 +37,7 @@ final class MenuBars implements Supplier<MenuBar> {
             
             if (Tools.isWindows()) {
                 exitItem.setAccelerator(KeyCombination.valueOf("Alt+F4"));
-            }
+            } // else TODO: learn linux standard?
             
             exitItem.setOnAction(e -> app.exit());
             
