@@ -29,7 +29,12 @@ class DatabaseTablePane extends BorderPane {
         startCol.setCellValueFactory(new PropertyValueFactory<>("start"));
         endCol.setCellValueFactory(new PropertyValueFactory<>("end"));
         
-        this.table = new TableView<>();
+        table = new TableView<>();
+        
+//        idCol.prefWidthProperty().bind(table.widthProperty().divide(5));
+//        startCol.prefWidthProperty().bind(table.widthProperty().multiply(2).divide(5));
+//        endCol.prefWidthProperty().bind(table.widthProperty().multiply(2).divide(5));
+        
         table.setEditable(false);
         
         Collections.addAll(table.getColumns(), idCol, startCol, endCol);
