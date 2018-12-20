@@ -46,4 +46,8 @@ public final class Tools {
     public static String formatDuration(Duration d) {
         return DurationFormatUtils.formatDuration(d.toMillis(), "HH:mm:ss");
     }
+    
+    public static boolean isMac() {
+        return System.getProperty("os.name").startsWith("Mac");
+    }
 }
