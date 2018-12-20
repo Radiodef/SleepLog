@@ -11,11 +11,15 @@ import java.time.*;
 import java.util.*;
 
 class DatabaseTablePane extends BorderPane {
+    static final String ID = "db-table-pane";
+    
     private final Database db;
     private final TableView<SleepPeriod> table;
     
     DatabaseTablePane(Database db) {
         this.db = Objects.requireNonNull(db, "db");
+        
+        setId(ID);
         
         var idCol = new TableColumn<SleepPeriod, Integer>("ID");
         var startCol = new TableColumn<SleepPeriod, Instant>("Start");

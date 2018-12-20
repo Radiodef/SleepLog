@@ -91,7 +91,6 @@ public final class SleepLogApp extends Application {
     private void configureTableViewStage(Stage stage) {
         var content = new BorderPane();
         var table = new DatabaseTablePane(db);
-        table.setId("db-table");
         
         content.setCenter(table);
     
@@ -135,7 +134,7 @@ public final class SleepLogApp extends Application {
 //            db.printAllRows();
             
             if (tableViewStage != null) {
-                ((DatabaseTablePane) tableViewStage.getScene().lookup("#db-table")).update();
+                ((DatabaseTablePane) tableViewStage.getScene().lookup("#" + DatabaseTablePane.ID)).update();
             }
             
         } else {
