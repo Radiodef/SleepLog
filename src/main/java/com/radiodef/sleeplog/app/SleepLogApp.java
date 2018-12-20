@@ -66,7 +66,7 @@ public final class SleepLogApp extends Application {
         
         if (Tools.isMac()) {
             // TODO: figure out what this does on other systems
-            menuBar.useSystemMenuBarProperty().set(true);
+            menuBar.setUseSystemMenuBar(true);
             
         } else {
             var fileMenu = new Menu("_File");
