@@ -108,6 +108,11 @@ public final class SleepLogApp extends Application {
         if (db.insertNewPeriod(start, end)) {
             Log.note("insertion succeeded");
             db.printAllRows();
+            
+            if (tableViewStage != null) {
+                ((DatabaseTablePane) tableViewStage.getScene().getRoot()).update();
+            }
+            
         } else {
             Log.note("insertion failed");
         }
@@ -120,7 +125,7 @@ public final class SleepLogApp extends Application {
     
     private Stage createTableViewStage() {
         var stage = new Stage();
-        var scene = new Scene(new DatabaseTablePane());
+        var scene = new Scene(new DatabaseTablePane(db));
         
         stage.setScene(scene);
         stage.initOwner(primaryStage);
