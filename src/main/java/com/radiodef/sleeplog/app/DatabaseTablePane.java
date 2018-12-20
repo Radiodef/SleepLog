@@ -1,11 +1,13 @@
 package com.radiodef.sleeplog.app;
 
 import com.radiodef.sleeplog.db.*;
+import com.radiodef.sleeplog.util.*;
 
-import javafx.geometry.*;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.*;
 import javafx.scene.layout.*;
+import javafx.geometry.*;
+import javafx.util.*;
 
 import java.time.*;
 import java.util.*;
@@ -28,6 +30,9 @@ class DatabaseTablePane extends BorderPane {
         idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         startCol.setCellValueFactory(new PropertyValueFactory<>("start"));
         endCol.setCellValueFactory(new PropertyValueFactory<>("end"));
+        
+        startCol.setCellFactory(InstantStringConverter.CELL_FACTORY);
+        endCol.setCellFactory(InstantStringConverter.CELL_FACTORY);
         
         table = new TableView<>();
         
@@ -72,6 +77,21 @@ class DatabaseTablePane extends BorderPane {
             Log.note("deletion succeeded");
         } else {
             Log.note("deletion failed");
+        }
+    }
+    
+    private static final class InstantStringConverter extends StringConverter<Instant> {
+        private static final Callback<TableColumn<SleepPeriod, Instant>, TableCell<SleepPeriod, Instant>> CELL_FACTORY =
+            TextFieldTableCell.forTableColumn(new InstantStringConverter());
+        
+        @Override
+        public String toString(Instant inst) {
+            return (inst == null) ? "null" : Tools.formatDetailedInstant(inst);
+        }
+        
+        @Override
+        public Instant fromString(String str) {
+            throw new AssertionError(str);
         }
     }
 }
