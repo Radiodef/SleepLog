@@ -140,6 +140,8 @@ public final class SleepLogApp extends Application {
                 )
         );
         
+        stage.setWidth(primaryStage.getWidth());
+        stage.setHeight(primaryStage.getHeight());
         return stage;
     }
     
