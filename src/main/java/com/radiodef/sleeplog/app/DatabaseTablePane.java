@@ -35,6 +35,7 @@ class DatabaseTablePane extends BorderPane {
         endCol.setCellFactory(InstantStringConverter.CELL_FACTORY);
         
         table = new TableView<>();
+        table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
         
 //        idCol.prefWidthProperty().bind(table.widthProperty().divide(5));
 //        startCol.prefWidthProperty().bind(table.widthProperty().multiply(2).divide(5));
