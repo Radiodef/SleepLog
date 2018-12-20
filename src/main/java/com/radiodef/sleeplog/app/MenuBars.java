@@ -34,8 +34,10 @@ final class MenuBars implements Supplier<MenuBar> {
             
             var exitItem = new MenuItem("E_xit");
             exitItem.setMnemonicParsing(true);
-            // TODO: find out what the correct key is
-//            exitItem.setAccelerator(KeyCombination.valueOf("Shortcut+X"));
+            
+            if (Tools.isWindows()) {
+                exitItem.setAccelerator(KeyCombination.valueOf("Alt+F4"));
+            }
             
             exitItem.setOnAction(e -> app.exit());
             
