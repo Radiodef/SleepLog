@@ -96,6 +96,7 @@ public final class SleepLogApp extends Application {
         tableItem.setMnemonicParsing(true);
         tableItem.setAccelerator(KeyCombination.valueOf("Shortcut+T"));
         
+        tableItem.setSelected(tableViewStage != null && tableViewStage.isShowing());
         tableItem.selectedProperty().addListener((p, o, val) -> setTableViewVisible(val));
         
         windowMenu.getItems().add(tableItem);
@@ -124,44 +125,21 @@ public final class SleepLogApp extends Application {
     }
     
     private Stage createTableViewStage() {
-        var stage = new Stage();
         var content = new BorderPane();
-        
         content.setCenter(new DatabaseTablePane(db));
     
-        /*if (Tools.isMac()) {
-            ((BorderPane) primaryStage.getScene().getRoot())
-                .getChildren()
-                .stream()
-                .filter(MenuBar.class::isInstance)
-                .findFirst()
-                .ifPresent(content::setTop)
-            ;
-        }*/
+        if (Tools.isMac()) {
+            content.setTop(createMenuBar());
+        }
         
+        var stage = new Stage();
         stage.setScene(new Scene(content));
-        stage.initOwner(primaryStage);
-        
-        stage.setOnCloseRequest(e ->
-            ((BorderPane) primaryStage.getScene().getRoot())
-                .getChildren()
-                .stream()
-                .filter(MenuBar.class::isInstance)
-                .findFirst()
-                .ifPresent(bar ->
-                    ((MenuBar) bar).getMenus()
-                        .stream()
-                        .flatMap(menu -> menu.getItems().stream())
-                        .filter(item -> item.getText().contains("Table"))
-                        .findFirst()
-                        .ifPresent(item -> ((CheckMenuItem) item).setSelected(false))
-                )
-        );
         
         stage.setWidth(primaryStage.getWidth());
         stage.setHeight(primaryStage.getHeight());
         
         stage.setTitle("Data");
+        stage.setOnCloseRequest(e -> setTableViewVisible(false));
         return stage;
     }
     
@@ -171,11 +149,20 @@ public final class SleepLogApp extends Application {
                 tableViewStage = createTableViewStage();
             }
             tableViewStage.show();
-//            tableViewStage.toFront();
+            tableViewStage.toFront();
         } else {
             if (tableViewStage != null) {
                 tableViewStage.hide();
             }
         }
+        Window.getWindows().stream()
+            .flatMap(w -> w.getScene().getRoot().getChildrenUnmodifiable().stream())
+            .filter(MenuBar.class::isInstance)
+            .map(MenuBar.class::cast)
+            .flatMap(b -> b.getMenus().stream().flatMap(m -> m.getItems().stream()))
+            .filter(CheckMenuItem.class::isInstance)
+            .map(CheckMenuItem.class::cast)
+            .filter(i -> i.getText().contains("Table"))
+            .forEach(i -> i.setSelected(visible));
     }
 }
