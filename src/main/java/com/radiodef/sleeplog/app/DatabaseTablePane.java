@@ -2,6 +2,7 @@ package com.radiodef.sleeplog.app;
 
 import com.radiodef.sleeplog.db.*;
 
+import javafx.geometry.*;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.*;
 import javafx.scene.layout.*;
@@ -29,6 +30,18 @@ class DatabaseTablePane extends BorderPane {
         
         Collections.addAll(table.getColumns(), idCol, startCol, endCol);
         setCenter(table);
+        
+        var deleteButton = new Button("Delete");
+        deleteButton.setDisable(true);
+        
+        table.getSelectionModel()
+             .selectedIndexProperty()
+             .addListener((a, b, value) -> deleteButton.setDisable(value.intValue() == -1));
+        
+        var tools = new ToolBar();
+        tools.setOrientation(Orientation.HORIZONTAL);
+        tools.getItems().add(deleteButton);
+        setTop(tools);
         
         update();
     }
