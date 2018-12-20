@@ -28,23 +28,19 @@ public final class Database implements AutoCloseable {
         Log.enter();
         Connection conn = null;
         
-        getConnection:
         try {
-            String connectionString;
-            if (dbPath != null) {
-                String dir;
-                try {
-                    dir = dbPath.resolve(DB_NAME).toAbsolutePath().toUri().toURL().getPath();
-                } catch (Exception x) {
-                    Log.caught(x);
-                    break getConnection;
-                }
-                connectionString = "jdbc:derby:directory:" + dir + ";create=true";
-            } else {
-                connectionString = "jdbc:derby:" + DB_NAME + ";create=true";
-            }
-            conn = DriverManager.getConnection(connectionString);
-        } catch (SQLException x) {
+            if (dbPath == null)
+                dbPath = Paths.get("");
+            
+            String dir = dbPath.resolve(DB_NAME)
+                               .toAbsolutePath()
+                               .toUri()
+                               .toURL()
+                               .getPath();
+            
+            conn = DriverManager.getConnection("jdbc:derby:directory:" + dir + ";create=true");
+            
+        } catch (Exception x) {
             Log.caught(x);
         }
         
