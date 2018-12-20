@@ -1,10 +1,11 @@
 package com.radiodef.sleeplog.util;
 
 import java.util.*;
-
-import com.google.common.base.Strings;
 import java.time.*;
 import java.time.format.*;
+
+import com.google.common.base.Strings;
+import org.apache.commons.lang3.*;
 import org.apache.commons.lang3.time.*;
 
 public final class Tools {
@@ -50,6 +51,6 @@ public final class Tools {
     public static boolean isMac() {
         // https://developer.apple.com/library/content/technotes/tn2002/tn2110.html
         // (archive: http://archive.is/w6JC0)
-        return System.getProperty("os.name", "").contains("OS X");
+        return (SystemUtils.OS_NAME != null) && SystemUtils.OS_NAME.contains("OS X");
     }
 }
