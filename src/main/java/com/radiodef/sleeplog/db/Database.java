@@ -128,28 +128,37 @@ public final class Database implements AutoCloseable {
         return null;
     }
     
-    public void printAllRows() {
+    public List<SleepPeriod> getAllSleepPeriods() {
+        var list = new ArrayList<SleepPeriod>();
+        
         if (didConnect()) {
             try (var statement = conn.createStatement()) {
                 var rs = statement.executeQuery("SELECT * FROM " + DATES_TABLE);
-                int rows = 0;
                 
                 while (rs.next()) {
-                    ++rows;
-                    
                     var id = rs.getInt(ID_COL);
                     var start = (Instant) rs.getObject(START_COL);
                     var end = (Instant) rs.getObject(END_COL);
                     
-                    Log.notef("id = %d, start = %s, end = %s",
-                        id, Tools.formatInstant(start), Tools.formatInstant(end));
+                    list.add(new SleepPeriod(id, start, end));
                 }
-                
-                Log.notef("total row count = %d", rows);
-                
             } catch (SQLException x) {
                 Log.caught(x);
             }
+        }
+        
+        return list;
+    }
+    
+    public void printAllRows() {
+        var rows = getAllSleepPeriods();
+        Log.notef("total row count = %d", rows.size());
+        
+        for (var p : rows) {
+            Log.notef("id = %d, start = %s, end = %s",
+                p.getID(),
+                Tools.formatInstant(p.getStart()),
+                Tools.formatInstant(p.getEnd()));
         }
     }
     
