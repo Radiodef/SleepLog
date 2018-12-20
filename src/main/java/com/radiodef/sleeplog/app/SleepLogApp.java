@@ -167,8 +167,7 @@ public final class SleepLogApp extends Application {
             .map(w -> (MenuBar) w.getScene().lookup("#menu-bar"))
             .flatMap(b -> b.getMenus().stream().flatMap(m -> m.getItems().stream()))
             .filter(CheckMenuItem.class::isInstance)
-            .map(CheckMenuItem.class::cast)
             .filter(i -> i.getText().contains("Table"))
-            .forEach(i -> i.setSelected(visible));
+            .forEach(i -> ((CheckMenuItem) i).setSelected(visible));
     }
 }
