@@ -1,8 +1,12 @@
 package com.radiodef.sleeplog.util;
 
 import java.util.*;
+import java.util.function.*;
 import java.time.*;
 import java.time.format.*;
+
+import javafx.event.*;
+import javafx.stage.*;
 
 import com.google.common.base.Strings;
 import org.apache.commons.lang3.*;
@@ -52,5 +56,20 @@ public final class Tools {
         // https://developer.apple.com/library/content/technotes/tn2002/tn2110.html
         // http://archive.is/w6JC0
         return StringUtils.contains(SystemUtils.OS_NAME, "OS X");
+    }
+    
+    public static void beforeFirstShow(Stage s, Consumer<? super Stage> action) {
+        var prev = s.onShowingProperty().get();
+        
+        // noinspection Convert2Lambda
+        s.setOnShowing(new EventHandler<>() {
+            @Override
+            public void handle(WindowEvent e) {
+                if (prev != null)
+                    prev.handle(e);
+                s.setOnShowing(prev);
+                action.accept(s);
+            }
+        });
     }
 }
