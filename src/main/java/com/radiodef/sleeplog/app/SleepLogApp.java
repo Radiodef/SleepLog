@@ -69,6 +69,7 @@ public final class SleepLogApp extends Application {
     
     private MenuBar createMenuBar() {
         var menuBar = new MenuBar();
+        menuBar.setId("menu-bar");
         
         if (Tools.isMac()) {
             // TODO: figure out what this does on other systems
@@ -159,9 +160,7 @@ public final class SleepLogApp extends Application {
             }
         }
         Window.getWindows().stream()
-            .flatMap(w -> w.getScene().getRoot().getChildrenUnmodifiable().stream())
-            .filter(MenuBar.class::isInstance)
-            .map(MenuBar.class::cast)
+            .map(w -> (MenuBar) w.getScene().lookup("#menu-bar"))
             .flatMap(b -> b.getMenus().stream().flatMap(m -> m.getItems().stream()))
             .filter(CheckMenuItem.class::isInstance)
             .map(CheckMenuItem.class::cast)
