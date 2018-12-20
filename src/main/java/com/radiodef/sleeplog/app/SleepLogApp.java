@@ -15,6 +15,8 @@ import java.time.*;
 public final class SleepLogApp extends Application {
     private Database db;
     
+    private Stage primaryStage;
+    
     static void launch() {
         Log.enter();
         launch(SleepLogApp.class, SleepLogMain.getArguments().toArray(new String[0]));
@@ -22,6 +24,8 @@ public final class SleepLogApp extends Application {
     
     @Override
     public void start(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+        
         db = new Database();
         
         if (!db.didConnect()) {
