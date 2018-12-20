@@ -31,10 +31,7 @@ public final class SleepLogApp extends Application {
         
         Platform.setImplicitExit(false);
         
-        primaryStage.setOnCloseRequest(e -> {
-            db.close();
-            Platform.exit();
-        });
+        primaryStage.setOnCloseRequest(e -> exit());
         
         var timerPane = new TimerPane();
         timerPane.addSleepPeriodListener(this::sleepPeriodAdded);
@@ -68,6 +65,15 @@ public final class SleepLogApp extends Application {
         
         if (Tools.isMac()) {
             menuBar.useSystemMenuBarProperty().set(true);
+            
+        } else {
+            var fileMenu = new Menu("File");
+            var exit = new MenuItem("Exit");
+            
+            exit.setOnAction(e -> exit());
+            
+            fileMenu.getItems().add(exit);
+            menuBar.getMenus().add(fileMenu);
         }
         
         return menuBar;
@@ -80,5 +86,10 @@ public final class SleepLogApp extends Application {
         } else {
             Log.note("insertion failed");
         }
+    }
+    
+    private void exit() {
+        db.close();
+        Platform.exit();
     }
 }
