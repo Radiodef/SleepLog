@@ -16,8 +16,8 @@ public final class Log {
         x.printStackTrace(System.out);
     }
     
-    public static void note(String msg) {
-        note(Tools.getCaller(), msg, null, false);
+    public static void note(Object msg) {
+        note(Tools.getCaller(), String.valueOf(msg), null, false);
     }
     
     public static void notef(String fmt, Object... args) {
