@@ -10,7 +10,8 @@ import javafx.scene.input.*;
 import javafx.stage.*;
 
 final class MenuBars implements Supplier<MenuBar> {
-    static final String MENU_BAR_ID = "menu-bar";
+    private static final String MENU_BAR_ID = "menu-bar";
+    private static final String TABLE_VIEW_ID = "table-view-item";
     
     private final SleepLogApp app;
     
@@ -46,6 +47,7 @@ final class MenuBars implements Supplier<MenuBar> {
         windowMenu.setMnemonicParsing(true);
         
         var tableItem = new CheckMenuItem("Database _Table View");
+        tableItem.setId(TABLE_VIEW_ID);
         tableItem.setMnemonicParsing(true);
         tableItem.setAccelerator(KeyCombination.valueOf("Shortcut+T"));
         
@@ -73,8 +75,7 @@ final class MenuBars implements Supplier<MenuBar> {
         Window.getWindows().stream()
             .map(w -> (MenuBar) w.getScene().lookup("#" + MenuBars.MENU_BAR_ID))
             .flatMap(b -> b.getMenus().stream().flatMap(m -> m.getItems().stream()))
-            .filter(CheckMenuItem.class::isInstance)
-            .filter(i -> i.getText().contains("Table"))
+            .filter(i -> TABLE_VIEW_ID.equals(i.getId()))
             .forEach(i -> ((CheckMenuItem) i).setSelected(visible));
     }
 }
