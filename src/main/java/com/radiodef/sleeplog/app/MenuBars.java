@@ -51,10 +51,7 @@ final class MenuBars implements Supplier<MenuBar> {
         tableItem.setMnemonicParsing(true);
         tableItem.setAccelerator(KeyCombination.valueOf("Shortcut+T"));
         
-        tableItem.setSelected(app.getTableViewStage().isShowing());
-        tableItem.selectedProperty().addListener((p, o, val) -> setTableViewVisible(val));
-        
-        app.getTableViewStage().setOnCloseRequest(e -> setTableViewVisible(false));
+        bindItemToStage(tableItem, app::getTableViewStage);
         
         windowMenu.getItems().add(tableItem);
         menuBar.getMenus().add(windowMenu);
@@ -62,20 +59,29 @@ final class MenuBars implements Supplier<MenuBar> {
         return menuBar;
     }
     
-    private void setTableViewVisible(boolean visible) {
-        var stage = app.getTableViewStage();
+    private void bindItemToStage(CheckMenuItem item, Supplier<Stage> supplier) {
+        item.setSelected(supplier.get().isShowing());
         
-        if (visible) {
-            stage.show();
-            stage.toFront();
-        } else {
-            stage.hide();
-        }
+        Consumer<Boolean> setStageVisible = visible -> {
+            var stage = supplier.get();
+            
+            if (visible) {
+                stage.show();
+                stage.toFront();
+            } else {
+                stage.hide();
+            }
+            
+            Window.getWindows().stream()
+                .map(wind -> (MenuBar) wind.getScene().lookup("#" + MENU_BAR_ID))
+                .filter(Objects::nonNull)
+                .flatMap(bar -> bar.getMenus().stream().flatMap(menu -> menu.getItems().stream()))
+                .filter(item1 -> (item1 != item) && Objects.equals(item.getId(), item1.getId()))
+                .forEach(item1 -> ((CheckMenuItem) item1).setSelected(visible));
+        };
         
-        Window.getWindows().stream()
-            .map(w -> (MenuBar) w.getScene().lookup("#" + MenuBars.MENU_BAR_ID))
-            .flatMap(b -> b.getMenus().stream().flatMap(m -> m.getItems().stream()))
-            .filter(i -> TABLE_VIEW_ID.equals(i.getId()))
-            .forEach(i -> ((CheckMenuItem) i).setSelected(visible));
+        item.selectedProperty().addListener((p, o, val) -> setStageVisible.accept(val));
+        
+        supplier.get().setOnCloseRequest(e -> setStageVisible.accept(false));
     }
 }
