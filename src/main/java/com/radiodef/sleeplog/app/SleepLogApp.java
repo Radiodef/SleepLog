@@ -40,7 +40,8 @@ public final class SleepLogApp extends Application {
         Platform.setImplicitExit(false);
         
         configurePrimaryStage(primaryStage);
-        configureTableViewStage(tableViewStage);
+        Tools.beforeFirstShow(tableViewStage, this::configureTableViewStage);
+        
         primaryStage.show();
     }
     
@@ -53,6 +54,8 @@ public final class SleepLogApp extends Application {
     }
     
     private void configurePrimaryStage(Stage stage) {
+        Log.enter();
+        
         // exit listener
         
         stage.setOnCloseRequest(e -> exit());
@@ -88,6 +91,7 @@ public final class SleepLogApp extends Application {
     }
     
     private void configureTableViewStage(Stage stage) {
+        Log.enter();
         var content = new BorderPane();
         var table = new DatabaseTablePane(db);
         
