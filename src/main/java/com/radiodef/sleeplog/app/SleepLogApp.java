@@ -74,6 +74,7 @@ public final class SleepLogApp extends Application {
             
             var exitItem = new MenuItem("E_xit");
             exitItem.setMnemonicParsing(true);
+            exitItem.setAccelerator(KeyCombination.valueOf("Shortcut+X"));
             
             exitItem.setOnAction(e -> exit());
             
