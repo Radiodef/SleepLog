@@ -130,40 +130,6 @@ public final class Database implements AutoCloseable {
         return null;
     }
     
-    public ObservableList<SleepPeriod> getAllSleepPeriods() {
-        var list = FXCollections.<SleepPeriod>observableArrayList();
-        
-        if (didConnect()) {
-            try (var statement = conn.createStatement()) {
-                var rs = statement.executeQuery("SELECT * FROM " + DATES_TABLE);
-                
-                while (rs.next()) {
-                    var id = rs.getInt(ID_COL);
-                    var start = (Instant) rs.getObject(START_COL);
-                    var end = (Instant) rs.getObject(END_COL);
-                    
-                    list.add(new SleepPeriod(id, start, end));
-                }
-            } catch (SQLException x) {
-                Log.caught(x);
-            }
-        }
-        
-        return list;
-    }
-    
-    public void printAllRows() {
-        var rows = getAllSleepPeriods();
-        Log.notef("total row count = %d", rows.size());
-        
-        for (var p : rows) {
-            Log.notef("id = %d, start = %s, end = %s",
-                p.getID(),
-                Tools.formatInstant(p.getStart()),
-                Tools.formatInstant(p.getEnd()));
-        }
-    }
-    
     public boolean insertNewPeriod(Instant start, Instant end) {
         Log.enter();
         return executePreparedStatement(insertPeriodRow, Map.of(1, start, 2, end));
@@ -196,6 +162,40 @@ public final class Database implements AutoCloseable {
         }
         
         return success;
+    }
+    
+    public ObservableList<SleepPeriod> getAllSleepPeriods() {
+        var list = FXCollections.<SleepPeriod>observableArrayList();
+        
+        if (didConnect()) {
+            try (var statement = conn.createStatement()) {
+                var rs = statement.executeQuery("SELECT * FROM " + DATES_TABLE);
+                
+                while (rs.next()) {
+                    var id = rs.getInt(ID_COL);
+                    var start = (Instant) rs.getObject(START_COL);
+                    var end = (Instant) rs.getObject(END_COL);
+                    
+                    list.add(new SleepPeriod(id, start, end));
+                }
+            } catch (SQLException x) {
+                Log.caught(x);
+            }
+        }
+        
+        return list;
+    }
+    
+    public void printAllRows() {
+        var rows = getAllSleepPeriods();
+        Log.notef("total row count = %d", rows.size());
+        
+        for (var p : rows) {
+            Log.notef("id = %d, start = %s, end = %s",
+                p.getID(),
+                Tools.formatInstant(p.getStart()),
+                Tools.formatInstant(p.getEnd()));
+        }
     }
     
     @SuppressWarnings("unused")
