@@ -48,6 +48,6 @@ public final class Tools {
     }
     
     public static boolean isMac() {
-        return System.getProperty("os.name").startsWith("Mac");
+        return System.getProperty("os.name", "Not Mac").startsWith("Mac");
     }
 }
