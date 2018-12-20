@@ -120,8 +120,8 @@ public final class SleepLogApp extends Application {
 //            db.printAllRows();
             
             Optional.ofNullable(tableViewStage.getScene())
-                .map(scene -> (DatabaseTablePane) scene.lookup("#" + DatabaseTablePane.ID))
-                .ifPresent(DatabaseTablePane::update);
+                    .map(scene -> (DatabaseTablePane) scene.lookup("#" + DatabaseTablePane.ID))
+                    .ifPresent(DatabaseTablePane::update);
             
         } else {
             Log.note("insertion failed");
