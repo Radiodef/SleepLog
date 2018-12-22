@@ -3,6 +3,8 @@ package com.radiodef.sleeplog.app;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
 
+import java.util.*;
+
 final class DateTimeEntryPane extends HBox {
     private final TextField monthField;
     private final TextField dayField;
@@ -12,11 +14,19 @@ final class DateTimeEntryPane extends HBox {
     private final TextField minuteField;
     
     DateTimeEntryPane() {
+        getStyleClass().add("date-time-entry-pane");
+        
         monthField = new TextField();
         dayField = new TextField();
         yearField = new TextField();
         hourField = new TextField();
         minuteField = new TextField();
+        
+        monthField.setId("month-field");
+        dayField.setId("day-field");
+        yearField.setId("year-field");
+        hourField.setId("hour-field");
+        minuteField.setId("minute-field");
         
         monthField.setPrefColumnCount(2);
         dayField.setPrefColumnCount(2);
@@ -30,6 +40,12 @@ final class DateTimeEntryPane extends HBox {
         hourField.setPromptText("hh");
         minuteField.setPromptText("mm");
         
-        getChildren().addAll(monthField, dayField, yearField, hourField, minuteField);
+        var date = new HBox(monthField, dayField, yearField);
+        var time = new HBox(hourField, minuteField);
+        
+        List.of(date, time)
+            .forEach(p -> p.getStyleClass().add("date-time-entry-pane-group"));
+        
+        getChildren().addAll(date, time);
     }
 }

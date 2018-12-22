@@ -30,3 +30,16 @@
 #period-dialog-vbox {
     -fx-spacing: 1em;
 }
+
+.date-time-entry-pane {
+    /*
+    -fx-border-color: black;
+    -fx-border-width: 1px;
+    */
+    -fx-padding: 0.5em;
+    -fx-spacing: 0.5em;
+}
+
+.date-time-entry-pane-group {
+    /*-fx-spacing: 1px;*/
+}
