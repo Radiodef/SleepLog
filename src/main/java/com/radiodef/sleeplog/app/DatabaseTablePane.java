@@ -64,6 +64,8 @@ class DatabaseTablePane extends BorderPane {
         
         var addButton = new Button("Add New");
         
+        addButton.setOnAction(e -> addNewRow());
+        
         var tools = new ToolBar();
         tools.setOrientation(Orientation.HORIZONTAL);
         tools.getItems().addAll(addButton, deleteButton);
@@ -77,6 +79,8 @@ class DatabaseTablePane extends BorderPane {
     }
     
     private void deleteSelection() {
+        Log.enter();
+        
         var indices = new ArrayList<>(table.getSelectionModel().getSelectedIndices());
         indices.sort(Comparator.reverseOrder());
         
@@ -88,6 +92,10 @@ class DatabaseTablePane extends BorderPane {
         }
         
         Log.notef("deleted %d items", count);
+    }
+    
+    private void addNewRow() {
+        Log.enter();
     }
     
     private static final class InstantStringConverter extends StringConverter<Instant> {
