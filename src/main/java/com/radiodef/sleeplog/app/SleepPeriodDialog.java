@@ -3,13 +3,13 @@ package com.radiodef.sleeplog.app;
 import com.radiodef.sleeplog.db.*;
 
 import java.util.*;
+import java.time.*;
+
 import javafx.stage.*;
 import javafx.scene.*;
 
 class SleepPeriodDialog extends Stage {
     private SleepPeriodDialog(Stage owner) {
-//        super(StageStyle.UTILITY);
-        
         initModality(Modality.WINDOW_MODAL);
         initOwner(Objects.requireNonNull(owner));
         
@@ -26,6 +26,6 @@ class SleepPeriodDialog extends Stage {
         diag.showAndWait();
         Log.note("done");
         
-        return null;
+        return new SleepPeriod(0, Instant.now(), Instant.now(), true);
     }
 }
