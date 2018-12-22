@@ -3,7 +3,6 @@ package com.radiodef.sleeplog.app;
 import com.radiodef.sleeplog.db.*;
 
 import java.util.*;
-import java.time.*;
 
 import javafx.stage.*;
 import javafx.scene.*;
@@ -11,6 +10,8 @@ import javafx.scene.layout.*;
 import javafx.scene.control.*;
 
 class SleepPeriodDialog extends Stage {
+    private SleepPeriod period;
+    
     private SleepPeriodDialog(Stage owner) {
         initModality(Modality.WINDOW_MODAL);
         initOwner(Objects.requireNonNull(owner));
@@ -21,6 +22,8 @@ class SleepPeriodDialog extends Stage {
         dates.getChildren().addAll(new DateTimeEntryPane(), new DateTimeEntryPane());
         
         var cancelButton = new Button("Cancel");
+        cancelButton.setOnAction(e -> cancel());
+        
         var doneButton = new Button("Done");
         
         var buttons = new HBox(cancelButton, doneButton);
@@ -35,16 +38,21 @@ class SleepPeriodDialog extends Stage {
         setScene(scene);
     }
     
-    static SleepPeriod show(Node owner) {
+    private void cancel() {
+        period = null;
+        hide();
+    }
+    
+    static Optional<SleepPeriod> show(Node owner) {
         return show((Stage) owner.getScene().getWindow());
     }
     
-    static SleepPeriod show(Stage owner) {
+    static Optional<SleepPeriod> show(Stage owner) {
         var diag = new SleepPeriodDialog(owner);
         
         diag.showAndWait();
         Log.note("done");
         
-        return new SleepPeriod(0, Instant.now(), Instant.now(), true);
+        return Optional.ofNullable(diag.period);
     }
 }
