@@ -16,3 +16,13 @@
     -fx-font-size: 3em;
     -fx-max-width: Infinity;
 }
+
+.dialog-buttons {
+    -fx-padding: 1em;
+    -fx-spacing: 1em;
+    -fx-alignment: center-right;
+}
+
+.dialog-content {
+    -fx-padding: 1em 1em 0em 1em;
+}
