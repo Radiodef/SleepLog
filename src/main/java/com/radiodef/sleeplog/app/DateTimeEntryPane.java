@@ -4,6 +4,7 @@ import javafx.scene.layout.*;
 import javafx.scene.control.*;
 
 import java.util.*;
+import java.time.*;
 
 final class DateTimeEntryPane extends HBox {
     private final TextField monthField;
@@ -47,5 +48,9 @@ final class DateTimeEntryPane extends HBox {
             .forEach(p -> p.getStyleClass().add("date-time-entry-pane-group"));
         
         getChildren().addAll(date, time);
+    }
+    
+    LocalDateTime getLocalDateTime() {
+        return null;
     }
 }
