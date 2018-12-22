@@ -12,11 +12,17 @@ public final class SleepPeriod {
     private final ReadOnlyIntegerProperty id;
     private final ReadOnlyObjectProperty<Instant> start;
     private final ReadOnlyObjectProperty<Instant> end;
+    private final ReadOnlyBooleanProperty manualEntry;
     
     public SleepPeriod(int id, Instant start, Instant end) {
+        this(id, start, end, false);
+    }
+    
+    public SleepPeriod(int id, Instant start, Instant end, boolean manualEntry) {
         this.id = new SimpleIntegerProperty(this, "id", id);
         this.start = new SimpleObjectProperty<>(this, "start", Objects.requireNonNull(start, "start"));
         this.end = new SimpleObjectProperty<>(this, "end", Objects.requireNonNull(end, "end"));
+        this.manualEntry = new SimpleBooleanProperty(this, "manualEntry", manualEntry);
     }
     
     public int getID() {
@@ -31,6 +37,10 @@ public final class SleepPeriod {
         return end.get();
     }
     
+    public boolean wasManualEntry() {
+        return manualEntry.get();
+    }
+    
     public ReadOnlyIntegerProperty idProperty() {
         return id;
     }
@@ -41,6 +51,10 @@ public final class SleepPeriod {
     
     public ReadOnlyObjectProperty<Instant> endProperty() {
         return end;
+    }
+    
+    public ReadOnlyBooleanProperty manualEntryProperty() {
+        return manualEntry;
     }
     
     @Override
