@@ -24,6 +24,12 @@ final class DateTimeEntryPane extends HBox {
         hourField.setPrefColumnCount(2);
         minuteField.setPrefColumnCount(2);
         
+        monthField.setPromptText("MM");
+        dayField.setPromptText("DD");
+        yearField.setPromptText("YYYY");
+        hourField.setPromptText("hh");
+        minuteField.setPromptText("mm");
+        
         getChildren().addAll(monthField, dayField, yearField, hourField, minuteField);
     }
 }
