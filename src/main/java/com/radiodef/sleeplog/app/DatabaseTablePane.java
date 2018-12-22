@@ -29,10 +29,12 @@ class DatabaseTablePane extends BorderPane {
         var idCol = new TableColumn<SleepPeriod, Integer>("ID");
         var startCol = new TableColumn<SleepPeriod, Instant>("Start");
         var endCol = new TableColumn<SleepPeriod, Instant>("End");
+        var manualCol = new TableColumn<SleepPeriod, Boolean>("Manual Entry");
         
         idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         startCol.setCellValueFactory(new PropertyValueFactory<>("start"));
         endCol.setCellValueFactory(new PropertyValueFactory<>("end"));
+        manualCol.setCellValueFactory(new PropertyValueFactory<>("manualEntry"));
         
         startCol.setCellFactory(InstantStringConverter.CELL_FACTORY);
         endCol.setCellFactory(InstantStringConverter.CELL_FACTORY);
@@ -46,7 +48,7 @@ class DatabaseTablePane extends BorderPane {
         
         table.setEditable(false);
         
-        Collections.addAll(table.getColumns(), idCol, startCol, endCol);
+        Collections.addAll(table.getColumns(), idCol, startCol, endCol, manualCol);
         setCenter(table);
         
         var deleteButton = new Button("Delete");

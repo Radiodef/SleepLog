@@ -17,6 +17,7 @@ public final class Database implements AutoCloseable {
     private static final String ID_COL = "id";
     private static final String START_COL = "start_instant";
     private static final String END_COL = "end_instant";
+    private static final String MANUAL_COL = "manual_entry";
     
     private final Connection conn;
     
@@ -88,7 +89,8 @@ public final class Database implements AutoCloseable {
             + "("
             + ID_COL + " INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,"
             + START_COL + " INSTANT,"
-            + END_COL + " INSTANT"
+            + END_COL + " INSTANT, "
+            + MANUAL_COL + " BOOLEAN WITH DEFAULT FALSE"
             + ")";
         // https://stackoverflow.com/a/5866339/2891664
         if (executeStatement(createTableStatement, "X0Y32")) {
@@ -121,8 +123,8 @@ public final class Database implements AutoCloseable {
     private PreparedStatement prepareInsertPeriodRow() {
         final var statement =
             "INSERT INTO " + DATES_TABLE
-            + " (" + START_COL + ", " + END_COL + ")"
-            + " VALUES (?, ?)";
+            + " (" + START_COL + ", " + END_COL + ", " + MANUAL_COL + ")"
+            + " VALUES (?, ?, ?)";
         return prepareStatement(statement);
     }
     
@@ -141,8 +143,12 @@ public final class Database implements AutoCloseable {
     }
     
     public boolean insertNewPeriod(Instant start, Instant end) {
+        return insertNewPeriod(start, end, false);
+    }
+    
+    public boolean insertNewPeriod(Instant start, Instant end, boolean manual) {
         Log.enter();
-        return executePreparedStatement(insertPeriodRow, start, end);
+        return executePreparedStatement(insertPeriodRow, start, end, manual);
     }
     
     public boolean deletePeriod(int id) {
@@ -206,10 +212,11 @@ public final class Database implements AutoCloseable {
         Log.notef("total row count = %d", rows.size());
         
         for (var p : rows) {
-            Log.notef("id = %d, start = %s, end = %s",
+            Log.notef("id = %d, start = %s, end = %s, manual = %b",
                 p.getID(),
                 Tools.formatInstant(p.getStart()),
-                Tools.formatInstant(p.getEnd()));
+                Tools.formatInstant(p.getEnd()),
+                p.wasManualEntry());
         }
     }
     
