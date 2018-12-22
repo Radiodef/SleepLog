@@ -16,6 +16,7 @@ class SleepPeriodDialog extends Stage {
         initModality(Modality.WINDOW_MODAL);
         initOwner(Objects.requireNonNull(owner));
         setResizable(false);
+        setTitle("Add New Sleep Period");
         
         var dates = new VBox();
         dates.setId("period-dialog-vbox");
