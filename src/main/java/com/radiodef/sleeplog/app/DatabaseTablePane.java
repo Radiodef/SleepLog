@@ -72,6 +72,8 @@ class DatabaseTablePane extends BorderPane {
         setTop(tools);
         
         update();
+        
+        table.getSortOrder().add(startCol);
     }
     
     void update() {
