@@ -3,7 +3,6 @@ module sleeplog {
     requires java.sql;
     requires com.google.common;
     requires org.apache.commons.lang3;
-    requires java.desktop;
     
     exports com.radiodef.sleeplog.app;
     
