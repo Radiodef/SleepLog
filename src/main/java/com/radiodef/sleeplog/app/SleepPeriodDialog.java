@@ -18,10 +18,15 @@ class SleepPeriodDialog extends Stage {
         setResizable(false);
         setTitle("Add New Sleep Period");
         
-        var dates = new VBox();
+        var startTitledPane = new TitledPane("Start Date/Time", new DateTimeEntryPane());
+        var endTitledPane = new TitledPane("End Date/Time", new DateTimeEntryPane());
+        
+        List.of(startTitledPane, endTitledPane)
+            .forEach(p -> p.getStyleClass().add("no-collapse-titled-pane"));
+        
+        var dates = new VBox(startTitledPane, endTitledPane);
         dates.setId("period-dialog-vbox");
         dates.getStyleClass().add("dialog-content");
-        dates.getChildren().addAll(new DateTimeEntryPane(), new DateTimeEntryPane());
         
         var cancelButton = new Button("Cancel");
         cancelButton.setOnAction(e -> cancel());

@@ -43,3 +43,8 @@
 .date-time-entry-pane-group {
     /*-fx-spacing: 1px;*/
 }
+
+.no-collapse-titled-pane {
+    -fx-collapsible: false;
+    -fx-animated: false;
+}
