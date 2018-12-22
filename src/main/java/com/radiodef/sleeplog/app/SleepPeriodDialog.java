@@ -40,6 +40,10 @@ class SleepPeriodDialog extends Stage {
         cancelButton.setOnAction(e -> cancel());
         
         doneButton = new Button("Done");
+        doneButton.setDisable(true);
+        startPane.dateTimeProperty().addListener((a, b, c) -> refreshDoneButton());
+        endPane.dateTimeProperty().addListener((a, b, c) -> refreshDoneButton());
+        doneButton.setOnAction(e -> done());
         
         var buttons = new HBox(cancelButton, doneButton);
         buttons.getStyleClass().add("dialog-buttons");
@@ -53,9 +57,18 @@ class SleepPeriodDialog extends Stage {
         setScene(scene);
     }
     
+    private void refreshDoneButton() {
+        doneButton.setDisable((startPane.getDateTime() == null) || (endPane.getDateTime() == null));
+    }
+    
     private void cancel() {
         period = null;
         hide();
+    }
+    
+    private void done() {
+        // TODO: implement
+        cancel();
     }
     
     static Optional<SleepPeriod> show(Node owner) {
