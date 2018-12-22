@@ -2,6 +2,7 @@ package com.radiodef.sleeplog.app;
 
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
+import javafx.beans.property.*;
 
 import java.util.*;
 import java.time.*;
@@ -13,6 +14,8 @@ final class DateTimeEntryPane extends HBox {
     
     private final TextField hourField;
     private final TextField minuteField;
+    
+    private final ObjectProperty<LocalDateTime> dateTime = new SimpleObjectProperty<>();
     
     DateTimeEntryPane() {
         getStyleClass().add("date-time-entry-pane");
@@ -50,7 +53,7 @@ final class DateTimeEntryPane extends HBox {
         getChildren().addAll(date, time);
     }
     
-    LocalDateTime getLocalDateTime() {
-        return null;
+    ObjectProperty<LocalDateTime> dateTimeProperty() {
+        return dateTime;
     }
 }
