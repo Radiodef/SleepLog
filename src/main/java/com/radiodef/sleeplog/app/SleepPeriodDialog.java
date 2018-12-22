@@ -70,7 +70,6 @@ class SleepPeriodDialog extends Stage {
         var start = startPane.getDateTime();
         var end = endPane.getDateTime();
         if (start == null || end == null) {
-            java.awt.Toolkit.getDefaultToolkit().beep();
             cancel();
         } else {
             // TODO: implement
