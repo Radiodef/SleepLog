@@ -75,7 +75,9 @@ final class MenuBars implements Supplier<MenuBar> {
             }
             
             Window.getWindows().stream()
-                .map(wind -> (MenuBar) wind.getScene().lookup("#" + MENU_BAR_ID))
+                .map(Window::getScene)
+                .filter(Objects::nonNull)
+                .map(scene -> (MenuBar) scene.lookup("#" + MENU_BAR_ID))
                 .filter(Objects::nonNull)
                 .flatMap(bar -> bar.getMenus().stream().flatMap(menu -> menu.getItems().stream()))
                 .filter(item1 -> (item1 != item) && Objects.equals(item.getId(), item1.getId()))
