@@ -62,9 +62,11 @@ class DatabaseTablePane extends BorderPane {
         
         deleteButton.setOnAction(e -> deleteSelection());
         
+        var addButton = new Button("Add New");
+        
         var tools = new ToolBar();
         tools.setOrientation(Orientation.HORIZONTAL);
-        tools.getItems().add(deleteButton);
+        tools.getItems().addAll(addButton, deleteButton);
         setTop(tools);
         
         update();
