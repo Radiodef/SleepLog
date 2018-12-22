@@ -13,6 +13,8 @@ class SleepPeriodDialog extends Stage {
     private final DateTimeEntryPane startPane;
     private final DateTimeEntryPane endPane;
     
+    private final Button doneButton;
+    
     private SleepPeriod period;
     
     private SleepPeriodDialog(Stage owner) {
@@ -37,7 +39,7 @@ class SleepPeriodDialog extends Stage {
         var cancelButton = new Button("Cancel");
         cancelButton.setOnAction(e -> cancel());
         
-        var doneButton = new Button("Done");
+        doneButton = new Button("Done");
         
         var buttons = new HBox(cancelButton, doneButton);
         buttons.getStyleClass().add("dialog-buttons");
