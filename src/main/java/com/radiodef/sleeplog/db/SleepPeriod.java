@@ -59,13 +59,26 @@ public final class SleepPeriod {
     
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder()
+            .append(getID())
+            .append(getStart())
+            .append(getEnd())
+            .append(wasManualEntry())
+            .toHashCode();
     }
     
     @Override
-    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object o) {
-        return EqualsBuilder.reflectionEquals(this, o);
+        if (o instanceof SleepPeriod) {
+            var that = (SleepPeriod) o;
+            return new EqualsBuilder()
+                .append(this.getID(), that.getID())
+                .append(this.getStart(), that.getStart())
+                .append(this.getEnd(), that.getEnd())
+                .append(this.wasManualEntry(), that.wasManualEntry())
+                .isEquals();
+        }
+        return false;
     }
     
     @Override
