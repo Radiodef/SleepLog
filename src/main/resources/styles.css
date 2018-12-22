@@ -26,3 +26,7 @@
 .dialog-content {
     -fx-padding: 1em 1em 0em 1em;
 }
+
+#period-dialog-vbox {
+    -fx-spacing: 1em;
+}

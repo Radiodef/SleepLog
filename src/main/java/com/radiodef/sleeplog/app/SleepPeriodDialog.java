@@ -18,6 +18,7 @@ class SleepPeriodDialog extends Stage {
         setResizable(false);
         
         var dates = new VBox();
+        dates.setId("period-dialog-vbox");
         dates.getStyleClass().add("dialog-content");
         dates.getChildren().addAll(new DateTimeEntryPane(), new DateTimeEntryPane());
         
