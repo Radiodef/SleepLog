@@ -67,8 +67,14 @@ class SleepPeriodDialog extends Stage {
     }
     
     private void done() {
-        // TODO: implement
-        cancel();
+        var start = startPane.getDateTime();
+        var end = endPane.getDateTime();
+        if (start == null || end == null) {
+            java.awt.Toolkit.getDefaultToolkit().beep();
+            cancel();
+        } else {
+            // TODO: implement
+        }
     }
     
     static Optional<SleepPeriod> show(Node owner) {
