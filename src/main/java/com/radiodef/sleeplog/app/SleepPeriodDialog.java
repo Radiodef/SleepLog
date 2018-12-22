@@ -7,13 +7,32 @@ import java.time.*;
 
 import javafx.stage.*;
 import javafx.scene.*;
+import javafx.scene.layout.*;
+import javafx.scene.control.*;
 
 class SleepPeriodDialog extends Stage {
     private SleepPeriodDialog(Stage owner) {
         initModality(Modality.WINDOW_MODAL);
         initOwner(Objects.requireNonNull(owner));
-        
         setResizable(false);
+        
+        var dates = new VBox();
+        dates.getStyleClass().add("dialog-content");
+        dates.getChildren().addAll(new DateTimeEntryPane(), new DateTimeEntryPane());
+        
+        var cancelButton = new Button("Cancel");
+        var doneButton = new Button("Done");
+        
+        var buttons = new HBox(cancelButton, doneButton);
+        buttons.getStyleClass().add("dialog-buttons");
+        
+        var content = new BorderPane();
+        content.setCenter(dates);
+        content.setBottom(buttons);
+        
+        var scene = new Scene(content);
+        scene.getStylesheets().add("styles.css");
+        setScene(scene);
     }
     
     static SleepPeriod show(Node owner) {
