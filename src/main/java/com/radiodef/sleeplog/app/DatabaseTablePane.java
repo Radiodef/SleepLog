@@ -97,8 +97,11 @@ class DatabaseTablePane extends BorderPane {
     private void addNewRow() {
         Log.enter();
         
-        var period = SleepPeriodDialog.show(this);
-        // TODO: add to db and update()
+        SleepPeriodDialog.show(this).ifPresent(period -> {
+            Log.note(period);
+            
+            // TODO: add to db and update()
+        });
     }
     
     private static final class InstantStringConverter extends StringConverter<Instant> {
