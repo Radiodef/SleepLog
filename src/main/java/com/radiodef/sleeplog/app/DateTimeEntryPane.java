@@ -18,6 +18,12 @@ final class DateTimeEntryPane extends HBox {
         hourField = new TextField();
         minuteField = new TextField();
         
+        monthField.setPrefColumnCount(2);
+        dayField.setPrefColumnCount(2);
+        yearField.setPrefColumnCount(4);
+        hourField.setPrefColumnCount(2);
+        minuteField.setPrefColumnCount(2);
+        
         getChildren().addAll(monthField, dayField, yearField, hourField, minuteField);
     }
 }
