@@ -10,6 +10,9 @@ import javafx.scene.layout.*;
 import javafx.scene.control.*;
 
 class SleepPeriodDialog extends Stage {
+    private final DateTimeEntryPane startPane;
+    private final DateTimeEntryPane endPane;
+    
     private SleepPeriod period;
     
     private SleepPeriodDialog(Stage owner) {
@@ -18,8 +21,11 @@ class SleepPeriodDialog extends Stage {
         setResizable(false);
         setTitle("Add New Sleep Period");
         
-        var startTitledPane = new TitledPane("Start Date/Time", new DateTimeEntryPane());
-        var endTitledPane = new TitledPane("End Date/Time", new DateTimeEntryPane());
+        startPane = new DateTimeEntryPane();
+        endPane = new DateTimeEntryPane();
+        
+        var startTitledPane = new TitledPane("Start Date/Time", startPane);
+        var endTitledPane = new TitledPane("End Date/Time", endPane);
         
         List.of(startTitledPane, endTitledPane)
             .forEach(p -> p.getStyleClass().add("no-collapse-titled-pane"));
