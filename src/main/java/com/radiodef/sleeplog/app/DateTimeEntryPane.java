@@ -6,6 +6,7 @@ import javafx.beans.property.*;
 
 import java.time.*;
 import java.util.*;
+import java.util.stream.*;
 
 import org.apache.commons.lang3.math.*;
 
@@ -61,8 +62,9 @@ final class DateTimeEntryPane extends HBox {
         
         getChildren().addAll(date, time, amButton, pmButton);
         
-        fields().forEach(f -> f.textProperty().addListener((a, b, c) -> setDateTime()));
-        List.of(amButton, pmButton).forEach(b -> b.selectedProperty().addListener((x, y, z) -> setDateTime()));
+        Stream.concat(fields().stream().map(TextField::textProperty),
+                      Stream.of(amButton, pmButton).map(RadioButton::selectedProperty))
+            .forEach(p -> p.addListener((x, y, z) -> setDateTime()));
         
 //        setToNow();
     }
