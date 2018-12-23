@@ -17,6 +17,9 @@ final class DateTimeEntryPane extends HBox {
     private final TextField hourField;
     private final TextField minuteField;
     
+    private final RadioButton amButton;
+    private final RadioButton pmButton;
+    
     private final ObjectProperty<LocalDateTime> dateTime = new SimpleObjectProperty<>();
     
     DateTimeEntryPane() {
@@ -27,6 +30,13 @@ final class DateTimeEntryPane extends HBox {
         yearField = new TextField();
         hourField = new TextField();
         minuteField = new TextField();
+        
+        amButton = new RadioButton("AM");
+        pmButton = new RadioButton("PM");
+        
+        var apGroup = new ToggleGroup();
+        List.of(amButton, pmButton).forEach(b -> b.setToggleGroup(apGroup));
+        amButton.setSelected(true);
         
         monthField.setId("month-field");
         dayField.setId("day-field");
@@ -49,14 +59,15 @@ final class DateTimeEntryPane extends HBox {
         var date = new HBox(monthField, dayField, yearField);
         var time = new HBox(hourField, minuteField);
         
-        List.of(date, time)
+        List.of(date, time, amButton, pmButton)
             .forEach(p -> p.getStyleClass().add("date-time-entry-pane-group"));
         
-        getChildren().addAll(date, time);
+        getChildren().addAll(date, time, amButton, pmButton);
         
         fields().forEach(f -> f.textProperty().addListener((a, b, c) -> setDateTime()));
+        List.of(amButton, pmButton).forEach(b -> b.selectedProperty().addListener((x, y, z) -> setDateTime()));
         
-//        setToNow();
+        setToNow();
     }
     
     LocalDateTime getDateTime() {
@@ -91,10 +102,19 @@ final class DateTimeEntryPane extends HBox {
             return;
         }
         
+        if (amButton.isSelected()) {
+            if (vals[3] == 12)
+                vals[3] = 0;
+        } else {
+            if (vals[3] > 12)
+                vals[3] -= 12;
+        }
+        
         try {
             dateTime.set(LocalDateTime.of(vals[2], vals[0], vals[1], vals[3], vals[4]));
         } catch (DateTimeException x) {
             Log.caught(x);
+            dateTime.set(null);
         }
     }
     
@@ -112,7 +132,20 @@ final class DateTimeEntryPane extends HBox {
             monthField.setText(Integer.toString(dt.getMonthValue()));
             dayField.setText(Integer.toString(dt.getDayOfMonth()));
             yearField.setText(Integer.toString(dt.getYear()));
-            hourField.setText(Integer.toString(dt.getHour()));
+            
+            var hour = dt.getHour();
+            if (hour == 0) {
+                hour = 12;
+                amButton.setSelected(true);
+            } else if (hour >= 12) {
+                if (hour > 12)
+                    hour -= 12;
+                pmButton.setSelected(true);
+            } else {
+                amButton.setSelected(true);
+            }
+            
+            hourField.setText(Integer.toString(hour));
             minuteField.setText(Integer.toString(dt.getMinute()));
         }
     }
