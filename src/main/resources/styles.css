@@ -38,6 +38,7 @@
     */
     -fx-padding: 0.5em;
     -fx-spacing: 0.5em;
+    -fx-alignment: center;
 }
 
 .date-time-entry-pane-group {
