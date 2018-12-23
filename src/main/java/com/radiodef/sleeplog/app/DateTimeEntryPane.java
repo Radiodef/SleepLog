@@ -59,9 +59,6 @@ final class DateTimeEntryPane extends HBox {
         var date = new HBox(monthField, dayField, yearField);
         var time = new HBox(hourField, minuteField);
         
-        List.of(date, time, amButton, pmButton)
-            .forEach(p -> p.getStyleClass().add("date-time-entry-pane-group"));
-        
         getChildren().addAll(date, time, amButton, pmButton);
         
         fields().forEach(f -> f.textProperty().addListener((a, b, c) -> setDateTime()));
