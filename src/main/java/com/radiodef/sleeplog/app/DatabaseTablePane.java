@@ -77,7 +77,10 @@ class DatabaseTablePane extends BorderPane {
     }
     
     void update() {
+        var sortOrder = List.copyOf(table.getSortOrder());
         table.setItems(db.getAllSleepPeriods());
+        table.getSortOrder().clear();
+        table.getSortOrder().addAll(sortOrder);
     }
     
     private void deleteSelection() {
