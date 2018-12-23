@@ -21,9 +21,11 @@ final class DateTimeEntryPane extends HBox {
     private final RadioButton amButton;
     private final RadioButton pmButton;
     
-    private final ObjectProperty<LocalDateTime> dateTime = new SimpleObjectProperty<>();
+    private final ObjectProperty<LocalDateTime> dateTime;
     
     DateTimeEntryPane() {
+        dateTime = new SimpleObjectProperty<>();
+        
         getStyleClass().add("date-time-entry-pane");
         
         monthField = new TextField();
