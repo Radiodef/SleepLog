@@ -195,8 +195,9 @@ public final class Database implements AutoCloseable {
                     var id = rs.getInt(ID_COL);
                     var start = (Instant) rs.getObject(START_COL);
                     var end = (Instant) rs.getObject(END_COL);
+                    var manual = rs.getBoolean(MANUAL_COL);
                     
-                    list.add(new SleepPeriod(id, start, end));
+                    list.add(new SleepPeriod(id, start, end, manual));
                 }
             } catch (SQLException x) {
                 Log.caught(x);
