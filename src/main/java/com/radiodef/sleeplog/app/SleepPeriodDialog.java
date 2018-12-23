@@ -86,7 +86,7 @@ class SleepPeriodDialog extends Stage {
         var diag = new SleepPeriodDialog(owner);
         
         diag.showAndWait();
-        Log.note("done");
+//        Log.note("done");
         
         return Optional.ofNullable(diag.period);
     }
