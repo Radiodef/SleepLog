@@ -103,8 +103,8 @@ final class DateTimeEntryPane extends HBox {
                 if (vals[3] == 12)
                     vals[3] = 0;
             } else {
-                if (vals[3] > 12)
-                    vals[3] -= 12;
+                if (vals[3] < 12)
+                    vals[3] += 12;
             }
             
             try {
