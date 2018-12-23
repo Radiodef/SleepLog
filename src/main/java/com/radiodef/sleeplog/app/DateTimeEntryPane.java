@@ -118,6 +118,7 @@ final class DateTimeEntryPane extends HBox {
         dateTime.set(val);
     }
     
+    @SuppressWarnings("unused")
     private void setToNow() {
         dateTime.set(LocalDateTime.now());
         setTextFields();
