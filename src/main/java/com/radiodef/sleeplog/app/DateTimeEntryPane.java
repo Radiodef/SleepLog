@@ -4,8 +4,10 @@ import javafx.scene.layout.*;
 import javafx.scene.control.*;
 import javafx.beans.property.*;
 
-import java.util.*;
 import java.time.*;
+import java.util.*;
+
+import org.apache.commons.lang3.math.*;
 
 final class DateTimeEntryPane extends HBox {
     private final TextField monthField;
@@ -51,6 +53,8 @@ final class DateTimeEntryPane extends HBox {
             .forEach(p -> p.getStyleClass().add("date-time-entry-pane-group"));
         
         getChildren().addAll(date, time);
+        
+        fields().forEach(f -> f.textProperty().addListener((a, b, c) -> setDateTime()));
     }
     
     LocalDateTime getDateTime() {
@@ -59,5 +63,36 @@ final class DateTimeEntryPane extends HBox {
     
     ReadOnlyObjectProperty<LocalDateTime> dateTimeProperty() {
         return dateTime;
+    }
+    
+    private List<TextField> fields() {
+        return List.of(monthField,
+                       dayField,
+                       yearField,
+                       hourField,
+                       minuteField);
+    }
+    
+    private void setDateTime() {
+        var fields = fields();
+        
+        int[] vals =
+            fields.stream()
+                .map(TextField::getText)
+                .mapToLong(text -> NumberUtils.toLong(text, Long.MIN_VALUE))
+                .filter(val -> (Integer.MIN_VALUE <= val) && (val <= Integer.MAX_VALUE))
+                .mapToInt(val -> (int) val)
+                .toArray();
+        
+        if (vals.length != fields.size()) {
+            dateTime.set(null);
+            return;
+        }
+        
+        try {
+            dateTime.set(LocalDateTime.of(vals[2], vals[0], vals[1], vals[3], vals[4]));
+        } catch (DateTimeException x) {
+            Log.caught(x);
+        }
     }
 }
