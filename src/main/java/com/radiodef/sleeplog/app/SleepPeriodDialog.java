@@ -1,6 +1,7 @@
 package com.radiodef.sleeplog.app;
 
 import com.radiodef.sleeplog.db.*;
+import com.radiodef.sleeplog.util.*;
 
 import java.util.*;
 
@@ -72,7 +73,8 @@ class SleepPeriodDialog extends Stage {
         if (start == null || end == null) {
             cancel();
         } else {
-            // TODO: implement
+            period = new SleepPeriod(0, Tools.toInstant(start), Tools.toInstant(end), true);
+            hide();
         }
     }
     
