@@ -59,6 +59,10 @@ public final class Tools {
         return DurationFormatUtils.formatDuration(d.toMillis(), "HH:mm:ss");
     }
     
+    public static Instant toInstant(LocalDateTime ldt) {
+        return ldt.atZone(ZoneId.systemDefault()).toInstant();
+    }
+    
     public static boolean isMac() {
         // https://developer.apple.com/library/content/technotes/tn2002/tn2110.html
         // http://archive.is/w6JC0
