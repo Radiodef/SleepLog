@@ -1,5 +1,7 @@
 package com.radiodef.sleeplog.db;
 
+import com.radiodef.sleeplog.util.*;
+
 import java.time.*;
 import java.util.*;
 
@@ -83,6 +85,11 @@ public final class SleepPeriod {
     
     @Override
     public String toString() {
-        return ReflectionToStringBuilder.toString(this);
+        return new ToStringBuilder(this)
+            .append("id", getID())
+            .append("start", Tools.formatDetailedInstant(getStart()))
+            .append("end", Tools.formatDetailedInstant(getEnd()))
+            .append("manualEntry", wasManualEntry())
+            .toString();
     }
 }
