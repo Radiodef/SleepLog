@@ -55,6 +55,8 @@ final class DateTimeEntryPane extends HBox {
         getChildren().addAll(date, time);
         
         fields().forEach(f -> f.textProperty().addListener((a, b, c) -> setDateTime()));
+        
+//        setToNow();
     }
     
     LocalDateTime getDateTime() {
@@ -93,6 +95,25 @@ final class DateTimeEntryPane extends HBox {
             dateTime.set(LocalDateTime.of(vals[2], vals[0], vals[1], vals[3], vals[4]));
         } catch (DateTimeException x) {
             Log.caught(x);
+        }
+    }
+    
+    private void setToNow() {
+        dateTime.set(LocalDateTime.now());
+        setTextFields();
+    }
+    
+    private void setTextFields() {
+        var dt = dateTime.get();
+        
+        if (dt == null) {
+            fields().forEach(field -> field.setText(""));
+        } else {
+            monthField.setText(Integer.toString(dt.getMonthValue()));
+            dayField.setText(Integer.toString(dt.getDayOfMonth()));
+            yearField.setText(Integer.toString(dt.getYear()));
+            hourField.setText(Integer.toString(dt.getHour()));
+            minuteField.setText(Integer.toString(dt.getMinute()));
         }
     }
 }
