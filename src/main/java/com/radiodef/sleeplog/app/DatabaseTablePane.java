@@ -105,7 +105,8 @@ class DatabaseTablePane extends BorderPane {
         SleepPeriodDialog.show(this).ifPresent(period -> {
             Log.note(period);
             
-            // TODO: add to db and update()
+            db.insertNewPeriod(period.getStart(), period.getEnd(), true);
+            update();
         });
     }
     
