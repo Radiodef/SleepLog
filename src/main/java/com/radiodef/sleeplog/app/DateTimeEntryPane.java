@@ -57,7 +57,7 @@ final class DateTimeEntryPane extends HBox {
         return dateTime.get();
     }
     
-    ObjectProperty<LocalDateTime> dateTimeProperty() {
+    ReadOnlyObjectProperty<LocalDateTime> dateTimeProperty() {
         return dateTime;
     }
 }
