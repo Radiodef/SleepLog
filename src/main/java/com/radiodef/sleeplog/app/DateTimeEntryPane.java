@@ -111,7 +111,8 @@ final class DateTimeEntryPane extends HBox {
             try {
                 val = LocalDateTime.of(vals[2], vals[0], vals[1], vals[3], vals[4]);
             } catch (DateTimeException x) {
-                Log.caught(x);
+                Log.note(x.getMessage());
+//                Log.caught(x);
             }
         }
         
