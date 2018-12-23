@@ -67,7 +67,7 @@ final class DateTimeEntryPane extends HBox {
         fields().forEach(f -> f.textProperty().addListener((a, b, c) -> setDateTime()));
         List.of(amButton, pmButton).forEach(b -> b.selectedProperty().addListener((x, y, z) -> setDateTime()));
         
-        setToNow();
+//        setToNow();
     }
     
     LocalDateTime getDateTime() {
