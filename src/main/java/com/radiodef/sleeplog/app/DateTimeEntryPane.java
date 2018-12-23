@@ -97,25 +97,25 @@ final class DateTimeEntryPane extends HBox {
                 .mapToInt(val -> (int) val)
                 .toArray();
         
-        if (vals.length != fields.size()) {
-            dateTime.set(null);
-            return;
+        LocalDateTime val = null;
+        
+        if (vals.length == fields.size()) {
+            if (amButton.isSelected()) {
+                if (vals[3] == 12)
+                    vals[3] = 0;
+            } else {
+                if (vals[3] > 12)
+                    vals[3] -= 12;
+            }
+            
+            try {
+                val = LocalDateTime.of(vals[2], vals[0], vals[1], vals[3], vals[4]);
+            } catch (DateTimeException x) {
+                Log.caught(x);
+            }
         }
         
-        if (amButton.isSelected()) {
-            if (vals[3] == 12)
-                vals[3] = 0;
-        } else {
-            if (vals[3] > 12)
-                vals[3] -= 12;
-        }
-        
-        try {
-            dateTime.set(LocalDateTime.of(vals[2], vals[0], vals[1], vals[3], vals[4]));
-        } catch (DateTimeException x) {
-            Log.caught(x);
-            dateTime.set(null);
-        }
+        dateTime.set(val);
     }
     
     private void setToNow() {
