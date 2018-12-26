@@ -18,6 +18,7 @@ public final class SleepLogApp extends Application {
     
     private Stage primaryStage;
     private Stage tableViewStage;
+    private Stage graphViewStage;
     
     static void launch() {
         Log.enter();
@@ -36,22 +37,28 @@ public final class SleepLogApp extends Application {
         
         primaryStage = inStage;
         tableViewStage = new Stage();
+        graphViewStage = new Stage();
         
         setUserAgentStylesheet(STYLESHEET_MODENA);
         Platform.setImplicitExit(false);
         
         configurePrimaryStage(primaryStage);
         Tools.beforeFirstShow(tableViewStage, this::configureTableViewStage);
+        Tools.beforeFirstShow(graphViewStage, this::configureGraphViewStage);
         
         primaryStage.show();
     }
     
     Stage getPrimaryStage() {
-        return primaryStage;
+        return Tools.requireNonNullState(primaryStage, "primaryStage");
     }
     
     Stage getTableViewStage() {
-        return tableViewStage;
+        return Tools.requireNonNullState(tableViewStage, "tableViewStage");
+    }
+    
+    Stage getGraphViewStage() {
+        return Tools.requireNonNullState(graphViewStage, "graphViewStage");
     }
     
     private void configurePrimaryStage(Stage stage) {
@@ -93,11 +100,30 @@ public final class SleepLogApp extends Application {
     
     private void configureTableViewStage(Stage stage) {
         Log.enter();
-        var content = new BorderPane();
-        var table = new DatabaseTablePane(db);
+        configureSecondaryStage(stage, new DatabaseTablePane(db));
         
-        content.setCenter(table);
+        var bounds = Screen.getPrimary().getVisualBounds();
+        stage.setX(bounds.getMinX());
+        stage.setY(bounds.getMinY());
+        
+        stage.setTitle("Data");
+    }
     
+    private void configureGraphViewStage(Stage stage) {
+        Log.enter();
+        configureSecondaryStage(stage, null);
+        
+        var bounds = Screen.getPrimary().getVisualBounds();
+        stage.setX(bounds.getMaxX() - stage.getWidth());
+        stage.setY(bounds.getMaxY() - stage.getHeight());
+        
+        stage.setTitle("Graphs");
+    }
+    
+    private void configureSecondaryStage(Stage stage, Pane pane) {
+        var content = new BorderPane();
+        content.setCenter(pane);
+        
         if (Tools.isMac()) {
             content.setTop(menuBars.get());
         }
@@ -106,12 +132,6 @@ public final class SleepLogApp extends Application {
         
         stage.setWidth(primaryStage.getWidth());
         stage.setHeight(primaryStage.getHeight());
-        
-        var bounds = Screen.getPrimary().getVisualBounds();
-        stage.setX(bounds.getMinX());
-        stage.setY(bounds.getMinY());
-        
-        stage.setTitle("Data");
     }
     
     private void sleepPeriodAdded(Instant start, Instant end) {
