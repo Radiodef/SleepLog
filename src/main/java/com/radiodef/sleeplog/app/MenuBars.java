@@ -12,11 +12,15 @@ import javafx.stage.*;
 final class MenuBars implements Supplier<MenuBar> {
     private static final String MENU_BAR_ID = "menu-bar";
     private static final String TABLE_VIEW_ID = "table-view-item";
+    private static final String GRAPH_VIEW_ID = "graph-view-item";
     
     private final SleepLogApp app;
     
+    private final List<MenuBar> bars;
+    
     MenuBars(SleepLogApp app) {
         this.app = Objects.requireNonNull(app);
+        this.bars = new ArrayList<>();
     }
     
     @Override
@@ -55,9 +59,17 @@ final class MenuBars implements Supplier<MenuBar> {
         
         bindItemToStage(tableItem, app::getTableViewStage);
         
-        windowMenu.getItems().add(tableItem);
+        var graphItem = new CheckMenuItem("_Graphs View");
+        graphItem.setId(GRAPH_VIEW_ID);
+        graphItem.setMnemonicParsing(true);
+        graphItem.setAccelerator(KeyCombination.valueOf("Shortcut+G"));
+        
+        bindItemToStage(graphItem, app::getGraphViewStage);
+        
+        windowMenu.getItems().addAll(tableItem, graphItem);
         menuBar.getMenus().add(windowMenu);
         
+        bars.add(menuBar);
         return menuBar;
     }
     
@@ -74,11 +86,7 @@ final class MenuBars implements Supplier<MenuBar> {
                 stage.hide();
             }
             
-            Window.getWindows().stream()
-                .map(Window::getScene)
-                .filter(Objects::nonNull)
-                .map(scene -> (MenuBar) scene.lookup("#" + MENU_BAR_ID))
-                .filter(Objects::nonNull)
+            bars.stream()
                 .flatMap(bar -> bar.getMenus().stream().flatMap(menu -> menu.getItems().stream()))
                 .filter(item1 -> (item1 != item) && Objects.equals(item.getId(), item1.getId()))
                 .forEach(item1 -> ((CheckMenuItem) item1).setSelected(visible));
