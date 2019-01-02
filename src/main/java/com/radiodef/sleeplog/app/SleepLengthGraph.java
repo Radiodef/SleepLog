@@ -13,6 +13,7 @@ final class SleepLengthGraph extends AreaChart<Number, Number> {
         super(new NumberAxis(), new NumberAxis());
         
         this.db = Objects.requireNonNull(db, "db");
+        update();
     }
     
     void update() {
