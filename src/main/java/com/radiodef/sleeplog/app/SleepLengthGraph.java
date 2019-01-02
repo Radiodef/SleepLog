@@ -3,6 +3,7 @@ package com.radiodef.sleeplog.app;
 import com.radiodef.sleeplog.db.*;
 
 import javafx.scene.chart.*;
+import javafx.collections.*;
 import java.util.*;
 
 final class SleepLengthGraph extends AreaChart<Number, Number> {
@@ -16,5 +17,7 @@ final class SleepLengthGraph extends AreaChart<Number, Number> {
     
     void update() {
         var periods = db.getAllSleepPeriods();
+        
+        setData(FXCollections.observableArrayList());
     }
 }
