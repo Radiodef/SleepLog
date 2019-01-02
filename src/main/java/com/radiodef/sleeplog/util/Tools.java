@@ -60,6 +60,13 @@ public final class Tools {
         return DurationFormatUtils.formatDuration(d.toMillis(), "HH:mm:ss");
     }
     
+    private static final DateTimeFormatter DATE_FORMATTER =
+        DateTimeFormatter.ISO_LOCAL_DATE;
+    
+    public static String formatDate(Instant i) {
+        return DATE_FORMATTER.format(LocalDate.ofInstant(i, ZoneId.systemDefault()));
+    }
+    
     public static Instant toInstant(LocalDateTime ldt) {
         return ldt.atZone(ZoneId.systemDefault()).toInstant();
     }
