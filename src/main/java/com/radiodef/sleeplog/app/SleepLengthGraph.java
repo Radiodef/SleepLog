@@ -87,6 +87,9 @@ final class SleepLengthGraph extends AreaChart<Number, Number> {
         xAxis.setLowerBound(minDate);
         xAxis.setUpperBound(maxDate);
         
+        Log.notef("x axis: %s to %s", Tools.formatDate(Instant.ofEpochSecond(minDate)),
+                                      Tools.formatDate(Instant.ofEpochSecond(maxDate)));
+        
         var yAxis = (NumberAxis) getYAxis();
         
         var yLowerBound = 0.0; // Math.floor(minSeconds / (double) SECS_IN_HR);
