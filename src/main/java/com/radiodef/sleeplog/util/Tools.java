@@ -7,6 +7,7 @@ import java.time.format.*;
 
 import javafx.event.*;
 import javafx.stage.*;
+import javafx.collections.*;
 
 import com.google.common.base.Strings;
 import org.apache.commons.lang3.*;
@@ -86,5 +87,12 @@ public final class Tools {
                 action.accept(s);
             }
         });
+    }
+    
+    @SafeVarargs
+    public static <E> ObservableList<E> observableArrayList(E... elements) {
+        var list = FXCollections.<E>observableArrayList();
+        Collections.addAll(list, elements);
+        return list;
     }
 }
