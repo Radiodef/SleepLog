@@ -9,12 +9,26 @@ import java.util.*;
 import java.time.*;
 
 final class SleepLengthGraph extends AreaChart<Number, Number> {
-    private static final int SECS_IN_HR = 3600;
+    private static final int SECS_IN_HR = 60 * 60;
+    private static final int SECS_IN_DAY = 60 * 60 * 24;
     
     private final Database db;
     
     private static NumberAxis createXAxis() {
         var axis = new NumberAxis();
+        axis.setAutoRanging(false);
+        axis.setTickUnit(SECS_IN_DAY);
+        axis.setMinorTickLength(0);
+        axis.setTickLabelFormatter(new StringConverter<>() {
+            @Override
+            public String toString(Number n) {
+                return Tools.formatDate(Instant.ofEpochSecond(n.longValue()));
+            }
+            @Override
+            public Number fromString(String s) {
+                throw new AssertionError(s);
+            }
+        });
         return axis;
     }
     
@@ -47,12 +61,18 @@ final class SleepLengthGraph extends AreaChart<Number, Number> {
         var periods = db.getAllSleepPeriods();
         var series = new Series<Number, Number>();
         
+        var minDate = Long.MAX_VALUE;
+        var maxDate = Long.MIN_VALUE;
+        
         var minSeconds = Long.MAX_VALUE;
         var maxSeconds = Long.MIN_VALUE;
         
         for (var p : periods) {
-            var date = p.getStart().getEpochSecond();
+            var date = Tools.toStartOfDay(p.getStart()).getEpochSecond();
             var duration = Duration.between(p.getStart(), p.getEnd()).toSeconds();
+            
+            minDate = Math.min(minDate, date);
+            maxDate = Math.max(maxDate, date);
             
             minSeconds = Math.min(minSeconds, duration);
             maxSeconds = Math.max(maxSeconds, duration);
@@ -62,9 +82,14 @@ final class SleepLengthGraph extends AreaChart<Number, Number> {
         
         setData(Tools.observableArrayList(series));
         
+        var xAxis = (NumberAxis) getXAxis();
+        
+        xAxis.setLowerBound(minDate);
+        xAxis.setUpperBound(maxDate);
+        
         var yAxis = (NumberAxis) getYAxis();
         
-        var yLowerBound = Math.floor(minSeconds / (double) SECS_IN_HR);
+        var yLowerBound = 0.0; // Math.floor(minSeconds / (double) SECS_IN_HR);
         var yUpperBound = Math.ceil(maxSeconds / (double) SECS_IN_HR);
         yAxis.setLowerBound(yLowerBound * SECS_IN_HR);
         yAxis.setUpperBound(yUpperBound * SECS_IN_HR);
