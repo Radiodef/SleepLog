@@ -111,7 +111,7 @@ public final class SleepLogApp extends Application {
     
     private void configureGraphViewStage(Stage stage) {
         Log.enter();
-        configureSecondaryStage(stage, null);
+        configureSecondaryStage(stage, new BorderPane(new SleepLengthGraph()));
         
         var bounds = Screen.getPrimary().getVisualBounds();
         stage.setX(bounds.getMaxX() - stage.getWidth());
