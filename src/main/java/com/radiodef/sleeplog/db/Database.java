@@ -6,6 +6,7 @@ import com.radiodef.sleeplog.util.*;
 import java.sql.*;
 import java.time.*;
 import java.util.*;
+import java.util.function.*;
 import java.nio.file.*;
 
 import javafx.collections.*;
@@ -157,22 +158,27 @@ public final class Database implements AutoCloseable {
     }
     
     private boolean executePreparedStatement(PreparedStatement statement, Object... params) {
+        return executePreparedStatement(p -> true, statement, params).isPresent();
+    }
+    
+    private <T> Optional<T> executePreparedStatement(Function<? super PreparedStatement, ? extends T> fn,
+                                                     PreparedStatement statement, Object... params) {
         Log.enter();
         if (!didConnect() || statement == null)
-            return false;
+            return Optional.empty();
         
-        boolean success;
+        Optional<T> result;
         
         try {
             for (int i = 0; i < params.length; ++i)
                 statement.setObject(i + 1, params[i]);
             
             statement.execute();
-            success = true;
+            result = Optional.ofNullable(fn.apply(statement));
             
         } catch (SQLException x) {
             Log.caught(x);
-            success = false;
+            result = Optional.empty();
         } finally {
             try {
                 statement.clearParameters();
@@ -181,7 +187,7 @@ public final class Database implements AutoCloseable {
             }
         }
         
-        return success;
+        return result;
     }
     
     public ObservableList<SleepPeriod> getAllSleepPeriods() {
