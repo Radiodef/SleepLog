@@ -136,7 +136,7 @@ public final class Database implements AutoCloseable {
     private PreparedStatement prepareStatement(String statement) {
         try {
             if (didConnect())
-                return conn.prepareStatement(statement);
+                return conn.prepareStatement(statement, Statement.RETURN_GENERATED_KEYS);
         } catch (SQLException x) {
             Log.caught(x);
         }
@@ -149,7 +149,28 @@ public final class Database implements AutoCloseable {
     
     public boolean insertNewPeriod(Instant start, Instant end, boolean manual) {
         Log.enter();
-        return executePreparedStatement(insertPeriodRow, start, end, manual);
+        var keys =
+            executePreparedStatement(ps -> {
+                try {
+                    var rs = ps.getGeneratedKeys();
+                    var ids = new ArrayList<Integer>();
+                    while (rs.next()) {
+                        ids.add(rs.getInt(1));
+                    }
+                    return ids;
+                } catch (SQLException x) {
+                    Log.caught(x);
+                    return null;
+                }
+            },
+            insertPeriodRow, start, end, manual);
+        
+        if (keys.isPresent()) {
+            Log.note(keys);
+            return true;
+        }
+        
+        return false;
     }
     
     public boolean deletePeriod(int id) {
@@ -158,7 +179,7 @@ public final class Database implements AutoCloseable {
     }
     
     private boolean executePreparedStatement(PreparedStatement statement, Object... params) {
-        return executePreparedStatement(p -> true, statement, params).isPresent();
+        return executePreparedStatement(ps -> true, statement, params).isPresent();
     }
     
     private <T> Optional<T> executePreparedStatement(Function<? super PreparedStatement, ? extends T> fn,
