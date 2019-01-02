@@ -4,14 +4,40 @@ import com.radiodef.sleeplog.db.*;
 import com.radiodef.sleeplog.util.*;
 
 import javafx.scene.chart.*;
+import javafx.util.StringConverter;
 import java.util.*;
 import java.time.*;
 
 final class SleepLengthGraph extends AreaChart<Number, Number> {
+    private static final int SECS_IN_HR = 3600;
+    
     private final Database db;
     
+    private static NumberAxis createXAxis() {
+        var axis = new NumberAxis();
+        return axis;
+    }
+    
+    private static NumberAxis createYAxis() {
+        var axis = new NumberAxis();
+        axis.setAutoRanging(false);
+        axis.setTickUnit(SECS_IN_HR);
+        axis.setMinorTickCount(2);
+        axis.setTickLabelFormatter(new StringConverter<>() {
+            @Override
+            public String toString(Number n) {
+                return Tools.formatDuration(Duration.ofSeconds(n.longValue()));
+            }
+            @Override
+            public Number fromString(String s) {
+                throw new AssertionError(s);
+            }
+        });
+        return axis;
+    }
+    
     SleepLengthGraph(Database db) {
-        super(new NumberAxis(), new NumberAxis());
+        super(createXAxis(), createYAxis());
         
         this.db = Objects.requireNonNull(db, "db");
         update();
@@ -21,13 +47,28 @@ final class SleepLengthGraph extends AreaChart<Number, Number> {
         var periods = db.getAllSleepPeriods();
         var series = new Series<Number, Number>();
         
+        var minSeconds = Long.MAX_VALUE;
+        var maxSeconds = Long.MIN_VALUE;
+        
         for (var p : periods) {
             var date = p.getStart().getEpochSecond();
             var duration = Duration.between(p.getStart(), p.getEnd()).toSeconds();
+            
+            minSeconds = Math.min(minSeconds, duration);
+            maxSeconds = Math.max(maxSeconds, duration);
             
             series.getData().add(new Data<>(date, duration));
         }
         
         setData(Tools.observableArrayList(series));
+        
+        var yAxis = (NumberAxis) getYAxis();
+        
+        var yLowerBound = Math.floor(minSeconds / (double) SECS_IN_HR);
+        var yUpperBound = Math.ceil(maxSeconds / (double) SECS_IN_HR);
+        yAxis.setLowerBound(yLowerBound * SECS_IN_HR);
+        yAxis.setUpperBound(yUpperBound * SECS_IN_HR);
+        
+        Log.notef("y axis: %f hours to %f hours", yLowerBound, yUpperBound);
     }
 }
