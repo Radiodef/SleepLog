@@ -71,16 +71,9 @@ public final class Tools {
         return ldt.atZone(ZoneId.systemDefault()).toInstant();
     }
     
-    public static Instant toInstant(LocalDate ld) {
-        return ld.atStartOfDay(ZoneId.systemDefault()).toInstant();
-    }
-    
-    public static LocalDate toDate(Instant i) {
-        return LocalDate.ofInstant(i, ZoneId.systemDefault());
-    }
-    
     public static Instant toStartOfDay(Instant i) {
-        return toInstant(toDate(i));
+        var zone = ZoneId.systemDefault();
+        return LocalDate.ofInstant(i, zone).atStartOfDay(zone).toInstant();
     }
     
     public static boolean isMac() {
