@@ -3,6 +3,7 @@ package com.radiodef.sleeplog.app;
 import com.radiodef.sleeplog.db.*;
 import com.radiodef.sleeplog.util.*;
 
+import javafx.collections.*;
 import javafx.scene.chart.*;
 import javafx.util.StringConverter;
 import java.util.*;
@@ -55,9 +56,12 @@ final class SleepLengthGraph extends AreaChart<Number, Number> {
         
         this.db = Objects.requireNonNull(db, "db");
         update();
+        
+        db.getAllSleepPeriods().addListener((ListChangeListener<SleepPeriod>) e -> update());
     }
     
-    void update() {
+    private void update() {
+        Log.enter();
         var periods = db.getAllSleepPeriods();
         var series = new Series<Number, Number>();
         
