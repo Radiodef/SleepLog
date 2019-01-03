@@ -16,6 +16,11 @@ public class PseudoTable<R> extends BorderPane {
         return columns;
     }
     
+    @SafeVarargs
+    public final void addColumns(Column<R>... columns) {
+        this.columns.addAll(columns);
+    }
+    
     private void layoutComponents() {
         Log.enter();
     }
