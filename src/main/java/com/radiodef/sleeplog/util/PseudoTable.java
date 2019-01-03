@@ -55,11 +55,11 @@ public class PseudoTable<R> extends BorderPane {
     }
     
     public static class Column<R> {
-        private final ObjectProperty<String> name;
+        private final ObjectProperty<String> label;
         private final ObjectProperty<VBox> node;
         
-        public Column(String name) {
-            this.name = new SimpleObjectProperty<>(name);
+        public Column(String label) {
+            this.label = new SimpleObjectProperty<>(label);
             
             var box = new VBox();
             box.getStyleClass().add(COL_VBOX_CLASS);
@@ -67,8 +67,8 @@ public class PseudoTable<R> extends BorderPane {
             this.node = new SimpleObjectProperty<>(box);
         }
         
-        public ObjectProperty<String> nameProperty() {
-            return name;
+        public ObjectProperty<String> labelProperty() {
+            return label;
         }
         
         public ReadOnlyObjectProperty<VBox> nodeProperty() {
