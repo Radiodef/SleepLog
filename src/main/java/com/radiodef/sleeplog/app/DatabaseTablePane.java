@@ -11,6 +11,7 @@ import javafx.scene.layout.*;
 import javafx.geometry.*;
 import javafx.util.*;
 import javafx.collections.*;
+import javafx.collections.transformation.*;
 
 import java.time.*;
 import java.util.*;
@@ -71,7 +72,10 @@ class DatabaseTablePane extends BorderPane {
         tools.getItems().addAll(addButton, deleteButton);
         setTop(tools);
         
-        table.setItems(db.getAllSleepPeriods());
+        var periods = new SortedList<>(db.getAllSleepPeriods());
+        periods.comparatorProperty().bind(table.comparatorProperty());
+        
+        table.setItems(periods);
         table.getSortOrder().add(startCol);
     }
     
