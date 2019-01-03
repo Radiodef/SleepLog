@@ -36,7 +36,7 @@ final class SleepLengthGraph extends BorderPane {
         
         setBottom(bottom);
         
-        this.chart = new AreaChart<>(Tools.createDayAxis(), Tools.createDurationAxis());
+        this.chart = new AreaChart<>(GraphsPane.createDayAxis(), GraphsPane.createDurationAxis());
         chart.getStyleClass().add("sleep-length-chart");
         
         update();
@@ -111,9 +111,9 @@ final class SleepLengthGraph extends BorderPane {
         var yAxis = (NumberAxis) chart.getYAxis();
         
         var yLowerBound = 0.0; // Math.floor(minSeconds / (double) SECS_IN_HR);
-        var yUpperBound = Math.ceil(maxSeconds / (double) Tools.SECS_PER_HR);
-        yAxis.setLowerBound(yLowerBound * Tools.SECS_PER_HR);
-        yAxis.setUpperBound(yUpperBound * Tools.SECS_PER_HR);
+        var yUpperBound = Math.ceil(maxSeconds / (double) GraphsPane.SECS_PER_HR);
+        yAxis.setLowerBound(yLowerBound * GraphsPane.SECS_PER_HR);
+        yAxis.setUpperBound(yUpperBound * GraphsPane.SECS_PER_HR);
         
         Log.notef("y axis: %f hours to %f hours", yLowerBound, yUpperBound);
         
@@ -134,7 +134,7 @@ final class SleepLengthGraph extends BorderPane {
     private static void setHours(Label label, String prefix, BigInteger seconds) {
         var hours =
             new BigDecimal(seconds)
-                .divide(BigDecimal.valueOf(Tools.SECS_PER_HR), 1, RoundingMode.HALF_UP);
+                .divide(BigDecimal.valueOf(GraphsPane.SECS_PER_HR), 1, RoundingMode.HALF_UP);
         
         var suffix = BigDecimal.ONE.equals(hours) ? " hour" : " hours";
         
