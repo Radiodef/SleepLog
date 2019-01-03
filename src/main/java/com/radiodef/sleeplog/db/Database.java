@@ -7,6 +7,7 @@ import java.sql.*;
 import java.time.*;
 import java.util.*;
 import java.util.function.*;
+import java.util.stream.*;
 import java.nio.file.*;
 
 import javafx.collections.*;
@@ -25,6 +26,8 @@ public final class Database implements AutoCloseable {
     private final PreparedStatement insertPeriodRow;
     private final PreparedStatement deletePeriodRow;
     private final PreparedStatement getRowById;
+    
+    private final ObservableList<SleepPeriod> rows;
     
     public Database() {
         this(null);
@@ -62,6 +65,8 @@ public final class Database implements AutoCloseable {
         this.insertPeriodRow = prepareInsertPeriodRow();
         this.deletePeriodRow = prepareDeletePeriodRow();
         this.getRowById = prepareGetRowById();
+        
+        this.rows = getAllSleepPeriodsImpl();
     }
     
     public boolean didConnect() {
@@ -171,20 +176,23 @@ public final class Database implements AutoCloseable {
             },
             insertPeriodRow, start, end, manual);
         
-        if (keys.isPresent()) {
-            for (var key : keys.get()) {
-                getRowById(key).ifPresent(Log::note);
-            }
-            
-            return true;
-        }
-        
-        return false;
+        return keys.map(list ->
+            rows.addAll(
+                list.stream()
+                    .map(this::getRowById)
+                    .flatMap(Optional::stream)
+                    .collect(Collectors.toList())
+            )
+        ).orElse(false);
     }
     
     public boolean deletePeriod(int id) {
         Log.enter();
-        return executePreparedStatement(deletePeriodRow, id);
+        if (executePreparedStatement(deletePeriodRow, id)) {
+            rows.removeIf(period -> period.getID() == id);
+            return true;
+        }
+        return false;
     }
     
     private Optional<SleepPeriod> getRowById(int id) {
@@ -227,6 +235,10 @@ public final class Database implements AutoCloseable {
     }
     
     public ObservableList<SleepPeriod> getAllSleepPeriods() {
+        return FXCollections.unmodifiableObservableList(rows);
+    }
+    
+    private ObservableList<SleepPeriod> getAllSleepPeriodsImpl() {
         var list = FXCollections.<SleepPeriod>observableArrayList();
         
         if (didConnect()) {
@@ -271,6 +283,7 @@ public final class Database implements AutoCloseable {
         if (didConnect()) {
             Log.notef("table dropped = %b", executeStatement("DROP TABLE " + DATES_TABLE));
             Log.notef("instant dropped = %b", executeStatement("DROP TYPE INSTANT RESTRICT"));
+            rows.clear();
         }
     }
     
