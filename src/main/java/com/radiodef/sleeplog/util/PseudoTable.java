@@ -6,6 +6,7 @@ import javafx.scene.layout.*;
 import javafx.collections.*;
 import javafx.beans.property.*;
 
+@SuppressWarnings("unused")
 public class PseudoTable<R> extends BorderPane {
     private final ObservableList<Column<R>> columns = FXCollections.observableArrayList();
     
