@@ -24,6 +24,7 @@ public final class Database implements AutoCloseable {
     
     private final PreparedStatement insertPeriodRow;
     private final PreparedStatement deletePeriodRow;
+    private final PreparedStatement getRowById;
     
     public Database() {
         this(null);
@@ -60,6 +61,7 @@ public final class Database implements AutoCloseable {
         
         this.insertPeriodRow = prepareInsertPeriodRow();
         this.deletePeriodRow = prepareDeletePeriodRow();
+        this.getRowById = prepareGetRowById();
     }
     
     public boolean didConnect() {
@@ -133,6 +135,10 @@ public final class Database implements AutoCloseable {
         return prepareStatement("DELETE FROM " + DATES_TABLE + " WHERE id = ?");
     }
     
+    private PreparedStatement prepareGetRowById() {
+        return prepareStatement("SELECT * FROM " + DATES_TABLE + " WHERE id = ?");
+    }
+    
     private PreparedStatement prepareStatement(String statement) {
         try {
             if (didConnect())
@@ -166,7 +172,10 @@ public final class Database implements AutoCloseable {
             insertPeriodRow, start, end, manual);
         
         if (keys.isPresent()) {
-            Log.note(keys);
+            for (var key : keys.get()) {
+                getRowById(key).ifPresent(Log::note);
+            }
+            
             return true;
         }
         
@@ -176,6 +185,12 @@ public final class Database implements AutoCloseable {
     public boolean deletePeriod(int id) {
         Log.enter();
         return executePreparedStatement(deletePeriodRow, id);
+    }
+    
+    private Optional<SleepPeriod> getRowById(int id) {
+        Log.enter();
+        return executePreparedStatement(Log.catchingSQL(Statement::getResultSet), getRowById, id)
+            .map(Log.catchingSQL(rs -> rs.next() ? getSleepPeriod(rs) : null));
     }
     
     private boolean executePreparedStatement(PreparedStatement statement, Object... params) {
@@ -219,12 +234,7 @@ public final class Database implements AutoCloseable {
                 var rs = statement.executeQuery("SELECT * FROM " + DATES_TABLE);
                 
                 while (rs.next()) {
-                    var id = rs.getInt(ID_COL);
-                    var start = (Instant) rs.getObject(START_COL);
-                    var end = (Instant) rs.getObject(END_COL);
-                    var manual = rs.getBoolean(MANUAL_COL);
-                    
-                    list.add(new SleepPeriod(id, start, end, manual));
+                    list.add(getSleepPeriod(rs));
                 }
             } catch (SQLException x) {
                 Log.caught(x);
@@ -232,6 +242,14 @@ public final class Database implements AutoCloseable {
         }
         
         return list;
+    }
+    
+    private static SleepPeriod getSleepPeriod(ResultSet rs) throws SQLException {
+        var id = rs.getInt(ID_COL);
+        var start = (Instant) rs.getObject(START_COL);
+        var end = (Instant) rs.getObject(END_COL);
+        var manual = rs.getBoolean(MANUAL_COL);
+        return new SleepPeriod(id, start, end, manual);
     }
     
     @SuppressWarnings("unused")
