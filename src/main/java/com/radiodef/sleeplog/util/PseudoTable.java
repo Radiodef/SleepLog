@@ -14,6 +14,7 @@ public class PseudoTable<R> extends BorderPane {
     private static final String COL_VBOX_CLASS = PSEUDO_TABLE + "-column-vbox";
     
     private final ObservableList<Column<R>> columns = FXCollections.observableArrayList();
+    private final ObservableList<R> data = FXCollections.observableArrayList();
     
     private final HBox columnsBox = new HBox();
     
@@ -22,6 +23,7 @@ public class PseudoTable<R> extends BorderPane {
         columnsBox.getStyleClass().add(COLS_HBOX_CLASS);
         
         columns.addListener(Tools.listChangeListener(c -> layoutComponents()));
+        data.addListener(Tools.listChangeListener(c -> layoutComponents()));
         
         setCenter(columnsBox);
     }
@@ -35,14 +37,20 @@ public class PseudoTable<R> extends BorderPane {
         this.columns.addAll(columns);
     }
     
+    public ObservableList<R> getData() {
+        return data;
+    }
+    
     private void layoutComponents() {
         Log.enter();
         columnsBox.getChildren().clear();
         
         for (var col : columns) {
             var box = col.node.get();
-            
             columnsBox.getChildren().add(box);
+        }
+        
+        for (var elem : data) {
         }
     }
     
