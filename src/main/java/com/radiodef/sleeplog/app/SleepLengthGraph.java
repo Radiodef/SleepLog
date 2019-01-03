@@ -3,8 +3,9 @@ package com.radiodef.sleeplog.app;
 import com.radiodef.sleeplog.db.*;
 import com.radiodef.sleeplog.util.*;
 
-import javafx.collections.*;
 import javafx.scene.chart.*;
+import javafx.scene.chart.XYChart.*;
+import javafx.collections.*;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
 import javafx.util.StringConverter;
@@ -92,10 +93,10 @@ final class SleepLengthGraph extends BorderPane {
         Log.enter();
         var periods = db.getAllSleepPeriods();
         
-        var durationSeries = new AreaChart.Series<Number, Number>();
+        var durationSeries = new Series<Number, Number>();
         durationSeries.setName("Sleep Duration");
         
-        var meanSeries = new AreaChart.Series<Number, Number>();
+        var meanSeries = new Series<Number, Number>();
         meanSeries.setName("Mean");
         
         var meanDuration = BigInteger.ONE;
@@ -118,7 +119,7 @@ final class SleepLengthGraph extends BorderPane {
             minSeconds = Math.min(minSeconds, duration);
             maxSeconds = Math.max(maxSeconds, duration);
             
-            durationSeries.getData().add(new AreaChart.Data<>(date, duration));
+            durationSeries.getData().add(new Data<>(date, duration));
         }
         
         if (!periods.isEmpty())
@@ -127,15 +128,11 @@ final class SleepLengthGraph extends BorderPane {
         
         var variance = BigInteger.ZERO;
         
-        var i = 0;
         for (var p : periods) {
             var duration = Duration.between(p.getStart(), p.getEnd()).toSeconds();
             var difference = meanDuration.subtract(BigInteger.valueOf(duration));
             
             variance = variance.add(difference.multiply(difference));
-            
-            var date = durationSeries.getData().get( i++ ).getXValue();
-            meanSeries.getData().add(new AreaChart.Data<>(date, meanDuration));
         }
         
         if (!periods.isEmpty())
@@ -159,6 +156,9 @@ final class SleepLengthGraph extends BorderPane {
         
         Log.notef("y axis: %f hours to %f hours", yLowerBound, yUpperBound);
         
+        meanSeries.getData().add(new Data<>(minDate, meanDuration));
+        meanSeries.getData().add(new Data<>(maxDate, meanDuration));
+        
         chart.setData(Tools.observableArrayList(durationSeries, meanSeries));
     }
     
@@ -181,9 +181,9 @@ final class SleepLengthGraph extends BorderPane {
     }
     
     /*
-    private AreaChart.Series<Number, Number> createSeries() {
+    private Series<Number, Number> createSeries() {
         Log.enter();
-        var series = new AreaChart.Series<Number, Number>();
+        var series = new Series<Number, Number>();
         series.setName("Sleep Duration");
         
         var periods = db.getAllSleepPeriods();
@@ -230,18 +230,18 @@ final class SleepLengthGraph extends BorderPane {
         Log.notef("y axis: %f hours to %f hours", yLowerBound, yUpperBound);
     }
     
-    private enum DataFunction implements Function<SleepPeriod, AreaChart.Data<Number, Number>> {
+    private enum DataFunction implements Function<SleepPeriod, Data<Number, Number>> {
         INSTANCE;
         
         @Override
-        public AreaChart.Data<Number, Number> apply(SleepPeriod period) {
+        public Data<Number, Number> apply(SleepPeriod period) {
             var start = period.getStart();
             var end = period.getEnd();
             
             var date = Tools.toStartOfDay(start).getEpochSecond();
             var duration = Duration.between(start, end).toSeconds();
             
-            return new AreaChart.Data<>(date, duration);
+            return new Data<>(date, duration);
         }
     }
     */
