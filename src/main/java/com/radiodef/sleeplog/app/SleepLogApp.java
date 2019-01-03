@@ -111,17 +111,7 @@ public final class SleepLogApp extends Application {
     
     private void configureGraphViewStage(Stage stage) {
         Log.enter();
-        var tabs = new TabPane();
-        tabs.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-        
-        var lengthTab = new Tab("Duration");
-        lengthTab.setContent(new SleepLengthGraph(db));
-        
-        var startEndTab = new Tab("Start & End");
-        startEndTab.setContent(new SleepStartEndGraph(db));
-        
-        tabs.getTabs().addAll(startEndTab, lengthTab);
-        configureSecondaryStage(stage, new BorderPane(tabs));
+        configureSecondaryStage(stage, new GraphsPane(db));
         
         var bounds = Screen.getPrimary().getVisualBounds();
         stage.setX(bounds.getMaxX() - stage.getWidth() - 10);
