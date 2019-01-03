@@ -117,7 +117,10 @@ public final class SleepLogApp extends Application {
         var lengthTab = new Tab("Duration");
         lengthTab.setContent(new SleepLengthGraph(db));
         
-        tabs.getTabs().add(lengthTab);
+        var startEndTab = new Tab("Start & End");
+        startEndTab.setContent(new SleepStartEndGraph(db));
+        
+        tabs.getTabs().addAll(startEndTab, lengthTab);
         configureSecondaryStage(stage, new BorderPane(tabs));
         
         var bounds = Screen.getPrimary().getVisualBounds();
