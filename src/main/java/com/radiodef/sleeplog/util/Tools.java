@@ -111,4 +111,8 @@ public final class Tools {
         Collections.addAll(list, elements);
         return list;
     }
+    
+    public static <T> ListChangeListener<T> listChangeListener(ListChangeListener<T> lcl) {
+        return lcl;
+    }
 }
