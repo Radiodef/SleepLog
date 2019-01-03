@@ -4,6 +4,7 @@ import com.radiodef.sleeplog.db.*;
 
 import javafx.scene.layout.*;
 import javafx.scene.chart.*;
+import javafx.collections.*;
 
 import java.util.*;
 
@@ -18,5 +19,12 @@ final class SleepStartEndGraph extends BorderPane {
         this.chart = new LineChart<>(GraphsPane.createDayAxis(), GraphsPane.createTimeAxis());
         
         setCenter(chart);
+        
+        update();
+        db.getAllSleepPeriods().addListener((ListChangeListener<SleepPeriod>) (c -> update()));
+    }
+    
+    private void update() {
+        Log.enter();
     }
 }
