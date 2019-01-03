@@ -3,6 +3,8 @@ package com.radiodef.sleeplog.app;
 import com.radiodef.sleeplog.util.*;
 
 import java.util.*;
+import java.util.function.*;
+import java.sql.*;
 
 public final class Log {
     private Log() {
@@ -42,5 +44,16 @@ public final class Log {
             System.out.print(str);
         }
         System.out.println();
+    }
+    
+    public static <T, U> Function<T, U> catchingSQL(ThrowingFunction<T, U, SQLException> fn) {
+        return arg -> {
+            try {
+                return fn.apply(arg);
+            } catch (SQLException x) {
+                caught(x);
+                return null;
+            }
+        };
     }
 }
