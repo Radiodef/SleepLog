@@ -5,11 +5,11 @@ import com.radiodef.sleeplog.util.*;
 
 import javafx.application.*;
 import javafx.scene.layout.*;
+import javafx.scene.control.*;
 import javafx.stage.*;
 import javafx.scene.*;
 
 import java.time.*;
-import java.util.*;
 
 public final class SleepLogApp extends Application {
     private Database db;
@@ -111,7 +111,14 @@ public final class SleepLogApp extends Application {
     
     private void configureGraphViewStage(Stage stage) {
         Log.enter();
-        configureSecondaryStage(stage, new SleepLengthGraph(db));
+        var tabs = new TabPane();
+        tabs.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+        
+        var lengthTab = new Tab("Duration");
+        lengthTab.setContent(new SleepLengthGraph(db));
+        
+        tabs.getTabs().add(lengthTab);
+        configureSecondaryStage(stage, new BorderPane(tabs));
         
         var bounds = Screen.getPrimary().getVisualBounds();
         stage.setX(bounds.getMaxX() - stage.getWidth() - 10);
