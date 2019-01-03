@@ -6,6 +6,7 @@ import com.radiodef.sleeplog.util.*;
 import org.apache.commons.lang3.*;
 import org.apache.commons.lang3.time.*;
 
+import javafx.application.*;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.*;
 import javafx.scene.layout.*;
@@ -82,6 +83,8 @@ class DatabaseTablePane extends BorderPane {
         
         table.setItems(periods);
         table.getSortOrder().add(startCol);
+        
+        Platform.runLater(() -> table.scrollTo(periods.size() - 1));
     }
     
     private void deleteSelection() {
