@@ -41,6 +41,7 @@ final class SleepLengthGraph extends BorderPane {
         setBottom(bottom);
         
         this.chart = new AreaChart<>(createXAxis(), createYAxis());
+        chart.getStyleClass().add("sleep-length-chart");
         
         update();
         db.getAllSleepPeriods().addListener((ListChangeListener<SleepPeriod>) e -> update());
