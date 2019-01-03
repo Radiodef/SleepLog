@@ -25,6 +25,14 @@ final class SleepStartEndGraph extends BorderPane {
         var statsPane = new GridPane();
         statsPane.getStyleClass().add("sleep-start-end-stats-pane");
         
+        var col0 = new ColumnConstraints();
+        var col1 = new ColumnConstraints();
+        var col2 = new ColumnConstraints();
+        col0.setPercentWidth(32);
+        col1.setPercentWidth(34);
+        col2.setPercentWidth(34);
+        statsPane.getColumnConstraints().addAll(col0, col1, col2);
+        
         statsPane.add(new Label("Start"), 0, 0);
         statsPane.add(new Label("10:30 PM"), 1, 0);
         statsPane.add(new Label("1.5"), 2, 0);
