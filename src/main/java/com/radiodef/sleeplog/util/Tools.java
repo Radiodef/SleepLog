@@ -45,6 +45,10 @@ public final class Tools {
     private static final DateTimeFormatter START_FORMATTER =
         DateTimeFormatter.ofPattern("h:mm a");
     
+    public static String formatTimeOfDay(LocalTime t) {
+        return START_FORMATTER.format(t);
+    }
+    
     public static String formatInstant(Instant i) {
         return START_FORMATTER.format(LocalTime.ofInstant(i, ZoneId.systemDefault()));
     }
