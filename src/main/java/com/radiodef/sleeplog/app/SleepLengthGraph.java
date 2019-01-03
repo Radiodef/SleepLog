@@ -5,7 +5,6 @@ import com.radiodef.sleeplog.util.*;
 
 import javafx.scene.chart.*;
 import javafx.scene.chart.XYChart.*;
-import javafx.collections.*;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
 
