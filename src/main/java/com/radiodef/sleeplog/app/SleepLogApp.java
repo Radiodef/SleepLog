@@ -103,8 +103,8 @@ public final class SleepLogApp extends Application {
         configureSecondaryStage(stage, new DatabaseTablePane(db));
         
         var bounds = Screen.getPrimary().getVisualBounds();
-        stage.setX(bounds.getMinX());
-        stage.setY(bounds.getMinY());
+        stage.setX(bounds.getMinX() + 10);
+        stage.setY(bounds.getMinY() + 10);
         
         stage.setTitle("Data");
     }
@@ -114,8 +114,8 @@ public final class SleepLogApp extends Application {
         configureSecondaryStage(stage, new BorderPane(new SleepLengthGraph(db)));
         
         var bounds = Screen.getPrimary().getVisualBounds();
-        stage.setX(bounds.getMaxX() - stage.getWidth());
-        stage.setY(bounds.getMaxY() - stage.getHeight());
+        stage.setX(bounds.getMaxX() - stage.getWidth() - 10);
+        stage.setY(bounds.getMaxY() - stage.getHeight() - 10);
         
         stage.setTitle("Graphs");
     }
