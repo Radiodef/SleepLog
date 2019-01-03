@@ -41,13 +41,19 @@ public class PseudoTable<R> extends BorderPane {
     
     public static class Column<R> {
         private final ObjectProperty<String> name;
+        private final ObjectProperty<VBox> node;
         
         public Column(String name) {
             this.name = new SimpleObjectProperty<>(name);
+            this.node = new SimpleObjectProperty<>();
         }
         
         public ObjectProperty<String> nameProperty() {
             return name;
+        }
+        
+        public ObjectProperty<VBox> nodeProperty() {
+            return node;
         }
     }
 }
