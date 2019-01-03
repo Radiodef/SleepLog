@@ -6,11 +6,13 @@ import com.radiodef.sleeplog.util.*;
 import javafx.collections.*;
 import javafx.scene.chart.*;
 import javafx.scene.layout.*;
+import javafx.scene.control.*;
+import javafx.geometry.*;
 import javafx.util.StringConverter;
 
 import java.util.*;
-import java.util.function.*;
 import java.time.*;
+import java.math.*;
 
 final class SleepLengthGraph extends BorderPane {
     private static final int SECS_IN_HR = 60 * 60;
@@ -20,8 +22,19 @@ final class SleepLengthGraph extends BorderPane {
     
     private final AreaChart<Number, Number> chart;
     
+    private final Label meanLabel;
+    
     SleepLengthGraph(Database db) {
         this.db = Objects.requireNonNull(db, "db");
+        
+        this.meanLabel = new Label();
+        setMean(BigInteger.ZERO);
+        
+        var bottom = new HBox();
+        bottom.setAlignment(Pos.CENTER_LEFT);
+        bottom.getChildren().add(meanLabel);
+        
+        setBottom(bottom);
         
         this.chart = new AreaChart<>(createXAxis(), createYAxis());
         
@@ -78,6 +91,8 @@ final class SleepLengthGraph extends BorderPane {
         var series = new AreaChart.Series<Number, Number>();
         series.setName("Sleep Duration");
         
+        var meanDuration = BigInteger.ONE;
+        
         var minDate = Long.MAX_VALUE;
         var maxDate = Long.MIN_VALUE;
         
@@ -87,6 +102,8 @@ final class SleepLengthGraph extends BorderPane {
         for (var p : periods) {
             var date = Tools.toStartOfDay(p.getStart()).getEpochSecond();
             var duration = Duration.between(p.getStart(), p.getEnd()).toSeconds();
+            
+            meanDuration = meanDuration.add(BigInteger.valueOf(duration));
             
             minDate = Math.min(minDate, date);
             maxDate = Math.max(maxDate, date);
@@ -98,6 +115,10 @@ final class SleepLengthGraph extends BorderPane {
         }
         
         chart.setData(Tools.observableArrayList(series));
+        
+        if (!periods.isEmpty())
+            meanDuration = meanDuration.divide(BigInteger.valueOf(periods.size()));
+        setMean(meanDuration);
         
         var xAxis = (NumberAxis) chart.getXAxis();
         
@@ -115,6 +136,16 @@ final class SleepLengthGraph extends BorderPane {
         yAxis.setUpperBound(yUpperBound * SECS_IN_HR);
         
         Log.notef("y axis: %f hours to %f hours", yLowerBound, yUpperBound);
+    }
+    
+    private void setMean(BigInteger seconds) {
+        var hours =
+            new BigDecimal(seconds)
+                .divide(BigDecimal.valueOf(SECS_IN_HR), 1, RoundingMode.HALF_UP);
+        
+        String suffix = BigDecimal.ONE.equals(hours) ? " hour" : " hours";
+        
+        meanLabel.setText("Mean: " + hours + suffix);
     }
     
     /*
