@@ -6,8 +6,10 @@ import java.time.*;
 import java.time.format.*;
 
 import javafx.event.*;
+import javafx.scene.chart.*;
 import javafx.stage.*;
 import javafx.collections.*;
+import javafx.util.StringConverter;
 
 import com.google.common.base.Strings;
 import org.apache.commons.lang3.*;
@@ -110,4 +112,22 @@ public final class Tools {
     
     public static final int SECS_PER_HR = 60 * 60;
     public static final int SECS_PER_DAY = 60 * 60 * 24;
+    
+    public static NumberAxis createDayAxis() {
+        var axis = new NumberAxis();
+        axis.setAutoRanging(false);
+        axis.setTickUnit(SECS_PER_DAY);
+        axis.setMinorTickLength(0);
+        axis.setTickLabelFormatter(new StringConverter<>() {
+            @Override
+            public String toString(Number n) {
+                return formatDate(Instant.ofEpochSecond(n.longValue()));
+            }
+            @Override
+            public Number fromString(String s) {
+                throw new AssertionError(s);
+            }
+        });
+        return axis;
+    }
 }
