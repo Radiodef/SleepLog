@@ -64,6 +64,7 @@ final class SleepLengthGraph extends AreaChart<Number, Number> {
         Log.enter();
         var periods = db.getAllSleepPeriods();
         var series = new Series<Number, Number>();
+        series.setName("Sleep Duration");
         
         var minDate = Long.MAX_VALUE;
         var maxDate = Long.MIN_VALUE;
