@@ -7,7 +7,6 @@ import javafx.collections.*;
 import javafx.scene.chart.*;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
-import javafx.geometry.*;
 import javafx.util.StringConverter;
 
 import java.util.*;
@@ -31,7 +30,7 @@ final class SleepLengthGraph extends BorderPane {
         setMean(BigInteger.ZERO);
         
         var bottom = new HBox();
-        bottom.setAlignment(Pos.CENTER_LEFT);
+        bottom.getStyleClass().add("graph-bottom-label-pane");
         bottom.getChildren().add(meanLabel);
         
         setBottom(bottom);

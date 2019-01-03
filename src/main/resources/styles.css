@@ -45,3 +45,9 @@
     -fx-collapsible: false;
     -fx-animated: false;
 }
+
+.graph-bottom-label-pane {
+    -fx-alignment: center-left;
+    -fx-padding: 1em;
+    -fx-spacing: 1em;
+}
