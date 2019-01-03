@@ -130,4 +130,22 @@ public final class Tools {
         });
         return axis;
     }
+    
+    public static NumberAxis createDurationAxis() {
+        var axis = new NumberAxis();
+        axis.setAutoRanging(false);
+        axis.setTickUnit(SECS_PER_HR);
+        axis.setMinorTickCount(2);
+        axis.setTickLabelFormatter(new StringConverter<>() {
+            @Override
+            public String toString(Number n) {
+                return formatDuration(Duration.ofSeconds(n.longValue()));
+            }
+            @Override
+            public Number fromString(String s) {
+                throw new AssertionError(s);
+            }
+        });
+        return axis;
+    }
 }

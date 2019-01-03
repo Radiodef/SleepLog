@@ -37,7 +37,7 @@ final class SleepLengthGraph extends BorderPane {
         
         setBottom(bottom);
         
-        this.chart = new AreaChart<>(Tools.createDayAxis(), createYAxis());
+        this.chart = new AreaChart<>(Tools.createDayAxis(), Tools.createDurationAxis());
         chart.getStyleClass().add("sleep-length-chart");
         
         update();
@@ -49,24 +49,6 @@ final class SleepLengthGraph extends BorderPane {
 //        setData(Tools.observableArrayList(series));
 //
 //        setBounds();
-    }
-    
-    private static NumberAxis createYAxis() {
-        var axis = new NumberAxis();
-        axis.setAutoRanging(false);
-        axis.setTickUnit(Tools.SECS_PER_HR);
-        axis.setMinorTickCount(2);
-        axis.setTickLabelFormatter(new StringConverter<>() {
-            @Override
-            public String toString(Number n) {
-                return Tools.formatDuration(Duration.ofSeconds(n.longValue()));
-            }
-            @Override
-            public Number fromString(String s) {
-                throw new AssertionError(s);
-            }
-        });
-        return axis;
     }
     
     private void update() {
