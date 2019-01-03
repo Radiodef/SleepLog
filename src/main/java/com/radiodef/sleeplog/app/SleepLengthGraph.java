@@ -22,6 +22,7 @@ final class SleepLengthGraph extends BorderPane {
     private final AreaChart<Number, Number> chart;
     
     private final Label meanLabel;
+    private final Label standardLabel;
     
     SleepLengthGraph(Database db) {
         this.db = Objects.requireNonNull(db, "db");
@@ -29,9 +30,12 @@ final class SleepLengthGraph extends BorderPane {
         this.meanLabel = new Label();
         setMean(BigInteger.ZERO);
         
+        this.standardLabel = new Label("Standard Deviation: 0 hours");
+        setStandardDeviation(BigInteger.ZERO);
+        
         var bottom = new HBox();
         bottom.getStyleClass().add("graph-bottom-label-pane");
-        bottom.getChildren().add(meanLabel);
+        bottom.getChildren().addAll(meanLabel, standardLabel);
         
         setBottom(bottom);
         
@@ -119,6 +123,19 @@ final class SleepLengthGraph extends BorderPane {
             meanDuration = meanDuration.divide(BigInteger.valueOf(periods.size()));
         setMean(meanDuration);
         
+        var variance = BigInteger.ZERO;
+        
+        for (var p : periods) {
+            var duration = Duration.between(p.getStart(), p.getEnd()).toSeconds();
+            var difference = meanDuration.subtract(BigInteger.valueOf(duration));
+            
+            variance = variance.add(difference.multiply(difference));
+        }
+        
+        if (!periods.isEmpty())
+            variance = variance.divide(BigInteger.valueOf(periods.size()));
+        setStandardDeviation(variance.sqrt());
+        
         var xAxis = (NumberAxis) chart.getXAxis();
         
         xAxis.setLowerBound(minDate);
@@ -138,13 +155,21 @@ final class SleepLengthGraph extends BorderPane {
     }
     
     private void setMean(BigInteger seconds) {
+        setHours(meanLabel, "Mean", seconds);
+    }
+    
+    private void setStandardDeviation(BigInteger seconds) {
+        setHours(standardLabel, "Standard Deviation", seconds);
+    }
+    
+    private static void setHours(Label label, String prefix, BigInteger seconds) {
         var hours =
             new BigDecimal(seconds)
                 .divide(BigDecimal.valueOf(SECS_IN_HR), 1, RoundingMode.HALF_UP);
         
-        String suffix = BigDecimal.ONE.equals(hours) ? " hour" : " hours";
+        var suffix = BigDecimal.ONE.equals(hours) ? " hour" : " hours";
         
-        meanLabel.setText("Mean: " + hours + suffix);
+        label.setText(prefix + ": " + hours + suffix);
     }
     
     /*
