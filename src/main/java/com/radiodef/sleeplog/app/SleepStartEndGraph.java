@@ -7,6 +7,7 @@ import javafx.scene.layout.*;
 import javafx.scene.chart.*;
 import javafx.scene.chart.XYChart.*;
 import javafx.scene.control.*;
+import javafx.geometry.*;
 
 import java.util.*;
 import java.time.*;
@@ -32,6 +33,7 @@ final class SleepStartEndGraph extends BorderPane {
         col1.setPercentWidth(34);
         col2.setPercentWidth(34);
         statsPane.getColumnConstraints().addAll(col0, col1, col2);
+        statsPane.getColumnConstraints().forEach(col -> col.setHalignment(HPos.CENTER));
         
         statsPane.add(new Label("Start"), 0, 0);
         statsPane.add(new Label("10:30 PM"), 1, 0);
