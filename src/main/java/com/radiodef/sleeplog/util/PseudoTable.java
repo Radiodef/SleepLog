@@ -40,19 +40,18 @@ public class PseudoTable<R> extends BorderPane {
         columnsBox.getChildren().clear();
         
         for (var col : columns) {
-            var box = col.nodeProperty().get();
+            var box = col.node.get();
             
             if (box == null) {
                 box = new VBox();
                 box.getStyleClass().add(COL_VBOX_CLASS);
-                col.nodeProperty().set(box);
+                col.node.set(box);
             }
             
             columnsBox.getChildren().add(box);
         }
     }
     
-    @SuppressWarnings("WeakerAccess")
     public static class Column<R> {
         private final ObjectProperty<String> name;
         private final ObjectProperty<VBox> node;
@@ -64,10 +63,6 @@ public class PseudoTable<R> extends BorderPane {
         
         public ObjectProperty<String> nameProperty() {
             return name;
-        }
-        
-        public ObjectProperty<VBox> nodeProperty() {
-            return node;
         }
     }
 }
