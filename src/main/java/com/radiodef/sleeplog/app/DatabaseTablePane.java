@@ -4,6 +4,7 @@ import com.radiodef.sleeplog.db.*;
 import com.radiodef.sleeplog.util.*;
 
 import org.apache.commons.lang3.*;
+import org.apache.commons.lang3.time.*;
 
 import javafx.scene.control.*;
 import javafx.scene.control.cell.*;
@@ -13,8 +14,9 @@ import javafx.util.*;
 import javafx.collections.*;
 import javafx.collections.transformation.*;
 
-import java.time.*;
 import java.util.*;
+import java.time.*;
+import java.time.Duration;
 
 class DatabaseTablePane extends BorderPane {
     private static final String ID = "db-table-pane";
@@ -30,15 +32,18 @@ class DatabaseTablePane extends BorderPane {
         var idCol = new TableColumn<SleepPeriod, Integer>("ID");
         var startCol = new TableColumn<SleepPeriod, Instant>("Start");
         var endCol = new TableColumn<SleepPeriod, Instant>("End");
+        var durationCol = new TableColumn<SleepPeriod, Duration>("Duration");
         var manualCol = new TableColumn<SleepPeriod, Boolean>("Manual Entry");
         
         idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         startCol.setCellValueFactory(new PropertyValueFactory<>("start"));
         endCol.setCellValueFactory(new PropertyValueFactory<>("end"));
+        durationCol.setCellValueFactory(new PropertyValueFactory<>("duration"));
         manualCol.setCellValueFactory(new PropertyValueFactory<>("manualEntry"));
         
         startCol.setCellFactory(InstantStringConverter.CELL_FACTORY);
         endCol.setCellFactory(InstantStringConverter.CELL_FACTORY);
+        durationCol.setCellFactory(DurationStringConverter.CELL_FACTORY);
         
         table = new TableView<>();
         table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
@@ -49,7 +54,7 @@ class DatabaseTablePane extends BorderPane {
         
         table.setEditable(false);
         
-        Collections.addAll(table.getColumns(), idCol, startCol, endCol, manualCol);
+        Collections.addAll(table.getColumns(), idCol, startCol, endCol, durationCol, manualCol);
         setCenter(table);
         
         var deleteButton = new Button("Delete");
@@ -112,6 +117,21 @@ class DatabaseTablePane extends BorderPane {
         
         @Override
         public Instant fromString(String str) {
+            throw new AssertionError(str);
+        }
+    }
+    
+    private static final class DurationStringConverter extends StringConverter<Duration> {
+        private static final Callback<TableColumn<SleepPeriod, Duration>, TableCell<SleepPeriod, Duration>> CELL_FACTORY =
+            TextFieldTableCell.forTableColumn(new DurationStringConverter());
+        
+        @Override
+        public String toString(Duration dur) {
+            return (dur == null) ? "null" : DurationFormatUtils.formatDuration(dur.toMillis(), "H:mm");
+        }
+        
+        @Override
+        public Duration fromString(String str) {
             throw new AssertionError(str);
         }
     }
