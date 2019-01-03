@@ -6,7 +6,6 @@ import com.radiodef.sleeplog.db.*;
 import javafx.scene.layout.*;
 import javafx.scene.chart.*;
 import javafx.scene.chart.XYChart.*;
-import javafx.collections.*;
 
 import java.util.*;
 import java.time.*;
@@ -24,7 +23,7 @@ final class SleepStartEndGraph extends BorderPane {
         setCenter(chart);
         
         update();
-        db.getAllSleepPeriods().addListener((ListChangeListener<SleepPeriod>) (c -> update()));
+        db.getAllSleepPeriods().addListener(Tools.listChangeListener(c -> update()));
     }
     
     private void update() {

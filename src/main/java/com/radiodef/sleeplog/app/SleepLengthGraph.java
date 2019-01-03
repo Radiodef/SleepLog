@@ -40,7 +40,7 @@ final class SleepLengthGraph extends BorderPane {
         chart.getStyleClass().add("sleep-length-chart");
         
         update();
-        db.getAllSleepPeriods().addListener((ListChangeListener<SleepPeriod>) c -> update());
+        db.getAllSleepPeriods().addListener(Tools.listChangeListener(c -> update()));
         
         setCenter(chart);
         
