@@ -128,7 +128,9 @@ public final class SleepLogApp extends Application {
             content.setTop(menuBars.get());
         }
         
-        stage.setScene(new Scene(content));
+        var scene = new Scene(content);
+        scene.getStylesheets().add("styles.css");
+        stage.setScene(scene);
         
         stage.setWidth(primaryStage.getWidth());
         stage.setHeight(primaryStage.getHeight());
