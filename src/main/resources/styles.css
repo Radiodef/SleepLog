@@ -59,3 +59,7 @@
 .sleep-start-end-stats-pane {
     -fx-padding: 1em;
 }
+
+.sleep-start-end-stats-pane .text {
+    -fx-alignment: center;
+}
