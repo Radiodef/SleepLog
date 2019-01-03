@@ -10,7 +10,7 @@ import javafx.beans.property.*;
 public class PseudoTable<R> extends BorderPane {
     private static final String PSEUDO_TABLE = "pseudo-table";
     private static final String PANE_CLASS = PSEUDO_TABLE + "-pane";
-    private static final String COL_BOX_CLASS = PSEUDO_TABLE + "-columns-box";
+    private static final String COLS_BOX_CLASS = PSEUDO_TABLE + "-columns-box";
     
     private final ObservableList<Column<R>> columns = FXCollections.observableArrayList();
     
@@ -18,7 +18,7 @@ public class PseudoTable<R> extends BorderPane {
     
     public PseudoTable() {
         getStyleClass().add(PANE_CLASS);
-        columnsBox.getStyleClass().add(COL_BOX_CLASS);
+        columnsBox.getStyleClass().add(COLS_BOX_CLASS);
         
         columns.addListener(Tools.listChangeListener(c -> layoutComponents()));
         
