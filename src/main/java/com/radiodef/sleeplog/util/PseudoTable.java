@@ -5,6 +5,9 @@ import com.radiodef.sleeplog.app.*;
 import javafx.scene.layout.*;
 import javafx.collections.*;
 import javafx.beans.property.*;
+import javafx.beans.value.*;
+
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class PseudoTable<R> extends BorderPane {
@@ -56,15 +59,22 @@ public class PseudoTable<R> extends BorderPane {
     
     public static class Column<R> {
         private final ObjectProperty<String> label;
+        private final ObjectProperty<String> property;
         private final ObjectProperty<VBox> node;
         
-        public Column(String label) {
+        private final IdentityHashMap<R, ChangeListener<?>> listeners;
+        
+        public Column(String label, String property) {
             this.label = new SimpleObjectProperty<>(label);
+            
+            this.property = new SimpleObjectProperty<>(property);
             
             var box = new VBox();
             box.getStyleClass().add(COL_VBOX_CLASS);
             
             this.node = new SimpleObjectProperty<>(box);
+            
+            this.listeners = new IdentityHashMap<>();
         }
         
         public ObjectProperty<String> labelProperty() {
