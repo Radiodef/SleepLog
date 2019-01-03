@@ -76,9 +76,8 @@ final class GraphsPane extends BorderPane {
         axis.setTickLabelFormatter(new StringConverter<>() {
             @Override
             public String toString(Number n) {
-                // TODO: find a better fix for this
-                var longVal = Math.min(24 * SECS_PER_HR - 1, n.longValue());
-                return Tools.formatTimeOfDay(LocalTime.ofSecondOfDay(longVal));
+                var modSeconds = n.longValue() % (24 * SECS_PER_HR);
+                return Tools.formatTimeOfDay(LocalTime.ofSecondOfDay(modSeconds));
             }
             @Override
             public Number fromString(String s) {
