@@ -138,11 +138,6 @@ public final class SleepLogApp extends Application {
         if (db.insertNewPeriod(start, end)) {
             Log.note("insertion succeeded");
 //            db.printAllRows();
-            
-            Optional.ofNullable(tableViewStage.getScene())
-                    .map(scene -> (DatabaseTablePane) scene.lookup("#" + DatabaseTablePane.ID))
-                    .ifPresent(DatabaseTablePane::update);
-            
         } else {
             Log.note("insertion failed");
         }

@@ -16,7 +16,7 @@ import java.time.*;
 import java.util.*;
 
 class DatabaseTablePane extends BorderPane {
-    static final String ID = "db-table-pane";
+    private static final String ID = "db-table-pane";
     
     private final Database db;
     private final TableView<SleepPeriod> table;
@@ -71,28 +71,17 @@ class DatabaseTablePane extends BorderPane {
         tools.getItems().addAll(addButton, deleteButton);
         setTop(tools);
         
-        update();
-        
-        table.getSortOrder().add(startCol);
-    }
-    
-    void update() {
-        var sortOrder = List.copyOf(table.getSortOrder());
         table.setItems(db.getAllSleepPeriods());
-        table.getSortOrder().clear();
-        table.getSortOrder().addAll(sortOrder);
+        table.getSortOrder().add(startCol);
     }
     
     private void deleteSelection() {
         Log.enter();
         
-        var indices = new ArrayList<>(table.getSelectionModel().getSelectedIndices());
-        indices.sort(Comparator.reverseOrder());
-        
+        var items = new ArrayList<>(table.getSelectionModel().getSelectedItems());
         int count = 0;
         
-        for (int i : indices) {
-            var item = table.getItems().remove(i);
+        for (var item : items) {
             count += BooleanUtils.toInteger(db.deletePeriod(item.getID()));
         }
         
@@ -104,9 +93,7 @@ class DatabaseTablePane extends BorderPane {
         
         SleepPeriodDialog.show(this).ifPresent(period -> {
             Log.note(period);
-            
             db.insertNewPeriod(period.getStart(), period.getEnd(), true);
-            update();
         });
     }
     
