@@ -5,14 +5,14 @@ import com.radiodef.sleeplog.app.*;
 import javafx.scene.layout.*;
 import javafx.collections.*;
 
-public class PseudoTable extends BorderPane {
-    private final ObservableList<Column> columns = FXCollections.observableArrayList();
+public class PseudoTable<R> extends BorderPane {
+    private final ObservableList<Column<R>> columns = FXCollections.observableArrayList();
     
     public PseudoTable() {
         columns.addListener(Tools.listChangeListener(c -> layoutComponents()));
     }
     
-    public ObservableList<Column> getColumns() {
+    public ObservableList<Column<R>> getColumns() {
         return columns;
     }
     
@@ -20,6 +20,6 @@ public class PseudoTable extends BorderPane {
         Log.enter();
     }
     
-    public static class Column {
+    public static class Column<R> {
     }
 }
