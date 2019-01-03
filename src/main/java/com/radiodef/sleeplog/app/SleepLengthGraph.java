@@ -72,6 +72,52 @@ final class SleepLengthGraph extends BorderPane {
         return axis;
     }
     
+    private void update() {
+        Log.enter();
+        var periods = db.getAllSleepPeriods();
+        var series = new AreaChart.Series<Number, Number>();
+        series.setName("Sleep Duration");
+        
+        var minDate = Long.MAX_VALUE;
+        var maxDate = Long.MIN_VALUE;
+        
+        var minSeconds = Long.MAX_VALUE;
+        var maxSeconds = Long.MIN_VALUE;
+        
+        for (var p : periods) {
+            var date = Tools.toStartOfDay(p.getStart()).getEpochSecond();
+            var duration = Duration.between(p.getStart(), p.getEnd()).toSeconds();
+            
+            minDate = Math.min(minDate, date);
+            maxDate = Math.max(maxDate, date);
+            
+            minSeconds = Math.min(minSeconds, duration);
+            maxSeconds = Math.max(maxSeconds, duration);
+            
+            series.getData().add(new AreaChart.Data<>(date, duration));
+        }
+        
+        chart.setData(Tools.observableArrayList(series));
+        
+        var xAxis = (NumberAxis) chart.getXAxis();
+        
+        xAxis.setLowerBound(minDate);
+        xAxis.setUpperBound(maxDate);
+        
+        Log.notef("x axis: %s to %s", Tools.formatDate(Instant.ofEpochSecond(minDate)),
+                                      Tools.formatDate(Instant.ofEpochSecond(maxDate)));
+        
+        var yAxis = (NumberAxis) chart.getYAxis();
+        
+        var yLowerBound = 0.0; // Math.floor(minSeconds / (double) SECS_IN_HR);
+        var yUpperBound = Math.ceil(maxSeconds / (double) SECS_IN_HR);
+        yAxis.setLowerBound(yLowerBound * SECS_IN_HR);
+        yAxis.setUpperBound(yUpperBound * SECS_IN_HR);
+        
+        Log.notef("y axis: %f hours to %f hours", yLowerBound, yUpperBound);
+    }
+    
+    /*
     private AreaChart.Series<Number, Number> createSeries() {
         Log.enter();
         var series = new AreaChart.Series<Number, Number>();
@@ -135,49 +181,5 @@ final class SleepLengthGraph extends BorderPane {
             return new AreaChart.Data<>(date, duration);
         }
     }
-    
-    private void update() {
-        Log.enter();
-        var periods = db.getAllSleepPeriods();
-        var series = new AreaChart.Series<Number, Number>();
-        series.setName("Sleep Duration");
-        
-        var minDate = Long.MAX_VALUE;
-        var maxDate = Long.MIN_VALUE;
-        
-        var minSeconds = Long.MAX_VALUE;
-        var maxSeconds = Long.MIN_VALUE;
-        
-        for (var p : periods) {
-            var date = Tools.toStartOfDay(p.getStart()).getEpochSecond();
-            var duration = Duration.between(p.getStart(), p.getEnd()).toSeconds();
-            
-            minDate = Math.min(minDate, date);
-            maxDate = Math.max(maxDate, date);
-            
-            minSeconds = Math.min(minSeconds, duration);
-            maxSeconds = Math.max(maxSeconds, duration);
-            
-            series.getData().add(new AreaChart.Data<>(date, duration));
-        }
-        
-        chart.setData(Tools.observableArrayList(series));
-        
-        var xAxis = (NumberAxis) chart.getXAxis();
-        
-        xAxis.setLowerBound(minDate);
-        xAxis.setUpperBound(maxDate);
-        
-        Log.notef("x axis: %s to %s", Tools.formatDate(Instant.ofEpochSecond(minDate)),
-                                      Tools.formatDate(Instant.ofEpochSecond(maxDate)));
-        
-        var yAxis = (NumberAxis) chart.getYAxis();
-        
-        var yLowerBound = 0.0; // Math.floor(minSeconds / (double) SECS_IN_HR);
-        var yUpperBound = Math.ceil(maxSeconds / (double) SECS_IN_HR);
-        yAxis.setLowerBound(yLowerBound * SECS_IN_HR);
-        yAxis.setUpperBound(yUpperBound * SECS_IN_HR);
-        
-        Log.notef("y axis: %f hours to %f hours", yLowerBound, yUpperBound);
-    }
+    */
 }
