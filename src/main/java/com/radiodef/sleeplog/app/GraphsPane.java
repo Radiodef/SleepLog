@@ -11,6 +11,7 @@ import javafx.util.*;
 import java.time.*;
 import java.time.Duration;
 
+@SuppressWarnings("WeakerAccess")
 final class GraphsPane extends BorderPane {
     GraphsPane(Database db) {
         var tabs = new TabPane();
