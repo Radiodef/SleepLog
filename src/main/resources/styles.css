@@ -55,3 +55,7 @@
 .sleep-length-chart .default-color1.chart-series-area-fill {
     -fx-fill: none;
 }
+
+.sleep-start-end-stats-pane {
+    -fx-padding: 1em;
+}
