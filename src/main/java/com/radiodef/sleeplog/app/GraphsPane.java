@@ -71,7 +71,7 @@ final class GraphsPane extends BorderPane {
         axis.setTickUnit(SECS_PER_HR);
         axis.setMinorTickCount(2);
         axis.setLowerBound(0);
-        axis.setUpperBound(24 * SECS_PER_HR);
+        axis.setUpperBound(24 * SECS_PER_HR - 1);
         axis.setTickLabelFormatter(new StringConverter<>() {
             @Override
             public String toString(Number n) {
