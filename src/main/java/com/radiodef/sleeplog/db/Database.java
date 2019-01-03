@@ -28,6 +28,7 @@ public final class Database implements AutoCloseable {
     private final PreparedStatement getRowById;
     
     private final ObservableList<SleepPeriod> rows;
+    private final ObservableList<SleepPeriod> unmodifiableRows;
     
     public Database() {
         this(null);
@@ -67,6 +68,7 @@ public final class Database implements AutoCloseable {
         this.getRowById = prepareGetRowById();
         
         this.rows = getAllSleepPeriodsImpl();
+        this.unmodifiableRows = FXCollections.unmodifiableObservableList(rows);
     }
     
     public boolean didConnect() {
@@ -235,7 +237,7 @@ public final class Database implements AutoCloseable {
     }
     
     public ObservableList<SleepPeriod> getAllSleepPeriods() {
-        return FXCollections.unmodifiableObservableList(rows);
+        return unmodifiableRows;
     }
     
     private ObservableList<SleepPeriod> getAllSleepPeriodsImpl() {
