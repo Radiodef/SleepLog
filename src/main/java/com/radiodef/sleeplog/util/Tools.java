@@ -107,4 +107,7 @@ public final class Tools {
         Collections.addAll(list, elements);
         return list;
     }
+    
+    public static final int SECS_PER_HR = 60 * 60;
+    public static final int SECS_PER_DAY = 60 * 60 * 24;
 }

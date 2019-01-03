@@ -15,9 +15,6 @@ import java.time.*;
 import java.math.*;
 
 final class SleepLengthGraph extends BorderPane {
-    private static final int SECS_IN_HR = 60 * 60;
-    private static final int SECS_IN_DAY = 60 * 60 * 24;
-    
     private final Database db;
     
     private final AreaChart<Number, Number> chart;
@@ -57,7 +54,7 @@ final class SleepLengthGraph extends BorderPane {
     private static NumberAxis createXAxis() {
         var axis = new NumberAxis();
         axis.setAutoRanging(false);
-        axis.setTickUnit(SECS_IN_DAY);
+        axis.setTickUnit(Tools.SECS_PER_DAY);
         axis.setMinorTickLength(0);
         axis.setTickLabelFormatter(new StringConverter<>() {
             @Override
@@ -75,7 +72,7 @@ final class SleepLengthGraph extends BorderPane {
     private static NumberAxis createYAxis() {
         var axis = new NumberAxis();
         axis.setAutoRanging(false);
-        axis.setTickUnit(SECS_IN_HR);
+        axis.setTickUnit(Tools.SECS_PER_HR);
         axis.setMinorTickCount(2);
         axis.setTickLabelFormatter(new StringConverter<>() {
             @Override
@@ -151,9 +148,9 @@ final class SleepLengthGraph extends BorderPane {
         var yAxis = (NumberAxis) chart.getYAxis();
         
         var yLowerBound = 0.0; // Math.floor(minSeconds / (double) SECS_IN_HR);
-        var yUpperBound = Math.ceil(maxSeconds / (double) SECS_IN_HR);
-        yAxis.setLowerBound(yLowerBound * SECS_IN_HR);
-        yAxis.setUpperBound(yUpperBound * SECS_IN_HR);
+        var yUpperBound = Math.ceil(maxSeconds / (double) Tools.SECS_PER_HR);
+        yAxis.setLowerBound(yLowerBound * Tools.SECS_PER_HR);
+        yAxis.setUpperBound(yUpperBound * Tools.SECS_PER_HR);
         
         Log.notef("y axis: %f hours to %f hours", yLowerBound, yUpperBound);
         
@@ -174,7 +171,7 @@ final class SleepLengthGraph extends BorderPane {
     private static void setHours(Label label, String prefix, BigInteger seconds) {
         var hours =
             new BigDecimal(seconds)
-                .divide(BigDecimal.valueOf(SECS_IN_HR), 1, RoundingMode.HALF_UP);
+                .divide(BigDecimal.valueOf(Tools.SECS_PER_HR), 1, RoundingMode.HALF_UP);
         
         var suffix = BigDecimal.ONE.equals(hours) ? " hour" : " hours";
         
