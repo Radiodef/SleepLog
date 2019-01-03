@@ -98,7 +98,7 @@ final class SleepLengthGraph extends BorderPane {
         durationSeries.setName("Sleep Duration");
         
         var meanSeries = new Series<Number, Number>();
-        meanSeries.setName("Mean");
+        meanSeries.setName("Mean Duration");
         
         var meanDuration = BigInteger.ONE;
         
