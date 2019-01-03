@@ -91,8 +91,12 @@ final class SleepLengthGraph extends BorderPane {
     private void update() {
         Log.enter();
         var periods = db.getAllSleepPeriods();
-        var series = new AreaChart.Series<Number, Number>();
-        series.setName("Sleep Duration");
+        
+        var durationSeries = new AreaChart.Series<Number, Number>();
+        durationSeries.setName("Sleep Duration");
+        
+        var meanSeries = new AreaChart.Series<Number, Number>();
+        meanSeries.setName("Mean");
         
         var meanDuration = BigInteger.ONE;
         
@@ -114,10 +118,8 @@ final class SleepLengthGraph extends BorderPane {
             minSeconds = Math.min(minSeconds, duration);
             maxSeconds = Math.max(maxSeconds, duration);
             
-            series.getData().add(new AreaChart.Data<>(date, duration));
+            durationSeries.getData().add(new AreaChart.Data<>(date, duration));
         }
-        
-        chart.setData(Tools.observableArrayList(series));
         
         if (!periods.isEmpty())
             meanDuration = meanDuration.divide(BigInteger.valueOf(periods.size()));
@@ -125,11 +127,15 @@ final class SleepLengthGraph extends BorderPane {
         
         var variance = BigInteger.ZERO;
         
+        var i = 0;
         for (var p : periods) {
             var duration = Duration.between(p.getStart(), p.getEnd()).toSeconds();
             var difference = meanDuration.subtract(BigInteger.valueOf(duration));
             
             variance = variance.add(difference.multiply(difference));
+            
+            var date = durationSeries.getData().get( i++ ).getXValue();
+            meanSeries.getData().add(new AreaChart.Data<>(date, meanDuration));
         }
         
         if (!periods.isEmpty())
@@ -152,6 +158,8 @@ final class SleepLengthGraph extends BorderPane {
         yAxis.setUpperBound(yUpperBound * SECS_IN_HR);
         
         Log.notef("y axis: %f hours to %f hours", yLowerBound, yUpperBound);
+        
+        chart.setData(Tools.observableArrayList(durationSeries, meanSeries));
     }
     
     private void setMean(BigInteger seconds) {
