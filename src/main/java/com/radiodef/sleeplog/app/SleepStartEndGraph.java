@@ -6,8 +6,7 @@ import com.radiodef.sleeplog.db.*;
 import javafx.scene.layout.*;
 import javafx.scene.chart.*;
 import javafx.scene.chart.XYChart.*;
-import javafx.scene.control.*;
-import javafx.geometry.*;
+import javafx.beans.property.*;
 
 import java.util.*;
 import java.time.*;
@@ -16,6 +15,7 @@ final class SleepStartEndGraph extends BorderPane {
     private final Database db;
     
     private final LineChart<Number, Number> chart;
+    private final PseudoTable<StatsRow> stats;
     
     SleepStartEndGraph(Database db) {
         this.db = Objects.requireNonNull(db, "db");
@@ -23,26 +23,14 @@ final class SleepStartEndGraph extends BorderPane {
         this.chart = new LineChart<>(GraphsPane.createDayAxis(), GraphsPane.createTimeAxis());
         setCenter(chart);
         
-        var statsPane = new GridPane();
-        statsPane.getStyleClass().add("sleep-start-end-stats-pane");
+        this.stats = new PseudoTable<>();
         
-        var col0 = new ColumnConstraints();
-        var col1 = new ColumnConstraints();
-        var col2 = new ColumnConstraints();
-        col0.setPercentWidth(32);
-        col1.setPercentWidth(34);
-        col2.setPercentWidth(34);
-        statsPane.getColumnConstraints().addAll(col0, col1, col2);
-        statsPane.getColumnConstraints().forEach(col -> col.setHalignment(HPos.CENTER));
+        var nameCol = new PseudoTable.Column<StatsRow>("Time");
+        var meanCol = new PseudoTable.Column<StatsRow>("Mean");
+        var stdDevCol = new PseudoTable.Column<StatsRow>("StandardDeviation");
         
-        statsPane.add(new Label("Start"), 0, 0);
-        statsPane.add(new Label("10:30 PM"), 1, 0);
-        statsPane.add(new Label("1.5"), 2, 0);
-        statsPane.add(new Label("End"), 0, 1);
-        statsPane.add(new Label("9:30 AM"), 1, 1);
-        statsPane.add(new Label("2.0"), 2, 1);
-        
-        setBottom(statsPane);
+        stats.addColumns(nameCol, meanCol, stdDevCol);
+        setBottom(stats);
         
         update();
         db.getAllSleepPeriods().addListener(Tools.listChangeListener(c -> update()));
@@ -86,5 +74,30 @@ final class SleepStartEndGraph extends BorderPane {
     
     private static Data<Number, Number> createData(Instant i) {
         return new Data<>(getStartOfDay(i), getSecondOfDay(i));
+    }
+    
+    @SuppressWarnings("unused")
+    public static final class StatsRow {
+        private final ObjectProperty<String> name;
+        private final ObjectProperty<LocalTime> mean;
+        private final DoubleProperty stdDev;
+        
+        private StatsRow(String name) {
+            this.name = new SimpleObjectProperty<>(name);
+            this.mean = new SimpleObjectProperty<>();
+            this.stdDev = new SimpleDoubleProperty();
+        }
+        
+        public ObjectProperty<String> nameProperty() {
+            return name;
+        }
+        
+        public ObjectProperty<LocalTime> meanProperty() {
+            return mean;
+        }
+        
+        public DoubleProperty stdDevProperty() {
+            return stdDev;
+        }
     }
 }
