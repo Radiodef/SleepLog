@@ -72,11 +72,13 @@ final class GraphsPane extends BorderPane {
         axis.setTickUnit(SECS_PER_HR);
         axis.setMinorTickCount(2);
         axis.setLowerBound(0);
-        axis.setUpperBound(24 * SECS_PER_HR - 1);
+        axis.setUpperBound(24 * SECS_PER_HR);
         axis.setTickLabelFormatter(new StringConverter<>() {
             @Override
             public String toString(Number n) {
-                return Tools.formatTimeOfDay(LocalTime.ofSecondOfDay(n.longValue()));
+                // TODO: find a better fix for this
+                var longVal = Math.min(24 * SECS_PER_HR - 1, n.longValue());
+                return Tools.formatTimeOfDay(LocalTime.ofSecondOfDay(longVal));
             }
             @Override
             public Number fromString(String s) {
