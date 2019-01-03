@@ -16,12 +16,16 @@ public class PseudoTable<R> extends BorderPane {
     private static final String COLS_HBOX_CLASS = PSEUDO_TABLE + "-columns-hbox";
     private static final String COL_VBOX_CLASS = PSEUDO_TABLE + "-column-vbox";
     
+    private final ObjectProperty<Class<R>> rowClass;
+    
     private final ObservableList<Column<R>> columns = FXCollections.observableArrayList();
     private final ObservableList<R> data = FXCollections.observableArrayList();
     
     private final HBox columnsBox = new HBox();
     
-    public PseudoTable() {
+    public PseudoTable(Class<R> rowClass) {
+        this.rowClass = new SimpleObjectProperty<>(Objects.requireNonNull(rowClass, "rowClass"));
+        
         getStyleClass().add(PANE_CLASS);
         columnsBox.getStyleClass().add(COLS_HBOX_CLASS);
         

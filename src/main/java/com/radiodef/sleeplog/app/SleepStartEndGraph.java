@@ -23,7 +23,7 @@ final class SleepStartEndGraph extends BorderPane {
         this.chart = new LineChart<>(GraphsPane.createDayAxis(), GraphsPane.createTimeAxis());
         setCenter(chart);
         
-        this.stats = new PseudoTable<>();
+        this.stats = new PseudoTable<>(StatsRow.class);
         
         var nameCol = new PseudoTable.Column<StatsRow>("Time", "name");
         var meanCol = new PseudoTable.Column<StatsRow>("Mean", "mean");
