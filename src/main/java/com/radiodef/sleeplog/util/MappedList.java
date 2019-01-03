@@ -55,13 +55,13 @@ public class MappedList<T, U> extends TransformationList<U, T> {
         }
         
         @Override
-        public boolean next() {
-            return change.next();
+        public int getAddedSize() {
+            return change.getAddedSize();
         }
         
         @Override
-        public void reset() {
-            change.reset();
+        public List<U> getAddedSubList() {
+            return super.getAddedSubList();
         }
         
         @Override
@@ -70,8 +70,18 @@ public class MappedList<T, U> extends TransformationList<U, T> {
         }
         
         @Override
-        public int getTo() {
-            return change.getTo();
+        public ObservableList<U> getList() {
+            return super.getList();
+        }
+        
+        @Override
+        protected int[] getPermutation() {
+            throw new AssertionError();
+        }
+        
+        @Override
+        public int getPermutation(int i) {
+            return change.getPermutation(i);
         }
         
         @Override
@@ -89,8 +99,48 @@ public class MappedList<T, U> extends TransformationList<U, T> {
         }
         
         @Override
-        protected int[] getPermutation() {
-            throw new AssertionError();
+        public int getRemovedSize() {
+            return change.getRemovedSize();
+        }
+        
+        @Override
+        public int getTo() {
+            return change.getTo();
+        }
+        
+        @Override
+        public boolean next() {
+            return change.next();
+        }
+        
+        @Override
+        public void reset() {
+            change.reset();
+        }
+        
+        @Override
+        public boolean wasAdded() {
+            return change.wasAdded();
+        }
+        
+        @Override
+        public boolean wasPermutated() {
+            return change.wasPermutated();
+        }
+        
+        @Override
+        public boolean wasRemoved() {
+            return change.wasRemoved();
+        }
+        
+        @Override
+        public boolean wasReplaced() {
+            return change.wasReplaced();
+        }
+        
+        @Override
+        public boolean wasUpdated() {
+            return change.wasUpdated();
         }
     }
 }
