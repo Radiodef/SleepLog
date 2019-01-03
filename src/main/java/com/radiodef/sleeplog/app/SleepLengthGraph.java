@@ -8,7 +8,6 @@ import javafx.scene.chart.XYChart.*;
 import javafx.collections.*;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
-import javafx.util.StringConverter;
 
 import java.util.*;
 import java.time.*;
