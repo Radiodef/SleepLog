@@ -30,6 +30,8 @@ final class SleepStartEndGraph extends BorderPane {
         var stdDevCol = new PseudoTable.Column<StatsRow>("StandardDeviation");
         
         stats.addColumns(nameCol, meanCol, stdDevCol);
+        stats.getData().addAll(new StatsRow("Start"), new StatsRow("End"));
+        
         setBottom(stats);
         
         update();
