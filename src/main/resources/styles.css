@@ -57,8 +57,11 @@
 }
 
 .sleep-start-end-stats-pane {
-    -fx-padding: 1em;
     -fx-alignment: center;
+    -fx-background-insets: 1em;
+    -fx-padding: 1em;
+    -fx-background-color: white;
+    -fx-grid-lines-visible: true;
 }
 
 .sleep-start-end-stats-pane .text {
