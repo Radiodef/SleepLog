@@ -163,19 +163,14 @@ public final class Database implements AutoCloseable {
     public boolean insertNewPeriod(Instant start, Instant end, boolean manual) {
         Log.enter();
         var keys =
-            executePreparedStatement(ps -> {
-                try {
-                    var rs = ps.getGeneratedKeys();
-                    var ids = new ArrayList<Integer>();
-                    while (rs.next()) {
-                        ids.add(rs.getInt(1));
-                    }
-                    return ids;
-                } catch (SQLException x) {
-                    Log.caught(x);
-                    return null;
+            executePreparedStatement(Log.catchingSQL(ps -> {
+                var rs = ps.getGeneratedKeys();
+                var ids = new ArrayList<Integer>();
+                while (rs.next()) {
+                    ids.add(rs.getInt(1));
                 }
-            },
+                return ids;
+            }),
             insertPeriodRow, start, end, manual);
         
         return keys.map(list ->
