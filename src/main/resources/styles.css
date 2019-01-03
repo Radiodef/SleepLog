@@ -71,5 +71,8 @@
 .pseudo-table-pane {
 }
 
-.pseudo-table-columns-box {
+.pseudo-table-columns-hbox {
+}
+
+.pseudo-table-column-vbox {
 }
