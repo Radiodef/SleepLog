@@ -3,6 +3,7 @@ package com.radiodef.sleeplog.util;
 import com.radiodef.sleeplog.app.*;
 
 import javafx.scene.layout.*;
+import javafx.scene.control.*;
 import javafx.collections.*;
 import javafx.beans.property.*;
 import javafx.beans.binding.*;
@@ -71,7 +72,7 @@ public class PseudoTable<R> extends BorderPane {
             col.clearListeners();
             
             for (var elem : data) {
-                Log.note(1);
+                col.addCell(elem);
             }
         }
     }
@@ -155,6 +156,21 @@ public class PseudoTable<R> extends BorderPane {
             listeners.clear();
         }
         
+        private void addCell(R row) {
+            Property<C> prop = getProperty(row);
+            if (prop == null) {
+                return;
+            }
+            
+            var label = new Label(toString(prop.getValue()));
+            ChangeListener<C> listener = (a, b, val) -> label.setText(toString(val));
+            
+            prop.addListener(listener);
+            listeners.put(prop, listener);
+            
+            node.get().getChildren().add(label);
+        }
+        
         @SuppressWarnings("unchecked")
         private Property<C> getProperty(R row) {
             var method = this.getter.get();
@@ -170,6 +186,10 @@ public class PseudoTable<R> extends BorderPane {
             } catch (Exception x) {
                 throw new IllegalStateException(x);
             }
+        }
+        
+        private String toString(C value) {
+            return String.valueOf(value);
         }
     }
 }
