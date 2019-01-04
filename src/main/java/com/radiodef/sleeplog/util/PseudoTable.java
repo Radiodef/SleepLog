@@ -67,7 +67,9 @@ public class PseudoTable<R> extends BorderPane {
         }
         
         for (var elem : data) {
-            Log.note(1);
+            for (var col : columns) {
+                Log.note(1);
+            }
         }
     }
     
