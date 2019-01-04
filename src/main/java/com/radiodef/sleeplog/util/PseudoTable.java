@@ -6,6 +6,7 @@ import javafx.scene.layout.*;
 import javafx.collections.*;
 import javafx.beans.property.*;
 import javafx.beans.binding.*;
+import javafx.beans.value.*;
 
 import java.util.*;
 import java.lang.reflect.*;
@@ -87,6 +88,8 @@ public class PseudoTable<R> extends BorderPane {
         
         private final ObjectProperty<Method> getter;
         
+        private final WeakHashMap<Property<?>, ChangeListener<?>> listeners;
+        
         public Column(Class<R> rowClass, Class<C> colClass, String label, String property) {
             this.rowClass = new SimpleObjectProperty<>(Objects.requireNonNull(rowClass, "rowClass"));
             this.colClass = new SimpleObjectProperty<>(Objects.requireNonNull(colClass, "colClass"));
@@ -125,6 +128,8 @@ public class PseudoTable<R> extends BorderPane {
             box.getStyleClass().add(COL_VBOX_CLASS);
             
             this.node = new SimpleObjectProperty<>(box);
+            
+            this.listeners = new WeakHashMap<>();
         }
         
         public ReadOnlyObjectProperty<Class<R>> rowClassProperty() {
