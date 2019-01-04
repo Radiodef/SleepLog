@@ -21,6 +21,7 @@ public class PseudoTable<R> extends BorderPane {
     private static final String PANE_CLASS = PSEUDO_TABLE + "-pane";
     private static final String COLS_HBOX_CLASS = PSEUDO_TABLE + "-columns-hbox";
     private static final String COL_VBOX_CLASS = PSEUDO_TABLE + "-column-vbox";
+    private static final String CELL_CLASS = PSEUDO_TABLE + "-cell";
     
     private final ObjectProperty<Class<R>> rowClass;
     
@@ -164,6 +165,7 @@ public class PseudoTable<R> extends BorderPane {
             }
             
             var label = new Label(toString(prop.getValue()));
+            label.getStyleClass().add(CELL_CLASS);
             ChangeListener<C> listener = (a, b, val) -> label.setText(toString(val));
             
             prop.addListener(listener);

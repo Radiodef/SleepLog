@@ -78,3 +78,6 @@
 .pseudo-table-column-vbox {
     -fx-alignment: center;
 }
+
+.pseudo-table-cell {
+}
