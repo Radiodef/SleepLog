@@ -23,6 +23,7 @@ public class PseudoTable<R> extends BorderPane {
     private static final String COLS_HBOX_CLASS = PSEUDO_TABLE + "-columns-hbox";
     private static final String COL_VBOX_CLASS = PSEUDO_TABLE + "-column-vbox";
     private static final String CELL_CLASS = PSEUDO_TABLE + "-cell";
+    private static final String HEADER_CLASS = PSEUDO_TABLE + "-header";
     
     private final ObjectProperty<Class<R>> rowClass;
     
@@ -72,6 +73,7 @@ public class PseudoTable<R> extends BorderPane {
         
         for (var col : columns) {
             col.clearListeners();
+            col.addHeader();
             
             for (var elem : data) {
                 col.addCell(elem);
@@ -180,6 +182,13 @@ public class PseudoTable<R> extends BorderPane {
         private void clearListeners() {
             listeners.forEach(Property::removeListener);
             listeners.clear();
+        }
+        
+        private void addHeader() {
+            var label = new Label(StringUtils.defaultString(this.label.get()));
+            label.getStyleClass().add(HEADER_CLASS);
+            
+            node.get().getChildren().add(label);
         }
         
         private void addCell(R row) {
