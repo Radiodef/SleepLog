@@ -42,40 +42,48 @@ final class SleepStartEndGraph extends BorderPane {
         Log.enter();
         var periods = db.getAllSleepPeriods();
         
-        var startSeries = new Series<Number, Number>();
-        var endSeries = new Series<Number, Number>();
-        
-        startSeries.setName("Start Time");
-        endSeries.setName("End Time");
+        var start = new SeriesBuilder("Start Time");
+        var end = new SeriesBuilder("End Time");
         
         for (var p : periods) {
-            startSeries.getData().add(createData(p.getStart()));
-            endSeries.getData().add(createData(p.getEnd()));
+            start.add(p.getStart());
+            end.add(p.getEnd());
         }
         
-        chart.setData(Tools.observableArrayList(startSeries, endSeries));
+        chart.setData(Tools.observableArrayList(start.series, end.series));
         
         if (!periods.isEmpty()) {
             var xAxis = (NumberAxis) chart.getXAxis();
             
-            var first = startSeries.getData().get(0);
-            var last = endSeries.getData().get(periods.size() - 1);
+            var first = start.series.getData().get(0);
+            var last = end.series.getData().get(periods.size() - 1);
             
             xAxis.setLowerBound(first.getXValue().doubleValue());
             xAxis.setUpperBound(last.getXValue().doubleValue());
         }
     }
     
-    private static long getStartOfDay(Instant i) {
-        return Tools.toStartOfDay(i).getEpochSecond();
-    }
-    
-    private static int getSecondOfDay(Instant i) {
-        return LocalTime.ofInstant(i, ZoneId.systemDefault()).toSecondOfDay();
-    }
-    
-    private static Data<Number, Number> createData(Instant i) {
-        return new Data<>(getStartOfDay(i), getSecondOfDay(i));
+    private static final class SeriesBuilder {
+        private final Series<Number, Number> series = new Series<>();
+        
+        private SeriesBuilder(String name) {
+            series.setName(name);
+        }
+        
+        private void add(Instant i) {
+            var date = getStartOfDay(i);
+            var time = getSecondOfDay(i);
+            
+            series.getData().add(new Data<>(date, time));
+        }
+        
+        private static long getStartOfDay(Instant i) {
+            return Tools.toStartOfDay(i).getEpochSecond();
+        }
+        
+        private static int getSecondOfDay(Instant i) {
+            return LocalTime.ofInstant(i, ZoneId.systemDefault()).toSecondOfDay();
+        }
     }
     
     @SuppressWarnings("unused")
