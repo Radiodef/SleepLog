@@ -11,6 +11,8 @@ import javafx.beans.binding.*;
 import java.util.*;
 import java.lang.reflect.*;
 
+import org.apache.commons.lang3.*;
+
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class PseudoTable<R> extends BorderPane {
     private static final String PSEUDO_TABLE = "pseudo-table";
@@ -93,7 +95,7 @@ public class PseudoTable<R> extends BorderPane {
             this.field = new SimpleObjectProperty<>();
             field.bind(
                 Bindings.createObjectBinding(() -> {
-                    if (this.rowClass.get() == null || this.property.get() == null) {
+                    if (!ObjectUtils.allNotNull(this.rowClass.get(), this.colClass.get(), this.property.get())) {
                         return null;
                     }
                     
@@ -108,6 +110,7 @@ public class PseudoTable<R> extends BorderPane {
                     return field;
                 },
                 this.rowClass,
+                this.colClass,
                 this.property)
             );
             
@@ -133,6 +136,22 @@ public class PseudoTable<R> extends BorderPane {
         
         public ReadOnlyObjectProperty<VBox> nodeProperty() {
             return node;
+        }
+        
+        private C getCellValue(R row) {
+            var field = this.field.get();
+            if (field == null) {
+                return null;
+            }
+            
+            try {
+                Property<?> prop = (Property<?>) field.get(row);
+                return colClass.get().cast(prop.getValue());
+            } catch (RuntimeException x) {
+                throw x;
+            } catch (Exception x) {
+                throw new IllegalArgumentException(x);
+            }
         }
     }
 }
