@@ -18,7 +18,7 @@ public class PseudoTable<R> extends BorderPane {
     
     private final ObjectProperty<Class<R>> rowClass;
     
-    private final ObservableList<Column<R>> columns = FXCollections.observableArrayList();
+    private final ObservableList<Column<R, ?>> columns = FXCollections.observableArrayList();
     private final ObservableList<R> data = FXCollections.observableArrayList();
     
     private final HBox columnsBox = new HBox();
@@ -35,12 +35,16 @@ public class PseudoTable<R> extends BorderPane {
         setCenter(columnsBox);
     }
     
-    public ObservableList<Column<R>> getColumns() {
+    public ReadOnlyObjectProperty<Class<R>> rowClassProperty() {
+        return rowClass;
+    }
+    
+    public ObservableList<Column<R, ?>> getColumns() {
         return columns;
     }
     
     @SafeVarargs
-    public final void addColumns(Column<R>... columns) {
+    public final void addColumns(Column<R, ?>... columns) {
         this.columns.addAll(columns);
     }
     
@@ -61,16 +65,21 @@ public class PseudoTable<R> extends BorderPane {
         }
     }
     
-    public static class Column<R> {
+    public static class Column<R, C> {
+        private final ObjectProperty<Class<R>> rowClass;
+        private final ObjectProperty<Class<C>> colClass;
+        
         private final ObjectProperty<String> label;
         private final ObjectProperty<String> property;
         private final ObjectProperty<VBox> node;
         
         private final IdentityHashMap<R, ChangeListener<?>> listeners;
         
-        public Column(String label, String property) {
-            this.label = new SimpleObjectProperty<>(label);
+        public Column(Class<R> rowClass, Class<C> colClass, String label, String property) {
+            this.rowClass = new SimpleObjectProperty<>(Objects.requireNonNull(rowClass, "rowClass"));
+            this.colClass = new SimpleObjectProperty<>(Objects.requireNonNull(colClass, "colClass"));
             
+            this.label = new SimpleObjectProperty<>(label);
             this.property = new SimpleObjectProperty<>(property);
             
             var box = new VBox();
@@ -79,6 +88,14 @@ public class PseudoTable<R> extends BorderPane {
             this.node = new SimpleObjectProperty<>(box);
             
             this.listeners = new IdentityHashMap<>();
+        }
+        
+        public ReadOnlyObjectProperty<Class<R>> rowClassProperty() {
+            return rowClass;
+        }
+        
+        public ReadOnlyObjectProperty<Class<C>> colClassProperty() {
+            return colClass;
         }
         
         public ObjectProperty<String> labelProperty() {
