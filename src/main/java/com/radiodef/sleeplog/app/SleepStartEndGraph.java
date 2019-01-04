@@ -28,7 +28,7 @@ final class SleepStartEndGraph extends BorderPane {
         
         var nameCol = stats.createColumn(String.class, "Time", "name");
         var meanCol = stats.createColumn(LocalTime.class, "Mean", "mean", Tools::formatTimeOfDay);
-        var stdDevCol = stats.createColumn(Duration.class, "StandardDeviation", "stdDev");
+        var stdDevCol = stats.createColumn(Duration.class, "StandardDeviation", "stdDev", SleepStartEndGraph::formatStdDev);
         
         stats.addColumns(nameCol, meanCol, stdDevCol);
         stats.getData().addAll(new StatsRow("Start"), new StatsRow("End"));
@@ -145,5 +145,11 @@ final class SleepStartEndGraph extends BorderPane {
         public ObjectProperty<Duration> stdDevProperty() {
             return stdDev;
         }
+    }
+    
+    private static String formatStdDev(Duration d) {
+        return BigDecimal.valueOf(d.getSeconds())
+            .divide(BigDecimal.valueOf(GraphsPane.SECS_PER_HR), 1, RoundingMode.HALF_EVEN)
+            .toString();
     }
 }
