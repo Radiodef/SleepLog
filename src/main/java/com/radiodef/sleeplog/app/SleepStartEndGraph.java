@@ -10,6 +10,7 @@ import javafx.beans.property.*;
 
 import java.util.*;
 import java.time.*;
+import java.math.*;
 
 final class SleepStartEndGraph extends BorderPane {
     private final Database db;
@@ -61,10 +62,15 @@ final class SleepStartEndGraph extends BorderPane {
             xAxis.setLowerBound(first.getXValue().doubleValue());
             xAxis.setUpperBound(last.getXValue().doubleValue());
         }
+        
+        stats.getData().get(0).meanProperty().set(start.getMean());
+        stats.getData().get(1).meanProperty().set(end.getMean());
     }
     
     private static final class SeriesBuilder {
         private final Series<Number, Number> series = new Series<>();
+        
+        private BigInteger totalTime = BigInteger.ZERO;
         
         private SeriesBuilder(String name) {
             series.setName(name);
@@ -75,6 +81,13 @@ final class SleepStartEndGraph extends BorderPane {
             var time = getSecondOfDay(i);
             
             series.getData().add(new Data<>(date, time));
+            
+            totalTime = totalTime.add(BigInteger.valueOf(time));
+        }
+        
+        private LocalTime getMean() {
+            var secs = totalTime.divide(BigInteger.valueOf(series.getData().size()));
+            return LocalTime.ofSecondOfDay(secs.intValue());
         }
         
         private static long getStartOfDay(Instant i) {
@@ -86,7 +99,7 @@ final class SleepStartEndGraph extends BorderPane {
         }
     }
     
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public static final class StatsRow {
         private final ObjectProperty<String> name;
         private final ObjectProperty<LocalTime> mean;
