@@ -129,6 +129,7 @@ public class PseudoTable<R> extends BorderPane {
             
             var box = new VBox();
             box.getStyleClass().add(COL_VBOX_CLASS);
+            HBox.setHgrow(box, Priority.ALWAYS);
             
             this.node = new SimpleObjectProperty<>(box);
             
