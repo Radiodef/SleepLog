@@ -67,8 +67,10 @@ public class PseudoTable<R> extends BorderPane {
             columnsBox.getChildren().add(box);
         }
         
-        for (var elem : data) {
-            for (var col : columns) {
+        for (var col : columns) {
+            col.clearListeners();
+            
+            for (var elem : data) {
                 Log.note(1);
             }
         }
@@ -146,6 +148,16 @@ public class PseudoTable<R> extends BorderPane {
         
         public ReadOnlyObjectProperty<VBox> nodeProperty() {
             return node;
+        }
+        
+        private void clearListeners() {
+            listeners.forEach(Column::removeListener);
+            listeners.clear();
+        }
+        
+        @SuppressWarnings("unchecked")
+        private static <T> void removeListener(Property<T> p, ChangeListener<?> l) {
+            p.removeListener((ChangeListener<T>) l);
         }
     }
 }
