@@ -212,7 +212,7 @@ public class PseudoTable<R> extends BorderPane {
         }
         
         private String toString(C value) {
-            return format.get().apply(value);
+            return (value == null) ? "null" : format.get().apply(value);
         }
     }
 }
