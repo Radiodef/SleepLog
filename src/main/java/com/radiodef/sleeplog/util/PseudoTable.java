@@ -10,6 +10,7 @@ import javafx.beans.binding.*;
 import javafx.beans.value.*;
 
 import java.util.*;
+import java.util.function.*;
 import java.lang.reflect.*;
 
 import org.apache.commons.lang3.*;
@@ -78,8 +79,11 @@ public class PseudoTable<R> extends BorderPane {
         }
     }
     
-    public <C> Column<R, C> createColumn(Class<C> colClass, String label, String property) {
-        return new Column<>(rowClass.get(), colClass, label, property);
+    public <C> Column<R, C> createColumn(Class<C> colClass,
+                                         String label,
+                                         String property,
+                                         Function<? super C, String> format) {
+        return new Column<>(rowClass.get(), colClass, label, property, format);
     }
     
     public static class Column<R, C> {
@@ -90,11 +94,17 @@ public class PseudoTable<R> extends BorderPane {
         private final ObjectProperty<String> property;
         private final ObjectProperty<VBox> node;
         
+        private final ObjectProperty<Function<? super C, String>> format;
+        
         private final ObjectProperty<Method> getter;
         
         private final WeakHashMap<Property<C>, ChangeListener<C>> listeners;
         
-        public Column(Class<R> rowClass, Class<C> colClass, String label, String property) {
+        public Column(Class<R> rowClass,
+                      Class<C> colClass,
+                      String label,
+                      String property,
+                      Function<? super C, String> format) {
             this.rowClass = new SimpleObjectProperty<>(Objects.requireNonNull(rowClass, "rowClass"));
             this.colClass = new SimpleObjectProperty<>(Objects.requireNonNull(colClass, "colClass"));
             
@@ -128,6 +138,10 @@ public class PseudoTable<R> extends BorderPane {
                 this.property)
             );
             
+            if (format == null)
+                format = String::valueOf;
+            this.format = new SimpleObjectProperty<>(format);
+            
             var box = new VBox();
             box.getStyleClass().add(COL_VBOX_CLASS);
             HBox.setHgrow(box, Priority.ALWAYS);
@@ -151,6 +165,10 @@ public class PseudoTable<R> extends BorderPane {
         
         public ReadOnlyObjectProperty<VBox> nodeProperty() {
             return node;
+        }
+        
+        public ReadOnlyObjectProperty<Function<? super C, String>> formatProperty() {
+            return format;
         }
         
         private void clearListeners() {
@@ -194,7 +212,7 @@ public class PseudoTable<R> extends BorderPane {
         }
         
         private String toString(C value) {
-            return String.valueOf(value);
+            return format.get().apply(value);
         }
     }
 }
