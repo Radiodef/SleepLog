@@ -72,6 +72,7 @@
 }
 
 .pseudo-table-columns-hbox {
+    -fx-alignment: top-center;
 }
 
 .pseudo-table-column-vbox {
