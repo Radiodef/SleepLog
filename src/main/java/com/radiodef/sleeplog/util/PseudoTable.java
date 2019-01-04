@@ -80,7 +80,7 @@ public class PseudoTable<R> extends BorderPane {
         private final ObjectProperty<String> property;
         private final ObjectProperty<VBox> node;
         
-        private final ObjectProperty<Field> field;
+        private final ObjectProperty<Method> getter;
         
         public Column(Class<R> rowClass, Class<C> colClass, String label, String property) {
             this.rowClass = new SimpleObjectProperty<>(Objects.requireNonNull(rowClass, "rowClass"));
@@ -89,22 +89,26 @@ public class PseudoTable<R> extends BorderPane {
             this.label = new SimpleObjectProperty<>(label);
             this.property = new SimpleObjectProperty<>(property);
             
-            this.field = new SimpleObjectProperty<>();
-            field.bind(
+            this.getter = new SimpleObjectProperty<>();
+            getter.bind(
                 Bindings.createObjectBinding(() -> {
                     if (!ObjectUtils.allNotNull(this.rowClass.get(), this.colClass.get(), this.property.get())) {
                         return null;
                     }
                     
-                    var field = this.rowClass.get().getDeclaredField(this.property.get());
-                    var type = field.getType();
+                    var name = this.property.get() + "Property";
+                    var method = this.rowClass.get().getMethod(name);
+                    var type = method.getReturnType();
                     
                     if (!Property.class.isAssignableFrom(type)) {
-                        throw new IllegalArgumentException(field.getName() + " with type " + type);
+                        throw new IllegalArgumentException(name + " with type " + type);
+                    }
+                    var params = method.getParameterCount();
+                    if (params != 0) {
+                        throw new IllegalArgumentException(name + " with " + params + " parameters");
                     }
                     
-                    field.setAccessible(true);
-                    return field;
+                    return method;
                 },
                 this.rowClass,
                 this.colClass,
