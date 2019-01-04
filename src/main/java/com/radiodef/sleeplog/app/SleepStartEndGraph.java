@@ -82,12 +82,12 @@ final class SleepStartEndGraph extends BorderPane {
     public static final class StatsRow {
         private final ObjectProperty<String> name;
         private final ObjectProperty<LocalTime> mean;
-        private final DoubleProperty stdDev;
+        private final ObjectProperty<Double> stdDev;
         
         private StatsRow(String name) {
             this.name = new SimpleObjectProperty<>(name);
             this.mean = new SimpleObjectProperty<>();
-            this.stdDev = new SimpleDoubleProperty();
+            this.stdDev = new SimpleObjectProperty<>();
         }
         
         public ObjectProperty<String> nameProperty() {
@@ -98,7 +98,7 @@ final class SleepStartEndGraph extends BorderPane {
             return mean;
         }
         
-        public DoubleProperty stdDevProperty() {
+        public ObjectProperty<Double> stdDevProperty() {
             return stdDev;
         }
     }

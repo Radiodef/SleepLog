@@ -11,6 +11,7 @@ import java.util.*;
 import java.lang.reflect.*;
 
 import org.apache.commons.lang3.*;
+import org.apache.commons.lang3.reflect.*;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class PseudoTable<R> extends BorderPane {
@@ -98,9 +99,10 @@ public class PseudoTable<R> extends BorderPane {
                     
                     var name = this.property.get() + "Property";
                     var method = this.rowClass.get().getMethod(name);
-                    var type = method.getReturnType();
+                    var type = method.getGenericReturnType();
+                    var expect = TypeUtils.parameterize(Property.class, this.colClass.get());
                     
-                    if (!Property.class.isAssignableFrom(type)) {
+                    if (!TypeUtils.isAssignable(type, expect)) {
                         throw new IllegalArgumentException(name + " with type " + type);
                     }
                     var params = method.getParameterCount();
