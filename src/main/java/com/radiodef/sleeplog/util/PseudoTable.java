@@ -62,10 +62,12 @@ public class PseudoTable<R> extends BorderPane {
         
         for (var col : columns) {
             var box = col.node.get();
+            box.getChildren().clear();
             columnsBox.getChildren().add(box);
         }
         
         for (var elem : data) {
+            Log.note(1);
         }
     }
     
