@@ -145,7 +145,7 @@ public class PseudoTable<R> extends BorderPane {
             return colClass;
         }
         
-        public ObjectProperty<String> labelProperty() {
+        public ReadOnlyObjectProperty<String> labelProperty() {
             return label;
         }
         
