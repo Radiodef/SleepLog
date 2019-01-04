@@ -69,17 +69,22 @@
 }
 
 .pseudo-table-pane {
+    -fx-background-color: derive(-fx-color,5%);
+    -fx-padding: 1px;
 }
 
 .pseudo-table-columns-hbox {
     -fx-alignment: top-center;
+    -fx-spacing: 1px;
 }
 
 .pseudo-table-column-vbox {
     -fx-alignment: center;
+    -fx-fill-width: true;
+    -fx-spacing: 1px;
 }
 
 .pseudo-table-cell {
     -fx-alignment: center;
-    -fx-background-color: white;
+    -fx-background-color: -fx-control-inner-background;
 }
