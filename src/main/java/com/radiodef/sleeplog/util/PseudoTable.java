@@ -165,13 +165,15 @@ public class PseudoTable<R> extends BorderPane {
             }
             
             var label = new Label(toString(prop.getValue()));
-            label.getStyleClass().add(CELL_CLASS);
             ChangeListener<C> listener = (a, b, val) -> label.setText(toString(val));
             
             prop.addListener(listener);
             listeners.put(prop, listener);
             
-            node.get().getChildren().add(label);
+            var cell = new BorderPane(label);
+            cell.getStyleClass().add(CELL_CLASS);
+            
+            node.get().getChildren().add(cell);
         }
         
         @SuppressWarnings("unchecked")
