@@ -28,7 +28,7 @@ final class SleepStartEndGraph extends BorderPane {
         
         var nameCol = stats.createColumn(String.class, "Time", "name");
         var meanCol = stats.createColumn(LocalTime.class, "Mean", "mean", Tools::formatTimeOfDay);
-        var stdDevCol = stats.createColumn(Double.class, "StandardDeviation", "stdDev");
+        var stdDevCol = stats.createColumn(Duration.class, "StandardDeviation", "stdDev");
         
         stats.addColumns(nameCol, meanCol, stdDevCol);
         stats.getData().addAll(new StatsRow("Start"), new StatsRow("End"));
@@ -65,6 +65,9 @@ final class SleepStartEndGraph extends BorderPane {
         
         stats.getData().get(0).meanProperty().set(start.getMean());
         stats.getData().get(1).meanProperty().set(end.getMean());
+        
+        stats.getData().get(0).stdDevProperty().set(start.getStandardDeviation());
+        stats.getData().get(1).stdDevProperty().set(end.getStandardDeviation());
     }
     
     private static final class SeriesBuilder {
@@ -85,9 +88,29 @@ final class SleepStartEndGraph extends BorderPane {
             totalTime = totalTime.add(BigInteger.valueOf(time));
         }
         
+        private BigInteger getMeanAsBigInteger() {
+            return totalTime.divide(BigInteger.valueOf(series.getData().size()));
+        }
+        
         private LocalTime getMean() {
-            var secs = totalTime.divide(BigInteger.valueOf(series.getData().size()));
-            return LocalTime.ofSecondOfDay(secs.intValue());
+            return LocalTime.ofSecondOfDay(getMeanAsBigInteger().intValue());
+        }
+        
+        private Duration getStandardDeviation() {
+            var mean = getMeanAsBigInteger();
+            var sum = BigInteger.ZERO;
+            
+            for (var data : series.getData()) {
+                var time = BigInteger.valueOf(data.getYValue().longValue());
+                var dif = time.subtract(mean);
+                
+                sum = sum.add(dif.multiply(dif));
+            }
+            
+            if (!series.getData().isEmpty()) {
+                sum = sum.divide(BigInteger.valueOf(series.getData().size()));
+            }
+            return Duration.ofSeconds(sum.sqrt().longValue());
         }
         
         private static long getStartOfDay(Instant i) {
@@ -103,7 +126,7 @@ final class SleepStartEndGraph extends BorderPane {
     public static final class StatsRow {
         private final ObjectProperty<String> name;
         private final ObjectProperty<LocalTime> mean;
-        private final ObjectProperty<Double> stdDev;
+        private final ObjectProperty<Duration> stdDev;
         
         private StatsRow(String name) {
             this.name = new SimpleObjectProperty<>(name);
@@ -119,7 +142,7 @@ final class SleepStartEndGraph extends BorderPane {
             return mean;
         }
         
-        public ObjectProperty<Double> stdDevProperty() {
+        public ObjectProperty<Duration> stdDevProperty() {
             return stdDev;
         }
     }
