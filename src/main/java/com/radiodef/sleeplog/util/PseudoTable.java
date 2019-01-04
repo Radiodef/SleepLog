@@ -6,8 +6,10 @@ import javafx.scene.layout.*;
 import javafx.collections.*;
 import javafx.beans.property.*;
 import javafx.beans.value.*;
+import javafx.beans.binding.*;
 
 import java.util.*;
+import java.lang.reflect.*;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class PseudoTable<R> extends BorderPane {
@@ -77,6 +79,8 @@ public class PseudoTable<R> extends BorderPane {
         private final ObjectProperty<String> property;
         private final ObjectProperty<VBox> node;
         
+        private final ObjectProperty<Field> field;
+        
         private final IdentityHashMap<R, ChangeListener<?>> listeners;
         
         public Column(Class<R> rowClass, Class<C> colClass, String label, String property) {
@@ -85,6 +89,27 @@ public class PseudoTable<R> extends BorderPane {
             
             this.label = new SimpleObjectProperty<>(label);
             this.property = new SimpleObjectProperty<>(property);
+            
+            this.field = new SimpleObjectProperty<>();
+            field.bind(
+                Bindings.createObjectBinding(() -> {
+                    if (this.rowClass.get() == null || this.property.get() == null) {
+                        return null;
+                    }
+                    
+                    var field = this.rowClass.get().getDeclaredField(this.property.get());
+                    var type = field.getType();
+                    
+                    if (!Property.class.isAssignableFrom(type)) {
+                        throw new IllegalArgumentException(property + " with type " + type);
+                    }
+                    
+                    field.setAccessible(true);
+                    return field;
+                },
+                this.rowClass,
+                this.property)
+            );
             
             var box = new VBox();
             box.getStyleClass().add(COL_VBOX_CLASS);
