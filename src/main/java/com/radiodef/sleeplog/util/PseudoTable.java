@@ -154,5 +154,22 @@ public class PseudoTable<R> extends BorderPane {
             listeners.forEach(Property::removeListener);
             listeners.clear();
         }
+        
+        @SuppressWarnings("unchecked")
+        private Property<C> getProperty(R row) {
+            var method = this.getter.get();
+            
+            if (method == null) {
+                return null;
+            }
+            
+            try {
+                return (Property<C>) method.invoke(row);
+            } catch (RuntimeException x) {
+                throw x;
+            } catch (Exception x) {
+                throw new IllegalStateException(x);
+            }
+        }
     }
 }
