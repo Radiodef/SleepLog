@@ -5,7 +5,6 @@ import com.radiodef.sleeplog.app.*;
 import javafx.scene.layout.*;
 import javafx.collections.*;
 import javafx.beans.property.*;
-import javafx.beans.value.*;
 import javafx.beans.binding.*;
 
 import java.util.*;
@@ -83,8 +82,6 @@ public class PseudoTable<R> extends BorderPane {
         
         private final ObjectProperty<Field> field;
         
-        private final IdentityHashMap<R, ChangeListener<?>> listeners;
-        
         public Column(Class<R> rowClass, Class<C> colClass, String label, String property) {
             this.rowClass = new SimpleObjectProperty<>(Objects.requireNonNull(rowClass, "rowClass"));
             this.colClass = new SimpleObjectProperty<>(Objects.requireNonNull(colClass, "colClass"));
@@ -118,8 +115,6 @@ public class PseudoTable<R> extends BorderPane {
             box.getStyleClass().add(COL_VBOX_CLASS);
             
             this.node = new SimpleObjectProperty<>(box);
-            
-            this.listeners = new IdentityHashMap<>();
         }
         
         public ReadOnlyObjectProperty<Class<R>> rowClassProperty() {
@@ -136,22 +131,6 @@ public class PseudoTable<R> extends BorderPane {
         
         public ReadOnlyObjectProperty<VBox> nodeProperty() {
             return node;
-        }
-        
-        private C getCellValue(R row) {
-            var field = this.field.get();
-            if (field == null) {
-                return null;
-            }
-            
-            try {
-                Property<?> prop = (Property<?>) field.get(row);
-                return colClass.get().cast(prop.getValue());
-            } catch (RuntimeException x) {
-                throw x;
-            } catch (Exception x) {
-                throw new IllegalArgumentException(x);
-            }
         }
     }
 }
