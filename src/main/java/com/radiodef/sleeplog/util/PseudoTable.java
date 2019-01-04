@@ -81,6 +81,12 @@ public class PseudoTable<R> extends BorderPane {
     
     public <C> Column<R, C> createColumn(Class<C> colClass,
                                          String label,
+                                         String property) {
+        return createColumn(colClass, label, property, null);
+    }
+    
+    public <C> Column<R, C> createColumn(Class<C> colClass,
+                                         String label,
                                          String property,
                                          Function<? super C, String> format) {
         return new Column<>(rowClass.get(), colClass, label, property, format);
