@@ -9,7 +9,7 @@ import javafx.beans.value.*;
 
 import java.util.*;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class PseudoTable<R> extends BorderPane {
     private static final String PSEUDO_TABLE = "pseudo-table";
     private static final String PANE_CLASS = PSEUDO_TABLE + "-pane";
