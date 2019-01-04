@@ -164,7 +164,7 @@ public class PseudoTable<R> extends BorderPane {
             }
             
             try {
-                return (Property<C>) method.invoke(row);
+                return (Property<C>) method.invoke(row, ArrayUtils.EMPTY_OBJECT_ARRAY);
             } catch (RuntimeException x) {
                 throw x;
             } catch (Exception x) {
