@@ -75,4 +75,5 @@
 }
 
 .pseudo-table-column-vbox {
+    -fx-alignment: center;
 }
