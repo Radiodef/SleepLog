@@ -100,7 +100,7 @@ public class PseudoTable<R> extends BorderPane {
                     var type = field.getType();
                     
                     if (!Property.class.isAssignableFrom(type)) {
-                        throw new IllegalArgumentException(property + " with type " + type);
+                        throw new IllegalArgumentException(field.getName() + " with type " + type);
                     }
                     
                     field.setAccessible(true);
