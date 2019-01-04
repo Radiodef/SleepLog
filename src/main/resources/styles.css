@@ -90,4 +90,5 @@
 }
 
 .pseudo-table-header {
+    -fx-padding: 0.33em;
 }
