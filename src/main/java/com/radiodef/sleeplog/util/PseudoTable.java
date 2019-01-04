@@ -90,7 +90,7 @@ public class PseudoTable<R> extends BorderPane {
         
         private final ObjectProperty<Method> getter;
         
-        private final WeakHashMap<Property<?>, ChangeListener<?>> listeners;
+        private final WeakHashMap<Property<C>, ChangeListener<C>> listeners;
         
         public Column(Class<R> rowClass, Class<C> colClass, String label, String property) {
             this.rowClass = new SimpleObjectProperty<>(Objects.requireNonNull(rowClass, "rowClass"));
@@ -151,13 +151,8 @@ public class PseudoTable<R> extends BorderPane {
         }
         
         private void clearListeners() {
-            listeners.forEach(Column::removeListener);
+            listeners.forEach(Property::removeListener);
             listeners.clear();
-        }
-        
-        @SuppressWarnings("unchecked")
-        private static <T> void removeListener(Property<T> p, ChangeListener<?> l) {
-            p.removeListener((ChangeListener<T>) l);
         }
     }
 }
