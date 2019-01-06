@@ -130,6 +130,10 @@ class DatabaseTablePane extends BorderPane {
         
         table.getSortOrder().add(dateIdCol);
         
+        idCol.prefWidthProperty().bind(table.widthProperty().multiply(0.15).subtract(1));
+        dateIdCol.prefWidthProperty().bind(table.widthProperty().multiply(0.15).subtract(1));
+        textCol.prefWidthProperty().bind(table.widthProperty().multiply(0.7).subtract(1));
+        
         db.getAllNotes().addListener(Tools.listChangeListener(c -> fillNotesTable()));
         return table;
     }
