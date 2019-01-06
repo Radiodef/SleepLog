@@ -115,6 +115,15 @@ class DatabaseTablePane extends BorderPane {
     
     private void addNewNote() {
         Log.enter();
+        
+        var dialog = new TextInputDialog();
+        dialog.initOwner(getScene().getWindow());
+        dialog.showAndWait();
+        
+        var result = dialog.getResult();
+        if (result != null) {
+            Log.note(result);
+        }
     }
     
     private static final class InstantStringConverter extends StringConverter<Instant> {
