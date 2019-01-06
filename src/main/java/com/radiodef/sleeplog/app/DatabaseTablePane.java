@@ -26,7 +26,7 @@ class DatabaseTablePane extends BorderPane {
     private final TableView<SleepPeriod> table;
     
     private final Button deleteButton;
-    private final Button noteButton;
+    private final Button addNoteButton;
     
     DatabaseTablePane(Database db) {
         this.db = Objects.requireNonNull(db, "db");
@@ -59,7 +59,6 @@ class DatabaseTablePane extends BorderPane {
         table.setEditable(false);
         
         Collections.addAll(table.getColumns(), idCol, startCol, endCol, durationCol, manualCol);
-        setCenter(table);
         
         deleteButton = new Button("Delete");
         deleteButton.setDisable(true);
@@ -76,15 +75,9 @@ class DatabaseTablePane extends BorderPane {
         
         addButton.setOnAction(e -> addNewRow());
         
-        noteButton = new Button("Add Note");
-        noteButton.setDisable(true);
-        
-        noteButton.setOnAction(e -> addNewNote());
-        
         var tools = new ToolBar();
         tools.setOrientation(Orientation.HORIZONTAL);
-        tools.getItems().addAll(addButton, deleteButton, new Separator(Orientation.VERTICAL), noteButton);
-        setTop(tools);
+        tools.getItems().addAll(addButton, deleteButton);
         
         var periods = new SortedList<>(db.getAllSleepPeriods());
         periods.comparatorProperty().bind(table.comparatorProperty());
@@ -92,6 +85,30 @@ class DatabaseTablePane extends BorderPane {
         table.setItems(periods);
         table.getSortOrder().add(startCol);
         
+        var notes = new ListView<Note>();
+        
+        var noteTools = new ToolBar();
+        noteTools.setOrientation(Orientation.HORIZONTAL);
+        
+        addNoteButton = new Button("Add Note");
+        addNoteButton.setDisable(true);
+        
+        addNoteButton.setOnAction(e -> addNewNote());
+        noteTools.getItems().addAll(addNoteButton);
+        
+        var top = new BorderPane();
+        top.setTop(tools);
+        top.setCenter(table);
+        
+        var bot = new BorderPane();
+        bot.setTop(noteTools);
+        bot.setCenter(notes);
+        
+        var split = new SplitPane(top, bot);
+        split.setOrientation(Orientation.VERTICAL);
+        setCenter(split);
+        
+        split.setDividerPosition(0, 0.25);
         Platform.runLater(() -> table.scrollTo(periods.size() - 1));
     }
     
@@ -111,7 +128,7 @@ class DatabaseTablePane extends BorderPane {
     private void selectionChanged(ListChangeListener.Change<? extends Integer> c) {
         var noSelection = c.getList().isEmpty();
         deleteButton.setDisable(noSelection);
-        noteButton.setDisable(noSelection);
+        addNoteButton.setDisable(noSelection);
         
         for (var item : table.getSelectionModel().getSelectedItems()) {
             for (var note : db.getNotesForPeriodId(item.getID())) {
