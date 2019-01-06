@@ -32,42 +32,10 @@ class DatabaseTablePane extends BorderPane {
         this.db = Objects.requireNonNull(db, "db");
         
         setId(ID);
-        
-        var idCol = new TableColumn<SleepPeriod, Integer>("ID");
-        var startCol = new TableColumn<SleepPeriod, Instant>("Start");
-        var endCol = new TableColumn<SleepPeriod, Instant>("End");
-        var durationCol = new TableColumn<SleepPeriod, Duration>("Duration");
-        var manualCol = new TableColumn<SleepPeriod, Boolean>("Manual Entry");
-        
-        idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
-        startCol.setCellValueFactory(new PropertyValueFactory<>("start"));
-        endCol.setCellValueFactory(new PropertyValueFactory<>("end"));
-        durationCol.setCellValueFactory(new PropertyValueFactory<>("duration"));
-        manualCol.setCellValueFactory(new PropertyValueFactory<>("manualEntry"));
-        
-        startCol.setCellFactory(InstantStringConverter.CELL_FACTORY);
-        endCol.setCellFactory(InstantStringConverter.CELL_FACTORY);
-        durationCol.setCellFactory(DurationStringConverter.CELL_FACTORY);
-        
-        table = new TableView<>();
-        table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
-        
-//        idCol.prefWidthProperty().bind(table.widthProperty().divide(5));
-//        startCol.prefWidthProperty().bind(table.widthProperty().multiply(2).divide(5));
-//        endCol.prefWidthProperty().bind(table.widthProperty().multiply(2).divide(5));
-        
-        table.setEditable(false);
-        
-        Collections.addAll(table.getColumns(), idCol, startCol, endCol, durationCol, manualCol);
+        table = createPeriodsTable();
         
         deleteButton = new Button("Delete");
         deleteButton.setDisable(true);
-        
-        table.getSelectionModel()
-             .getSelectedIndices()
-             .addListener(this::selectionChanged);
-        table.getSelectionModel()
-             .setSelectionMode(SelectionMode.MULTIPLE);
         
         deleteButton.setOnAction(e -> deleteSelection());
         
@@ -79,13 +47,7 @@ class DatabaseTablePane extends BorderPane {
         tools.setOrientation(Orientation.HORIZONTAL);
         tools.getItems().addAll(addButton, deleteButton);
         
-        var periods = new SortedList<>(db.getAllSleepPeriods());
-        periods.comparatorProperty().bind(table.comparatorProperty());
-        
-        table.setItems(periods);
-        table.getSortOrder().add(startCol);
-        
-        var notes = new ListView<Note>();
+        var notes = createNotesList();
         
         var noteTools = new ToolBar();
         noteTools.setOrientation(Orientation.HORIZONTAL);
@@ -109,7 +71,52 @@ class DatabaseTablePane extends BorderPane {
         setCenter(split);
         
         split.setDividerPosition(0, 0.25);
-        Platform.runLater(() -> table.scrollTo(periods.size() - 1));
+        Platform.runLater(() -> table.scrollTo(table.getItems().size() - 1));
+    }
+    
+    private TableView<SleepPeriod> createPeriodsTable() {
+        var idCol = new TableColumn<SleepPeriod, Integer>("ID");
+        var startCol = new TableColumn<SleepPeriod, Instant>("Start");
+        var endCol = new TableColumn<SleepPeriod, Instant>("End");
+        var durationCol = new TableColumn<SleepPeriod, Duration>("Duration");
+        var manualCol = new TableColumn<SleepPeriod, Boolean>("Manual Entry");
+        
+        idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        startCol.setCellValueFactory(new PropertyValueFactory<>("start"));
+        endCol.setCellValueFactory(new PropertyValueFactory<>("end"));
+        durationCol.setCellValueFactory(new PropertyValueFactory<>("duration"));
+        manualCol.setCellValueFactory(new PropertyValueFactory<>("manualEntry"));
+        
+        startCol.setCellFactory(InstantStringConverter.CELL_FACTORY);
+        endCol.setCellFactory(InstantStringConverter.CELL_FACTORY);
+        durationCol.setCellFactory(DurationStringConverter.CELL_FACTORY);
+        
+        var table = new TableView<SleepPeriod>();
+        table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+        
+        table.setEditable(false);
+        
+        Collections.addAll(table.getColumns(), idCol, startCol, endCol, durationCol, manualCol);
+        
+        var periods = new SortedList<>(db.getAllSleepPeriods());
+        periods.comparatorProperty().bind(table.comparatorProperty());
+        
+        table.setItems(periods);
+        table.getSortOrder().add(startCol);
+        
+        table.getSelectionModel()
+             .getSelectedIndices()
+             .addListener(this::selectionChanged);
+        table.getSelectionModel()
+             .setSelectionMode(SelectionMode.MULTIPLE);
+        
+        return table;
+    }
+    
+    private ListView<Note> createNotesList() {
+        var list = new ListView<Note>();
+        
+        return list;
     }
     
     private void deleteSelection() {
