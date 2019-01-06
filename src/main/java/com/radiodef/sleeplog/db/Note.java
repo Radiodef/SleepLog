@@ -9,7 +9,7 @@ import org.apache.commons.lang3.builder.*;
 public final class Note {
     private final ReadOnlyIntegerProperty id;
     private final ReadOnlyIntegerProperty dateId;
-    private final ReadOnlyStringProperty text;
+    private final StringProperty text;
     
     public Note(int id, int dateId, String text) {
         this.id = new SimpleIntegerProperty(this, "id", id);
@@ -25,7 +25,7 @@ public final class Note {
         return dateId;
     }
     
-    public ReadOnlyStringProperty textProperty() {
+    public StringProperty textProperty() {
         return text;
     }
     
