@@ -243,10 +243,14 @@ class DatabaseTablePane extends BorderPane {
                 .orElse("");
         
         getNoteText(def).ifPresent(text -> {
+            var sel = List.copyOf(notes.getSelectionModel().getSelectedIndices());
+            
             for (var note : notes.getSelectionModel().getSelectedItems()) {
                 db.updateNoteText(note.getID(), text);
             }
+            
             fillNotesTable();
+            sel.forEach(notes.getSelectionModel()::select);
         });
     }
     
