@@ -22,6 +22,9 @@ public final class Database implements AutoCloseable {
     private static final String END_COL = "end_instant";
     private static final String MANUAL_COL = "manual_entry";
     
+    private static final String DATE_ID_COL = "date_id";
+    private static final String TEXT_COL = "text";
+    
     private final Connection conn;
     
     private final PreparedStatement insertPeriodRow;
@@ -60,7 +63,8 @@ public final class Database implements AutoCloseable {
     
         // noinspection StatementWithEmptyBody
         if (conn != null && createInstantType()
-                         && createDatesTable()) {
+                         && createDatesTable()
+                         && createNotesTable()) {
 //            printAllRows();
         }
         
@@ -103,9 +107,27 @@ public final class Database implements AutoCloseable {
             + END_COL + " INSTANT, "
             + MANUAL_COL + " BOOLEAN WITH DEFAULT FALSE"
             + ")";
+        return createTable(createTableStatement, "Dates");
+    }
+    
+    /**
+     * @return true if the table exists
+     */
+    private boolean createNotesTable() {
+        final var createTableStatement =
+            "CREATE TABLE " + NOTES_TABLE
+            + "("
+            + ID_COL + " INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,"
+            + DATE_ID_COL + " INTEGER,"
+            + TEXT_COL + " LONG VARCHAR"
+            + ")";
+        return createTable(createTableStatement, "Notes");
+    }
+    
+    private boolean createTable(String createTableStatement, String name) {
         // https://stackoverflow.com/a/5866339/2891664
         if (executeStatement(createTableStatement, "X0Y32")) {
-            Log.note("Dates table created or already existed");
+            Log.note(name + " table created or already existed");
             return true;
         }
         return false;
