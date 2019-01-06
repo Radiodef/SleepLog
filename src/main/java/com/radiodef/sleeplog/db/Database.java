@@ -367,7 +367,7 @@ public final class Database implements AutoCloseable {
     
     public boolean updateNoteText(int id, String text) {
         Log.enter();
-        return executePreparedStatement(updateNoteText, id, text);
+        return executePreparedStatement(updateNoteText, text, id);
     }
     
     public Optional<Note> getNoteById(int id) {
