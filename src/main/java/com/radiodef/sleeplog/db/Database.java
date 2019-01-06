@@ -379,7 +379,10 @@ public final class Database implements AutoCloseable {
     
     public void printAllNotes() {
         for (var note : getAllNotes()) {
-            Log.note(note);
+            Log.notef("id = %d, dateId = %d, text = %s",
+                note.getID(),
+                note.getDateID(),
+                note.getText());
         }
     }
     
