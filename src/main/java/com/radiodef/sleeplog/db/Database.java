@@ -35,6 +35,7 @@ public final class Database implements AutoCloseable {
     private final ObservableList<SleepPeriod> unmodifiableRows;
     
     private final PreparedStatement insertNoteRow;
+    private final PreparedStatement deleteNoteRow;
     private final PreparedStatement getNoteById;
     private final PreparedStatement getNotesForPeriodId;
     private final PreparedStatement deleteNotesForPeriodId;
@@ -85,6 +86,7 @@ public final class Database implements AutoCloseable {
         this.unmodifiableRows = FXCollections.unmodifiableObservableList(rows);
         
         this.insertNoteRow = prepareInsertNoteRow();
+        this.deleteNoteRow = prepareDeleteNoteRow();
         this.getNoteById = prepareGetNoteById();
         this.getNotesForPeriodId = prepareGetNotesForPeriodId();
         this.deleteNotesForPeriodId = prepareDeleteNotesForPeriodId();
@@ -194,6 +196,10 @@ public final class Database implements AutoCloseable {
             + " (" + DATE_ID_COL + ", " + TEXT_COL + ")"
             + " VALUES (?, ?)"
         );
+    }
+    
+    private PreparedStatement prepareDeleteNoteRow() {
+        return prepareStatement("DELETE FROM " + NOTES_TABLE + " WHERE " + ID_COL + " = ?");
     }
     
     private PreparedStatement prepareGetNoteById() {
@@ -340,6 +346,15 @@ public final class Database implements AutoCloseable {
                 .flatMap(Optional::stream)
                 .collect(Collectors.toList())
         );
+    }
+    
+    public boolean deleteNote(int id) {
+        Log.enter();
+        if (executePreparedStatement(deleteNoteRow, id)) {
+            notes.removeIf(note -> note.getID() == id);
+            return true;
+        }
+        return false;
     }
     
     public Optional<Note> getNoteById(int id) {
