@@ -73,9 +73,13 @@ class DatabaseTablePane extends BorderPane {
         
         addButton.setOnAction(e -> addNewRow());
         
+        var noteButton = new Button("Add Note");
+        
+        noteButton.setOnAction(e -> addNewNote());
+        
         var tools = new ToolBar();
         tools.setOrientation(Orientation.HORIZONTAL);
-        tools.getItems().addAll(addButton, deleteButton);
+        tools.getItems().addAll(addButton, deleteButton, new Separator(Orientation.VERTICAL), noteButton);
         setTop(tools);
         
         var periods = new SortedList<>(db.getAllSleepPeriods());
@@ -107,6 +111,10 @@ class DatabaseTablePane extends BorderPane {
             Log.note(period);
             db.insertNewPeriod(period.getStart(), period.getEnd(), true);
         });
+    }
+    
+    private void addNewNote() {
+        Log.enter();
     }
     
     private static final class InstantStringConverter extends StringConverter<Instant> {
