@@ -70,8 +70,9 @@ public final class Database implements AutoCloseable {
         if (conn != null && createInstantType()
                          && createDatesTable()
                          && createNotesTable()) {
-//            printAllRows();
             Log.note("Success");
+//            printAllRows();
+            printAllNotes();
         } else {
             Log.note("Fail");
         }
@@ -373,6 +374,12 @@ public final class Database implements AutoCloseable {
                 Tools.formatInstant(p.getStart()),
                 Tools.formatInstant(p.getEnd()),
                 p.wasManualEntry());
+        }
+    }
+    
+    public void printAllNotes() {
+        for (var note : getAllNotes()) {
+            Log.note(note);
         }
     }
     
