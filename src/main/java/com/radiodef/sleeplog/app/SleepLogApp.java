@@ -11,8 +11,6 @@ import javafx.scene.*;
 import java.time.*;
 
 public final class SleepLogApp extends Application {
-    static final String SLEEPLOG_LOWER = "sleeplog";
-    
     private Database db;
     
     private MenuBars menuBars;
