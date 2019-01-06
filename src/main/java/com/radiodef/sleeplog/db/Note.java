@@ -25,7 +25,7 @@ public final class Note {
         return dateId;
     }
     
-    public StringProperty textProperty() {
+    public ReadOnlyStringProperty textProperty() {
         return text;
     }
     
@@ -41,7 +41,7 @@ public final class Note {
         return text.get();
     }
     
-    public void setText(String text) {
+    void setText(String text) {
         this.text.set(text);
     }
     
