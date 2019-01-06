@@ -368,7 +368,11 @@ public final class Database implements AutoCloseable {
     public boolean updateNoteText(int id, String text) {
         Log.enter();
         if (executePreparedStatement(updateNoteText, text, id)) {
-            notes.replaceAll(note -> note.getID() != id ? note : new Note(id, note.getDateID(), text));
+            notes.replaceAll(n -> (n.getID() != id) ? n : new Note(id, n.getDateID(), text));
+//            for (var note : notes) {
+//                if (note.getID() == id)
+//                    note.textProperty().set(text);
+//            }
             return true;
         }
         return false;
@@ -411,6 +415,18 @@ public final class Database implements AutoCloseable {
     }
     
     public List<Note> getNotesForPeriodId(int id) {
+        return getNotesForPeriodIdWithDb(id);
+    }
+    
+    @SuppressWarnings("unused")
+    private List<Note> getNotesForPeriodIdWithList(int id) {
+        return notes.stream()
+            .filter(note -> note.getDateID() == id)
+            .collect(Collectors.toList());
+    }
+    
+    @SuppressWarnings("unused")
+    private List<Note> getNotesForPeriodIdWithDb(int id) {
         Log.enter();
         var rsOpt = executePreparedStatement(Log.catchingSQL(Statement::getResultSet), getNotesForPeriodId, id);
         return rsOpt.map(Log.catchingSQL(rs -> {
