@@ -20,6 +20,8 @@ import java.util.stream.*;
 import java.time.*;
 import java.time.Duration;
 
+import static java.util.Collections.*;
+
 class DatabaseTablePane extends BorderPane {
     private static final String ID = "db-table-pane";
     private static final String DELETE_PERIOD_ID = "delete-period-button";
@@ -27,7 +29,7 @@ class DatabaseTablePane extends BorderPane {
     
     private final Database db;
     private final TableView<SleepPeriod> table;
-    private final ListView<Note> notes;
+    private final TableView<Note> notes;
     
     DatabaseTablePane(Database db) {
         this.db = Objects.requireNonNull(db, "db");
@@ -39,7 +41,7 @@ class DatabaseTablePane extends BorderPane {
         top.setTop(periodsTools);
         top.setCenter(table);
         
-        notes = createNotesList();
+        notes = createNotesTable();
         var notesTools = createNotesToolBar();
         var bot = new BorderPane();
         bot.setTop(notesTools);
@@ -72,10 +74,9 @@ class DatabaseTablePane extends BorderPane {
         
         var table = new TableView<SleepPeriod>();
         table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
-        
         table.setEditable(false);
         
-        Collections.addAll(table.getColumns(), idCol, startCol, endCol, durationCol, manualCol);
+        addAll(table.getColumns(), idCol, startCol, endCol, durationCol, manualCol);
         
         var periods = new SortedList<>(db.getAllSleepPeriods());
         periods.comparatorProperty().bind(table.comparatorProperty());
@@ -107,10 +108,22 @@ class DatabaseTablePane extends BorderPane {
         return bar;
     }
     
-    private ListView<Note> createNotesList() {
-        var list = new ListView<Note>();
+    private TableView<Note> createNotesTable() {
+        var idCol = new TableColumn<Note, Integer>("ID");
+        var dateIdCol = new TableColumn<Note, Integer>("Period ID");
+        var textCol = new TableColumn<Note, String>("Note Text");
         
-        return list;
+        idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        dateIdCol.setCellValueFactory(new PropertyValueFactory<>("dateId"));
+        textCol.setCellValueFactory(new PropertyValueFactory<>("text"));
+        
+        var table = new TableView<Note>();
+        addAll(table.getColumns(), idCol, dateIdCol, textCol);
+        
+        table.getSortOrder().add(dateIdCol);
+        
+        db.getAllNotes().addListener(Tools.listChangeListener(c -> fillNotesTable()));
+        return table;
     }
     
     private ToolBar createNotesToolBar() {
@@ -141,16 +154,24 @@ class DatabaseTablePane extends BorderPane {
     private void selectionChanged(ListChangeListener.Change<? extends Integer> c) {
         var noSelection = c.getList().isEmpty();
         
-        Stream.of(getScene().lookup(DELETE_PERIOD_ID),
-                  getScene().lookup(ADD_NOTE_ID))
+        Stream.of(getScene().lookup("#" + DELETE_PERIOD_ID),
+                  getScene().lookup("#" + ADD_NOTE_ID))
             .filter(Objects::nonNull)
             .forEach(btn -> btn.setDisable(noSelection));
         
+        fillNotesTable();
+    }
+    
+    private void fillNotesTable() {
+        ObservableList<Note> notes = FXCollections.observableArrayList();
+        
         for (var item : table.getSelectionModel().getSelectedItems()) {
-            for (var note : db.getNotesForPeriodId(item.getID())) {
-                Log.notef("%d Note: %s", note.getDateID(), note.getText());
-            }
+            notes.addAll(db.getNotesForPeriodId(item.getID()));
         }
+        
+        var sort = List.copyOf(this.notes.getSortOrder());
+        this.notes.setItems(notes);
+        this.notes.getSortOrder().setAll(sort);
     }
     
     private void addNewRow() {
