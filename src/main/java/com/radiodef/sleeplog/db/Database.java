@@ -34,6 +34,8 @@ public final class Database implements AutoCloseable {
     private final ObservableList<SleepPeriod> rows;
     private final ObservableList<SleepPeriod> unmodifiableRows;
     
+    private final PreparedStatement insertNoteRow;
+    
     private final ObservableList<Note> notes;
     private final ObservableList<Note> unmodifiableNotes;
     
@@ -79,6 +81,8 @@ public final class Database implements AutoCloseable {
         
         this.rows = getAllSleepPeriodsImpl();
         this.unmodifiableRows = FXCollections.unmodifiableObservableList(rows);
+        
+        this.insertNoteRow = prepareInsertNoteRow();
         
         this.notes = getAllNotesImpl();
         this.unmodifiableNotes = FXCollections.unmodifiableObservableList(notes);
@@ -177,6 +181,14 @@ public final class Database implements AutoCloseable {
         return prepareStatement("SELECT * FROM " + DATES_TABLE + " WHERE id = ?");
     }
     
+    private PreparedStatement prepareInsertNoteRow() {
+        return prepareStatement(
+            "INSERT INTO " + NOTES_TABLE
+            + " (" + DATE_ID_COL + ", " + TEXT_COL + ")"
+            + " VALUES (?, ?)"
+        );
+    }
+    
     private PreparedStatement prepareStatement(String statement) {
         try {
             if (didConnect())
@@ -193,25 +205,14 @@ public final class Database implements AutoCloseable {
     
     public boolean insertNewPeriod(Instant start, Instant end, boolean manual) {
         Log.enter();
-        var keys =
-            executePreparedStatement(Log.catchingSQL(ps -> {
-                var rs = ps.getGeneratedKeys();
-                var ids = new ArrayList<Integer>();
-                while (rs.next()) {
-                    ids.add(rs.getInt(1));
-                }
-                return ids;
-            }),
-            insertPeriodRow, start, end, manual);
+        var keys = executeInsert(insertPeriodRow, start, end, manual);
         
-        return keys.map(list ->
-            rows.addAll(
-                list.stream()
-                    .map(this::getRowById)
-                    .flatMap(Optional::stream)
-                    .collect(Collectors.toList())
-            )
-        ).orElse(false);
+        return rows.addAll(
+            keys.stream()
+                .map(this::getRowById)
+                .flatMap(Optional::stream)
+                .collect(Collectors.toList())
+        );
     }
     
     public boolean deletePeriod(int id) {
@@ -227,6 +228,21 @@ public final class Database implements AutoCloseable {
         Log.enter();
         return executePreparedStatement(Log.catchingSQL(Statement::getResultSet), getRowById, id)
             .map(Log.catchingSQL(rs -> rs.next() ? getSleepPeriod(rs) : null));
+    }
+    
+    private List<Integer> executeInsert(PreparedStatement statement, Object... params) {
+        Log.enter();
+        return
+            executePreparedStatement(Log.catchingSQL(ps -> {
+                var rs = ps.getGeneratedKeys();
+                var ids = new ArrayList<Integer>();
+                while (rs.next()) {
+                    ids.add(rs.getInt(1));
+                }
+                return ids;
+            }),
+            statement, params)
+            .orElseGet(ArrayList::new);
     }
     
     private boolean executePreparedStatement(PreparedStatement statement, Object... params) {
@@ -293,11 +309,15 @@ public final class Database implements AutoCloseable {
         return new SleepPeriod(id, start, end, manual);
     }
     
+    public boolean insertNewNote(int dateId, String text) {
+        throw new AssertionError();
+    }
+    
     public ObservableList<Note> getAllNotes() {
         return unmodifiableNotes;
     }
     
-    public ObservableList<Note> getAllNotesImpl() {
+    private ObservableList<Note> getAllNotesImpl() {
         var list = FXCollections.<Note>observableArrayList();
         
         if (didConnect()) {
