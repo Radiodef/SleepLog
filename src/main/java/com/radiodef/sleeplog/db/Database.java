@@ -93,8 +93,6 @@ public final class Database implements AutoCloseable {
         
         this.notes = getAllNotesImpl();
         this.unmodifiableNotes = FXCollections.unmodifiableObservableList(notes);
-        
-        printAllNotes();
     }
     
     public boolean didConnect() {
