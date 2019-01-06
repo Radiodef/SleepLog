@@ -25,7 +25,7 @@ public final class Note {
         return dateId;
     }
     
-    public StringProperty textProperty() {
+    public ReadOnlyStringProperty textProperty() {
         return text;
     }
     
