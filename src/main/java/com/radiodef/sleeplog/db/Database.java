@@ -63,12 +63,14 @@ public final class Database implements AutoCloseable {
         }
         
         this.conn = conn;
-    
-        // noinspection StatementWithEmptyBody
+        
         if (conn != null && createInstantType()
                          && createDatesTable()
                          && createNotesTable()) {
 //            printAllRows();
+            Log.note("Success");
+        } else {
+            Log.note("Fail");
         }
         
         this.insertPeriodRow = prepareInsertPeriodRow();
