@@ -368,11 +368,11 @@ public final class Database implements AutoCloseable {
     public boolean updateNoteText(int id, String text) {
         Log.enter();
         if (executePreparedStatement(updateNoteText, text, id)) {
-            notes.replaceAll(n -> (n.getID() != id) ? n : new Note(id, n.getDateID(), text));
-//            for (var note : notes) {
-//                if (note.getID() == id)
-//                    note.textProperty().set(text);
-//            }
+//            notes.replaceAll(n -> (n.getID() != id) ? n : new Note(id, n.getDateID(), text));
+            for (var note : notes) {
+                if (note.getID() == id)
+                    note.setText(text);
+            }
             return true;
         }
         return false;
@@ -406,26 +406,29 @@ public final class Database implements AutoCloseable {
         return list;
     }
     
-    private static Note getNote(ResultSet rs) throws SQLException {
+    private final Map<Integer, Note> notesByIdCache = new HashMap<>();
+    
+    private Note getNote(ResultSet rs) throws SQLException {
         var id = rs.getInt(ID_COL);
         var dateId = rs.getInt(DATE_ID_COL);
         var text = rs.getString(TEXT_COL);
         
-        return new Note(id, dateId, text);
+        return notesByIdCache.computeIfAbsent(id, key -> new Note(key, dateId, text));
     }
     
     public List<Note> getNotesForPeriodId(int id) {
         return getNotesForPeriodIdWithDb(id);
     }
     
+    /*
     @SuppressWarnings("unused")
     private List<Note> getNotesForPeriodIdWithList(int id) {
         return notes.stream()
             .filter(note -> note.getDateID() == id)
             .collect(Collectors.toList());
     }
+    */
     
-    @SuppressWarnings("unused")
     private List<Note> getNotesForPeriodIdWithDb(int id) {
         Log.enter();
         var rsOpt = executePreparedStatement(Log.catchingSQL(Statement::getResultSet), getNotesForPeriodId, id);
@@ -455,6 +458,7 @@ public final class Database implements AutoCloseable {
         }
     }
     
+    @SuppressWarnings("unused")
     public void printAllNotes() {
         for (var note : getAllNotes()) {
             Log.notef("id = %d, dateId = %d, text = %s",
