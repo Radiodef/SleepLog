@@ -36,6 +36,7 @@ public final class Database implements AutoCloseable {
     
     private final PreparedStatement insertNoteRow;
     private final PreparedStatement getNoteById;
+    private final PreparedStatement getNotesForPeriodId;
     
     private final ObservableList<Note> notes;
     private final ObservableList<Note> unmodifiableNotes;
@@ -84,6 +85,7 @@ public final class Database implements AutoCloseable {
         
         this.insertNoteRow = prepareInsertNoteRow();
         this.getNoteById = prepareGetNoteById();
+        this.getNotesForPeriodId = prepareGetNotesForPeriodId();
         
         this.notes = getAllNotesImpl();
         this.unmodifiableNotes = FXCollections.unmodifiableObservableList(notes);
@@ -194,6 +196,10 @@ public final class Database implements AutoCloseable {
     
     private PreparedStatement prepareGetNoteById() {
         return prepareStatement("SELECT * FROM " + NOTES_TABLE + " WHERE id = ?");
+    }
+    
+    private PreparedStatement prepareGetNotesForPeriodId() {
+        return prepareStatement("SELECT * FROM " + NOTES_TABLE + " WHERE " + DATE_ID_COL + " = ?");
     }
     
     private PreparedStatement prepareStatement(String statement) {
@@ -361,6 +367,21 @@ public final class Database implements AutoCloseable {
         var text = rs.getString(TEXT_COL);
         
         return new Note(id, dateId, text);
+    }
+    
+    public List<Note> getNotesForPeriodId(int id) {
+        Log.enter();
+        var rsOpt = executePreparedStatement(Log.catchingSQL(Statement::getResultSet), getNotesForPeriodId, id);
+        return rsOpt.map(Log.catchingSQL(rs -> {
+            var list = new ArrayList<Note>();
+            
+            while (rs.next()) {
+                list.add(getNote(rs));
+            }
+            
+            return list;
+        }))
+        .orElseGet(ArrayList::new);
     }
     
     @SuppressWarnings("unused")
