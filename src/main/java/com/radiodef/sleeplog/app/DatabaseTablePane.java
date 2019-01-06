@@ -112,6 +112,12 @@ class DatabaseTablePane extends BorderPane {
         var noSelection = c.getList().isEmpty();
         deleteButton.setDisable(noSelection);
         noteButton.setDisable(noSelection);
+        
+        for (var item : table.getSelectionModel().getSelectedItems()) {
+            for (var note : db.getNotesForPeriodId(item.getID())) {
+                Log.notef("%d Note: %s", note.getDateID(), note.getText());
+            }
+        }
     }
     
     private void addNewRow() {
