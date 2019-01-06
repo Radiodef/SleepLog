@@ -35,6 +35,7 @@ public final class Database implements AutoCloseable {
     private final ObservableList<SleepPeriod> unmodifiableRows;
     
     private final PreparedStatement insertNoteRow;
+    private final PreparedStatement getNoteById;
     
     private final ObservableList<Note> notes;
     private final ObservableList<Note> unmodifiableNotes;
@@ -83,6 +84,7 @@ public final class Database implements AutoCloseable {
         this.unmodifiableRows = FXCollections.unmodifiableObservableList(rows);
         
         this.insertNoteRow = prepareInsertNoteRow();
+        this.getNoteById = prepareGetNoteById();
         
         this.notes = getAllNotesImpl();
         this.unmodifiableNotes = FXCollections.unmodifiableObservableList(notes);
@@ -187,6 +189,10 @@ public final class Database implements AutoCloseable {
             + " (" + DATE_ID_COL + ", " + TEXT_COL + ")"
             + " VALUES (?, ?)"
         );
+    }
+    
+    private PreparedStatement prepareGetNoteById() {
+        return prepareStatement("SELECT * FROM " + NOTES_TABLE + " WHERE id = ?");
     }
     
     private PreparedStatement prepareStatement(String statement) {
@@ -310,7 +316,20 @@ public final class Database implements AutoCloseable {
     }
     
     public boolean insertNewNote(int dateId, String text) {
-        throw new AssertionError();
+        var keys = executeInsert(insertNoteRow, dateId, text);
+        
+        return notes.addAll(
+            keys.stream()
+                .map(this::getNoteById)
+                .flatMap(Optional::stream)
+                .collect(Collectors.toList())
+        );
+    }
+    
+    public Optional<Note> getNoteById(int id) {
+        Log.enter();
+        return executePreparedStatement(Log.catchingSQL(Statement::getResultSet), getNoteById, id)
+            .map(Log.catchingSQL(rs -> rs.next() ? getNote(rs) : null));
     }
     
     public ObservableList<Note> getAllNotes() {
