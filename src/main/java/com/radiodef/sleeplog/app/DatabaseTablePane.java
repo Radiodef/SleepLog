@@ -25,6 +25,9 @@ class DatabaseTablePane extends BorderPane {
     private final Database db;
     private final TableView<SleepPeriod> table;
     
+    private final Button deleteButton;
+    private final Button noteButton;
+    
     DatabaseTablePane(Database db) {
         this.db = Objects.requireNonNull(db, "db");
         
@@ -58,12 +61,12 @@ class DatabaseTablePane extends BorderPane {
         Collections.addAll(table.getColumns(), idCol, startCol, endCol, durationCol, manualCol);
         setCenter(table);
         
-        var deleteButton = new Button("Delete");
+        deleteButton = new Button("Delete");
         deleteButton.setDisable(true);
         
         table.getSelectionModel()
              .getSelectedIndices()
-             .addListener((ListChangeListener<Integer>) c -> deleteButton.setDisable(c.getList().isEmpty()));
+             .addListener(this::selectionChanged);
         table.getSelectionModel()
              .setSelectionMode(SelectionMode.MULTIPLE);
         
@@ -73,7 +76,8 @@ class DatabaseTablePane extends BorderPane {
         
         addButton.setOnAction(e -> addNewRow());
         
-        var noteButton = new Button("Add Note");
+        noteButton = new Button("Add Note");
+        noteButton.setDisable(true);
         
         noteButton.setOnAction(e -> addNewNote());
         
@@ -104,6 +108,12 @@ class DatabaseTablePane extends BorderPane {
         Log.notef("deleted %d items", count);
     }
     
+    private void selectionChanged(ListChangeListener.Change<? extends Integer> c) {
+        var noSelection = c.getList().isEmpty();
+        deleteButton.setDisable(noSelection);
+        noteButton.setDisable(noSelection);
+    }
+    
     private void addNewRow() {
         Log.enter();
         
@@ -120,9 +130,12 @@ class DatabaseTablePane extends BorderPane {
         dialog.initOwner(getScene().getWindow());
         dialog.showAndWait();
         
-        var result = dialog.getResult();
-        if (result != null) {
-            Log.note(result);
+        var text = dialog.getResult();
+        if (text != null) {
+            Log.note("Note text = " + text);
+            for (var period : table.getSelectionModel().getSelectedItems()) {
+                db.insertNewNote(period.getID(), text);
+            }
         }
     }
     
