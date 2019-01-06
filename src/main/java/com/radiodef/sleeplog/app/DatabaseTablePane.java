@@ -16,54 +16,33 @@ import javafx.collections.*;
 import javafx.collections.transformation.*;
 
 import java.util.*;
+import java.util.stream.*;
 import java.time.*;
 import java.time.Duration;
 
 class DatabaseTablePane extends BorderPane {
     private static final String ID = "db-table-pane";
+    private static final String DELETE_PERIOD_ID = "delete-period-button";
+    private static final String ADD_NOTE_ID = "add-note-button";
     
     private final Database db;
     private final TableView<SleepPeriod> table;
-    
-    private final Button deleteButton;
-    private final Button addNoteButton;
+    private final ListView<Note> notes;
     
     DatabaseTablePane(Database db) {
         this.db = Objects.requireNonNull(db, "db");
-        
         setId(ID);
+        
         table = createPeriodsTable();
-        
-        deleteButton = new Button("Delete");
-        deleteButton.setDisable(true);
-        
-        deleteButton.setOnAction(e -> deleteSelection());
-        
-        var addButton = new Button("Add New");
-        
-        addButton.setOnAction(e -> addNewRow());
-        
-        var tools = new ToolBar();
-        tools.setOrientation(Orientation.HORIZONTAL);
-        tools.getItems().addAll(addButton, deleteButton);
-        
-        var notes = createNotesList();
-        
-        var noteTools = new ToolBar();
-        noteTools.setOrientation(Orientation.HORIZONTAL);
-        
-        addNoteButton = new Button("Add Note");
-        addNoteButton.setDisable(true);
-        
-        addNoteButton.setOnAction(e -> addNewNote());
-        noteTools.getItems().addAll(addNoteButton);
-        
+        var periodsTools = createPeriodsToolBar();
         var top = new BorderPane();
-        top.setTop(tools);
+        top.setTop(periodsTools);
         top.setCenter(table);
         
+        notes = createNotesList();
+        var notesTools = createNotesToolBar();
         var bot = new BorderPane();
-        bot.setTop(noteTools);
+        bot.setTop(notesTools);
         bot.setCenter(notes);
         
         var split = new SplitPane(top, bot);
@@ -113,10 +92,37 @@ class DatabaseTablePane extends BorderPane {
         return table;
     }
     
+    private ToolBar createPeriodsToolBar() {
+        var deleteButton = new Button("Delete");
+        deleteButton.setId(DELETE_PERIOD_ID);
+        deleteButton.setDisable(true);
+        deleteButton.setOnAction(e -> deleteSelection());
+        
+        var addButton = new Button("Add New");
+        addButton.setOnAction(e -> addNewRow());
+        
+        var bar = new ToolBar();
+        bar.setOrientation(Orientation.HORIZONTAL);
+        bar.getItems().addAll(addButton, deleteButton);
+        return bar;
+    }
+    
     private ListView<Note> createNotesList() {
         var list = new ListView<Note>();
         
         return list;
+    }
+    
+    private ToolBar createNotesToolBar() {
+        var addButton = new Button("Add Note");
+        addButton.setId(ADD_NOTE_ID);
+        addButton.setDisable(true);
+        addButton.setOnAction(e -> addNewNote());
+        
+        var bar = new ToolBar();
+        bar.setOrientation(Orientation.HORIZONTAL);
+        bar.getItems().addAll(addButton);
+        return bar;
     }
     
     private void deleteSelection() {
@@ -134,8 +140,11 @@ class DatabaseTablePane extends BorderPane {
     
     private void selectionChanged(ListChangeListener.Change<? extends Integer> c) {
         var noSelection = c.getList().isEmpty();
-        deleteButton.setDisable(noSelection);
-        addNoteButton.setDisable(noSelection);
+        
+        Stream.of(getScene().lookup(DELETE_PERIOD_ID),
+                  getScene().lookup(ADD_NOTE_ID))
+            .filter(Objects::nonNull)
+            .forEach(btn -> btn.setDisable(noSelection));
         
         for (var item : table.getSelectionModel().getSelectedItems()) {
             for (var note : db.getNotesForPeriodId(item.getID())) {
