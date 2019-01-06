@@ -27,6 +27,7 @@ class DatabaseTablePane extends BorderPane {
     private static final String DELETE_PERIOD_ID = "delete-period-button";
     private static final String ADD_NOTE_ID = "add-note-button";
     private static final String DELETE_NOTE_ID = "delete-note-button";
+    private static final String EDIT_NOTE_ID = "edit-note-button";
     
     private final Database db;
     private final TableView<SleepPeriod> table;
@@ -136,17 +137,20 @@ class DatabaseTablePane extends BorderPane {
     private ToolBar createNotesToolBar() {
         var addButton = new Button("Add Note");
         addButton.setId(ADD_NOTE_ID);
-        addButton.setDisable(true);
         addButton.setOnAction(e -> addNewNote());
         
         var deleteButton = new Button("Delete Note");
         deleteButton.setId(DELETE_NOTE_ID);
-        deleteButton.setDisable(true);
         deleteButton.setOnAction(e -> deleteSelectedNotes());
+        
+        var editButton = new Button("Edit Note Text");
+        editButton.setId(EDIT_NOTE_ID);
+        editButton.setOnAction(e -> editNoteText());
         
         var bar = new ToolBar();
         bar.setOrientation(Orientation.HORIZONTAL);
-        bar.getItems().addAll(addButton, deleteButton);
+        bar.getItems().addAll(addButton, deleteButton, editButton);
+        bar.getItems().forEach(btn -> btn.setDisable(true));
         return bar;
     }
     
@@ -190,8 +194,12 @@ class DatabaseTablePane extends BorderPane {
     
     private void noteSelectionChanged(ListChangeListener.Change<? extends Integer> c) {
         Log.enter();
-        Stream.ofNullable(getScene().lookup("#" + DELETE_NOTE_ID))
-            .forEach(btn -> btn.setDisable(c.getList().isEmpty()));
+        var noSelection = c.getList().isEmpty();
+        
+        Stream.of(getScene().lookup("#" + DELETE_NOTE_ID),
+                  getScene().lookup("#" + EDIT_NOTE_ID))
+            .filter(Objects::nonNull)
+            .forEach(btn -> btn.setDisable(noSelection));
     }
     
     private void fillNotesTable() {
@@ -218,17 +226,39 @@ class DatabaseTablePane extends BorderPane {
     private void addNewNote() {
         Log.enter();
         
-        var dialog = new TextInputDialog();
-        dialog.initOwner(getScene().getWindow());
-        dialog.showAndWait();
-        
-        var text = dialog.getResult();
-        if (text != null) {
-            Log.note("Note text = " + text);
+        getNoteText("").ifPresent(text -> {
             for (var period : table.getSelectionModel().getSelectedItems()) {
                 db.insertNewNote(period.getID(), text);
             }
-        }
+        });
+    }
+    
+    private void editNoteText() {
+        Log.enter();
+        
+        var def =
+            notes.getSelectionModel().getSelectedItems().stream()
+                .map(Note::getText)
+                .findFirst()
+                .orElse("");
+        
+        getNoteText(def).ifPresent(text -> {
+            for (var note : notes.getSelectionModel().getSelectedItems()) {
+                db.updateNoteText(note.getID(), text);
+            }
+            fillNotesTable();
+        });
+    }
+    
+    private Optional<String> getNoteText(String text) {
+        var dialog = new TextInputDialog(text);
+        
+        dialog.initOwner(getScene().getWindow());
+        dialog.showAndWait();
+        
+        text = dialog.getResult();
+        Log.note("Note text = " + text);
+        return Optional.ofNullable(text);
     }
     
     private static final class InstantStringConverter extends StringConverter<Instant> {
