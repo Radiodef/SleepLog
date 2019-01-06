@@ -5,13 +5,14 @@ import com.radiodef.sleeplog.util.*;
 
 import javafx.application.*;
 import javafx.scene.layout.*;
-import javafx.scene.control.*;
 import javafx.stage.*;
 import javafx.scene.*;
 
 import java.time.*;
 
 public final class SleepLogApp extends Application {
+    static final String SLEEPLOG_LOWER = "sleeplog";
+    
     private Database db;
     
     private MenuBars menuBars;
