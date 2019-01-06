@@ -13,8 +13,9 @@ import java.nio.file.*;
 import javafx.collections.*;
 
 public final class Database implements AutoCloseable {
-    private static final String DB_NAME = "sleeplog-db";
-    private static final String DATES_TABLE = "sleeplog_dates";
+    private static final String DB_NAME = Tools.SLEEPLOG_LOWER + "-db";
+    private static final String DATES_TABLE = Tools.SLEEPLOG_LOWER + "_dates";
+    private static final String NOTES_TABLE = Tools.SLEEPLOG_LOWER + "_notes";
     
     private static final String ID_COL = "id";
     private static final String START_COL = "start_instant";
