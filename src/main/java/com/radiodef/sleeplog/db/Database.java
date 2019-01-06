@@ -181,11 +181,11 @@ public final class Database implements AutoCloseable {
     }
     
     private PreparedStatement prepareDeletePeriodRow() {
-        return prepareStatement("DELETE FROM " + DATES_TABLE + " WHERE id = ?");
+        return prepareStatement("DELETE FROM " + DATES_TABLE + " WHERE " + ID_COL + " = ?");
     }
     
     private PreparedStatement prepareGetRowById() {
-        return prepareStatement("SELECT * FROM " + DATES_TABLE + " WHERE id = ?");
+        return prepareStatement("SELECT * FROM " + DATES_TABLE + " WHERE " + ID_COL + " = ?");
     }
     
     private PreparedStatement prepareInsertNoteRow() {
@@ -197,7 +197,7 @@ public final class Database implements AutoCloseable {
     }
     
     private PreparedStatement prepareGetNoteById() {
-        return prepareStatement("SELECT * FROM " + NOTES_TABLE + " WHERE id = ?");
+        return prepareStatement("SELECT * FROM " + NOTES_TABLE + " WHERE " + ID_COL + " = ?");
     }
     
     private PreparedStatement prepareGetNotesForPeriodId() {
