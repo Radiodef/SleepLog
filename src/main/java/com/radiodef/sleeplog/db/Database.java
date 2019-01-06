@@ -34,6 +34,9 @@ public final class Database implements AutoCloseable {
     private final ObservableList<SleepPeriod> rows;
     private final ObservableList<SleepPeriod> unmodifiableRows;
     
+    private final ObservableList<Note> notes;
+    private final ObservableList<Note> unmodifiableNotes;
+    
     public Database() {
         this(null);
     }
@@ -74,6 +77,9 @@ public final class Database implements AutoCloseable {
         
         this.rows = getAllSleepPeriodsImpl();
         this.unmodifiableRows = FXCollections.unmodifiableObservableList(rows);
+        
+        this.notes = getAllNotesImpl();
+        this.unmodifiableNotes = FXCollections.unmodifiableObservableList(notes);
     }
     
     public boolean didConnect() {
@@ -281,7 +287,38 @@ public final class Database implements AutoCloseable {
         var start = (Instant) rs.getObject(START_COL);
         var end = (Instant) rs.getObject(END_COL);
         var manual = rs.getBoolean(MANUAL_COL);
+        
         return new SleepPeriod(id, start, end, manual);
+    }
+    
+    public ObservableList<Note> getAllNotes() {
+        return unmodifiableNotes;
+    }
+    
+    public ObservableList<Note> getAllNotesImpl() {
+        var list = FXCollections.<Note>observableArrayList();
+        
+        if (didConnect()) {
+            try (var statement = conn.createStatement()) {
+                var rs = statement.executeQuery("SELECT * FROM " + NOTES_TABLE);
+                
+                while (rs.next()) {
+                    list.add(getNote(rs));
+                }
+            } catch (SQLException x) {
+                Log.caught(x);
+            }
+        }
+        
+        return list;
+    }
+    
+    private static Note getNote(ResultSet rs) throws SQLException {
+        var id = rs.getInt(ID_COL);
+        var dateId = rs.getInt(DATE_ID_COL);
+        var text = rs.getString(TEXT_COL);
+        
+        return new Note(id, dateId, text);
     }
     
     @SuppressWarnings("unused")
