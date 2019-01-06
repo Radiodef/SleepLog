@@ -39,6 +39,7 @@ public final class Database implements AutoCloseable {
     private final PreparedStatement getNoteById;
     private final PreparedStatement getNotesForPeriodId;
     private final PreparedStatement deleteNotesForPeriodId;
+    private final PreparedStatement updateNoteText;
     
     private final ObservableList<Note> notes;
     private final ObservableList<Note> unmodifiableNotes;
@@ -90,6 +91,7 @@ public final class Database implements AutoCloseable {
         this.getNoteById = prepareGetNoteById();
         this.getNotesForPeriodId = prepareGetNotesForPeriodId();
         this.deleteNotesForPeriodId = prepareDeleteNotesForPeriodId();
+        this.updateNoteText = prepareUpdateNoteText();
         
         this.notes = getAllNotesImpl();
         this.unmodifiableNotes = FXCollections.unmodifiableObservableList(notes);
@@ -210,6 +212,14 @@ public final class Database implements AutoCloseable {
     
     private PreparedStatement prepareDeleteNotesForPeriodId() {
         return prepareStatement("DELETE FROM " + NOTES_TABLE + " WHERE " + DATE_ID_COL + " = ?");
+    }
+    
+    private PreparedStatement prepareUpdateNoteText() {
+        return prepareStatement(
+            "UPDATE " + NOTES_TABLE
+            + " SET " + TEXT_COL + " = ?"
+            + " WHERE " + ID_COL + " = ?"
+        );
     }
     
     private PreparedStatement prepareStatement(String statement) {
@@ -353,6 +363,11 @@ public final class Database implements AutoCloseable {
             return true;
         }
         return false;
+    }
+    
+    public boolean updateNoteText(int id, String text) {
+        Log.enter();
+        return executePreparedStatement(updateNoteText, id, text);
     }
     
     public Optional<Note> getNoteById(int id) {
