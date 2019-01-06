@@ -26,6 +26,7 @@ class DatabaseTablePane extends BorderPane {
     private static final String ID = "db-table-pane";
     private static final String DELETE_PERIOD_ID = "delete-period-button";
     private static final String ADD_NOTE_ID = "add-note-button";
+    private static final String DELETE_NOTE_ID = "delete-note-button";
     
     private final Database db;
     private final TableView<SleepPeriod> table;
@@ -86,7 +87,7 @@ class DatabaseTablePane extends BorderPane {
         
         table.getSelectionModel()
              .getSelectedIndices()
-             .addListener(this::selectionChanged);
+             .addListener(this::periodSelectionChanged);
         table.getSelectionModel()
              .setSelectionMode(SelectionMode.MULTIPLE);
         
@@ -94,13 +95,13 @@ class DatabaseTablePane extends BorderPane {
     }
     
     private ToolBar createPeriodsToolBar() {
-        var deleteButton = new Button("Delete");
+        var addButton = new Button("Add Period");
+        addButton.setOnAction(e -> addNewRow());
+        
+        var deleteButton = new Button("Delete Period");
         deleteButton.setId(DELETE_PERIOD_ID);
         deleteButton.setDisable(true);
-        deleteButton.setOnAction(e -> deleteSelection());
-        
-        var addButton = new Button("Add New");
-        addButton.setOnAction(e -> addNewRow());
+        deleteButton.setOnAction(e -> deleteSelectedPeriods());
         
         var bar = new ToolBar();
         bar.setOrientation(Orientation.HORIZONTAL);
@@ -120,6 +121,12 @@ class DatabaseTablePane extends BorderPane {
         var table = new TableView<Note>();
         addAll(table.getColumns(), idCol, dateIdCol, textCol);
         
+        table.getSelectionModel()
+             .getSelectedIndices()
+             .addListener(this::noteSelectionChanged);
+        table.getSelectionModel()
+             .setSelectionMode(SelectionMode.MULTIPLE);
+        
         table.getSortOrder().add(dateIdCol);
         
         db.getAllNotes().addListener(Tools.listChangeListener(c -> fillNotesTable()));
@@ -132,26 +139,45 @@ class DatabaseTablePane extends BorderPane {
         addButton.setDisable(true);
         addButton.setOnAction(e -> addNewNote());
         
+        var deleteButton = new Button("Delete Note");
+        deleteButton.setId(DELETE_NOTE_ID);
+        deleteButton.setDisable(true);
+        deleteButton.setOnAction(e -> deleteSelectedNotes());
+        
         var bar = new ToolBar();
         bar.setOrientation(Orientation.HORIZONTAL);
-        bar.getItems().addAll(addButton);
+        bar.getItems().addAll(addButton, deleteButton);
         return bar;
     }
     
-    private void deleteSelection() {
+    private void deleteSelectedPeriods() {
         Log.enter();
         
         var items = new ArrayList<>(table.getSelectionModel().getSelectedItems());
-        int count = 0;
+        var count = 0;
         
         for (var item : items) {
             count += BooleanUtils.toInteger(db.deletePeriod(item.getID()));
         }
         
-        Log.notef("deleted %d items", count);
+        Log.notef("deleted %d items in %s", count, items);
     }
     
-    private void selectionChanged(ListChangeListener.Change<? extends Integer> c) {
+    private void deleteSelectedNotes() {
+        Log.enter();
+        
+        var notes = new ArrayList<>(this.notes.getSelectionModel().getSelectedItems());
+        var count = 0;
+        
+        for (var note : notes) {
+            count += BooleanUtils.toInteger(db.deleteNote(note.getID()));
+        }
+        
+        Log.notef("deleted %d items in %s", count, notes);
+    }
+    
+    private void periodSelectionChanged(ListChangeListener.Change<? extends Integer> c) {
+        Log.enter();
         var noSelection = c.getList().isEmpty();
         
         Stream.of(getScene().lookup("#" + DELETE_PERIOD_ID),
@@ -160,6 +186,12 @@ class DatabaseTablePane extends BorderPane {
             .forEach(btn -> btn.setDisable(noSelection));
         
         fillNotesTable();
+    }
+    
+    private void noteSelectionChanged(ListChangeListener.Change<? extends Integer> c) {
+        Log.enter();
+        Stream.ofNullable(getScene().lookup("#" + DELETE_NOTE_ID))
+            .forEach(btn -> btn.setDisable(c.getList().isEmpty()));
     }
     
     private void fillNotesTable() {
