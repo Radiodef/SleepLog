@@ -132,7 +132,7 @@ public final class SleepLogApp extends Application {
         
         var bounds = Screen.getPrimary().getVisualBounds();
         stage.setX(bounds.getMaxX() - stage.getWidth() - 10);
-        stage.setY(bounds.getMaxY() + 10);
+        stage.setY(bounds.getMinY() + 10);
         
         stage.setTitle("Hardware History");
     }
