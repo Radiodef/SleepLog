@@ -18,6 +18,7 @@ public final class SleepLogApp extends Application {
     private Stage primaryStage;
     private Stage tableViewStage;
     private Stage graphViewStage;
+    private Stage historyStage;
     
     static void launch() {
         Log.enter();
@@ -37,6 +38,7 @@ public final class SleepLogApp extends Application {
         primaryStage = inStage;
         tableViewStage = new Stage();
         graphViewStage = new Stage();
+        historyStage = new Stage();
         
         setUserAgentStylesheet(STYLESHEET_MODENA);
         Platform.setImplicitExit(false);
@@ -44,6 +46,7 @@ public final class SleepLogApp extends Application {
         configurePrimaryStage(primaryStage);
         Tools.beforeFirstShow(tableViewStage, this::configureTableViewStage);
         Tools.beforeFirstShow(graphViewStage, this::configureGraphViewStage);
+        Tools.beforeFirstShow(historyStage, this::configureHistoryStage);
         
         primaryStage.show();
     }
@@ -58,6 +61,10 @@ public final class SleepLogApp extends Application {
     
     Stage getGraphViewStage() {
         return Tools.requireNonNullState(graphViewStage, "graphViewStage");
+    }
+    
+    Stage getHistoryStage() {
+        return Tools.requireNonNullState(historyStage, "historyStage");
     }
     
     private void configurePrimaryStage(Stage stage) {
@@ -117,6 +124,17 @@ public final class SleepLogApp extends Application {
         stage.setY(bounds.getMaxY() - stage.getHeight() - 10);
         
         stage.setTitle("Graphs");
+    }
+    
+    private void configureHistoryStage(Stage stage) {
+        Log.enter();
+        configureSecondaryStage(stage, new BorderPane());
+        
+        var bounds = Screen.getPrimary().getVisualBounds();
+        stage.setX(bounds.getMaxX() - stage.getWidth() - 10);
+        stage.setY(bounds.getMaxY() + 10);
+        
+        stage.setTitle("Hardware History");
     }
     
     private void configureSecondaryStage(Stage stage, Pane pane) {
