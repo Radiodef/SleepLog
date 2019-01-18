@@ -128,7 +128,7 @@ public final class SleepLogApp extends Application {
     
     private void configureHardwareStage(Stage stage) {
         Log.enter();
-        configureSecondaryStage(stage, new BorderPane());
+        configureSecondaryStage(stage, new HardwareHistoryPane());
         
         var bounds = Screen.getPrimary().getVisualBounds();
         stage.setX(bounds.getMaxX() - stage.getWidth() - 10);
