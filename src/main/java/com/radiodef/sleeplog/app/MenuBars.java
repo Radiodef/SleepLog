@@ -13,6 +13,7 @@ final class MenuBars implements Supplier<MenuBar> {
     private static final String MENU_BAR_ID = "menu-bar";
     private static final String TABLE_VIEW_ID = "table-view-item";
     private static final String GRAPH_VIEW_ID = "graph-view-item";
+    private static final String HARDWARE_VIEW_ID = "hardware-view-item";
     
     private final SleepLogApp app;
     
@@ -67,6 +68,18 @@ final class MenuBars implements Supplier<MenuBar> {
         bindItemToStage(graphItem, app::getGraphViewStage);
         
         windowMenu.getItems().addAll(tableItem, graphItem);
+        
+        if (Tools.isMac()) {
+            var hardwareItem = new CheckMenuItem("_Hardware History View");
+            hardwareItem.setId(HARDWARE_VIEW_ID);
+            hardwareItem.setMnemonicParsing(true);
+            hardwareItem.setAccelerator(KeyCombination.valueOf("Shortcut+H"));
+            
+            bindItemToStage(hardwareItem, app::getHardwareStage);
+            
+            windowMenu.getItems().add(hardwareItem);
+        }
+        
         menuBar.getMenus().add(windowMenu);
         
         bars.add(menuBar);
