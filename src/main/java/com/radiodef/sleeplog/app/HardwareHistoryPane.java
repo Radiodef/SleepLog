@@ -9,12 +9,18 @@ import java.io.*;
 
 final class HardwareHistoryPane extends BorderPane {
     HardwareHistoryPane() {
-        var text = new TextArea();
-        
-        text.setText(String.join("\n", getHardwareHistory()));
-        Platform.runLater(() -> text.setScrollTop(Double.MAX_VALUE));
-        
+        var text = new TextArea("Loading...");
+        text.setEditable(false);
         setCenter(text);
+        
+        new Thread(() -> {
+            final var lines = getHardwareHistory();
+            Platform.runLater(() -> {
+                text.setText(String.join("\n", lines));
+                text.end();
+//                text.setScrollTop(Double.MAX_VALUE);
+            });
+        }).start();
     }
     
     // https://apple.stackexchange.com/questions/52064/how-to-find-out-the-start-time-of-last-sleep
