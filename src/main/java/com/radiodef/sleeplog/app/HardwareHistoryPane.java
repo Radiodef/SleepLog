@@ -1,12 +1,20 @@
 package com.radiodef.sleeplog.app;
 
 import javafx.scene.layout.*;
+import javafx.scene.control.*;
+import javafx.application.*;
 
 import java.util.*;
 import java.io.*;
 
 final class HardwareHistoryPane extends BorderPane {
     HardwareHistoryPane() {
+        var text = new TextArea();
+        
+        text.setText(String.join("\n", getHardwareHistory()));
+        Platform.runLater(() -> text.setScrollTop(Double.MAX_VALUE));
+        
+        setCenter(text);
     }
     
     // https://apple.stackexchange.com/questions/52064/how-to-find-out-the-start-time-of-last-sleep
