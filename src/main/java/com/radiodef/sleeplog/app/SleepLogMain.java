@@ -24,7 +24,20 @@ final class SleepLogMain {
         Log.notef("OS name = %s", SystemUtils.OS_NAME);
         Log.notef("working directory = %s", Paths.get("").toAbsolutePath());
         
-        // https://github.com/javafxports/openjdk-jfx/issues/236#issuecomment-426583174
-        SleepLogApp.launch();
+        // noinspection ConstantConditions
+        if (true) {
+            // https://github.com/javafxports/openjdk-jfx/issues/236#issuecomment-426583174
+            SleepLogApp.launch();
+        } else {
+            try {
+                sandbox();
+            } catch (Exception x) {
+                Log.caught(x);
+            }
+        }
+    }
+    
+    @SuppressWarnings("RedundantThrows")
+    private static void sandbox() throws Exception {
     }
 }
