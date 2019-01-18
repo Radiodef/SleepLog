@@ -18,7 +18,7 @@ public final class SleepLogApp extends Application {
     private Stage primaryStage;
     private Stage tableViewStage;
     private Stage graphViewStage;
-    private Stage historyStage;
+    private Stage hardwareStage;
     
     static void launch() {
         Log.enter();
@@ -38,7 +38,7 @@ public final class SleepLogApp extends Application {
         primaryStage = inStage;
         tableViewStage = new Stage();
         graphViewStage = new Stage();
-        historyStage = new Stage();
+        hardwareStage = new Stage();
         
         setUserAgentStylesheet(STYLESHEET_MODENA);
         Platform.setImplicitExit(false);
@@ -46,7 +46,7 @@ public final class SleepLogApp extends Application {
         configurePrimaryStage(primaryStage);
         Tools.beforeFirstShow(tableViewStage, this::configureTableViewStage);
         Tools.beforeFirstShow(graphViewStage, this::configureGraphViewStage);
-        Tools.beforeFirstShow(historyStage, this::configureHistoryStage);
+        Tools.beforeFirstShow(hardwareStage, this::configureHardwareStage);
         
         primaryStage.show();
     }
@@ -63,8 +63,8 @@ public final class SleepLogApp extends Application {
         return Tools.requireNonNullState(graphViewStage, "graphViewStage");
     }
     
-    Stage getHistoryStage() {
-        return Tools.requireNonNullState(historyStage, "historyStage");
+    Stage getHardwareStage() {
+        return Tools.requireNonNullState(hardwareStage, "hardwareStage");
     }
     
     private void configurePrimaryStage(Stage stage) {
@@ -126,7 +126,7 @@ public final class SleepLogApp extends Application {
         stage.setTitle("Graphs");
     }
     
-    private void configureHistoryStage(Stage stage) {
+    private void configureHardwareStage(Stage stage) {
         Log.enter();
         configureSecondaryStage(stage, new BorderPane());
         
