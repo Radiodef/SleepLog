@@ -26,6 +26,7 @@ final class HardwareHistoryPane extends BorderPane {
     // https://apple.stackexchange.com/questions/52064/how-to-find-out-the-start-time-of-last-sleep
     private static final String PMSET_ALL_COMMAND = "pmset -g log";
     
+    @SuppressWarnings("WeakerAccess")
     static List<String> getHardwareHistory() {
         var lines = new ArrayList<String>();
         
