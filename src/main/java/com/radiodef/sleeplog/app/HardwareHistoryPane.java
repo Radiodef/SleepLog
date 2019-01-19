@@ -66,6 +66,7 @@ final class HardwareHistoryPane extends BorderPane {
                         || ln.contains("Entering Sleep state")
                         || ln.contains("DarkWake to FullWake")
                         || ln.contains("DarkWake from Safe Sleep")
+                        || ln.contains("Wake from Safe Sleep")
 //                        || true
                     )
                     .forEach(lines::add);
