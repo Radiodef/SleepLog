@@ -7,7 +7,7 @@ import javafx.application.*;
 import java.util.*;
 import java.io.*;
 
-import org.apache.commons.lang3.*;
+//import org.apache.commons.lang3.*;
 
 final class HardwareHistoryPane extends BorderPane {
     HardwareHistoryPane() {
@@ -45,13 +45,27 @@ final class HardwareHistoryPane extends BorderPane {
             
             try (var in = new BufferedReader(new InputStreamReader(proc.getInputStream()))) {
                 in.lines()
-                    .filter(ln -> !ln.contains("Assertions"))
+                    /*
+                    .filter(ln ->
+                           !ln.contains("Assertions")
+                        && !ln.contains("Client Acks")
+                        && !ln.contains("Wake Requests")
+                        && !ln.contains("due to 'Maintenance Sleep'")
+                    )
                     .filter(ln ->
 //                           ln.contains(" Sleep ")
 //                        || ln.contains(" Wake ")
                            StringUtils.containsIgnoreCase(ln, "sleep")
                         || StringUtils.containsIgnoreCase(ln, "wake")
                         || StringUtils.containsIgnoreCase(ln, "display is turned")
+//                        || true
+                    )
+                    */
+                    .filter(ln ->
+                           ln.contains("Display is turned ") // ...on/off
+                        || ln.contains("Entering Sleep state")
+                        || ln.contains("DarkWake to FullWake")
+                        || ln.contains("DarkWake from Safe Sleep")
 //                        || true
                     )
                     .forEach(lines::add);
