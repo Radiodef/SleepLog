@@ -25,10 +25,6 @@ final class HardwareHistoryPane extends BorderPane {
                 if (lastLine >= 0) {
                     text.positionCaret(lastLine + 1);
                 }
-//                else {
-//                    text.end();
-//                }
-//                text.setScrollTop(Double.MAX_VALUE);
             });
         }).start();
     }
