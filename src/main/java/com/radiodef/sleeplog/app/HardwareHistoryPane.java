@@ -18,8 +18,16 @@ final class HardwareHistoryPane extends BorderPane {
         new Thread(() -> {
             final var lines = getHardwareHistory();
             Platform.runLater(() -> {
-                text.setText(String.join("\n", lines));
-                text.end();
+                var joined = String.join("\n", lines);
+                text.setText(joined);
+                
+                var lastLine = joined.lastIndexOf("\n");
+                if (lastLine >= 0) {
+                    text.positionCaret(lastLine + 1);
+                }
+//                else {
+//                    text.end();
+//                }
 //                text.setScrollTop(Double.MAX_VALUE);
             });
         }).start();
