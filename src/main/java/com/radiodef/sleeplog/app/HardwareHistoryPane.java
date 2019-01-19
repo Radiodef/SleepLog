@@ -37,9 +37,14 @@ final class HardwareHistoryPane extends BorderPane {
             
             try (var in = new BufferedReader(new InputStreamReader(proc.getInputStream()))) {
                 in.lines()
+                    .filter(ln -> !ln.contains("Assertions"))
                     .filter(ln ->
+//                           ln.contains(" Sleep ")
+//                        || ln.contains(" Wake ")
                            StringUtils.containsIgnoreCase(ln, "sleep")
                         || StringUtils.containsIgnoreCase(ln, "wake")
+                        || StringUtils.containsIgnoreCase(ln, "display is turned")
+//                        || true
                     )
                     .forEach(lines::add);
             }
