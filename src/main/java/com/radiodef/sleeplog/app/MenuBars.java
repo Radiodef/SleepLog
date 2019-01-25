@@ -73,7 +73,7 @@ final class MenuBars implements Supplier<MenuBar> {
             var hardwareItem = new CheckMenuItem("_Hardware History View");
             hardwareItem.setId(HARDWARE_VIEW_ID);
             hardwareItem.setMnemonicParsing(true);
-            hardwareItem.setAccelerator(KeyCombination.valueOf("Shortcut+H"));
+            hardwareItem.setAccelerator(KeyCombination.valueOf("Shortcut+R"));
             
             bindItemToStage(hardwareItem, app::getHardwareStage);
             
