@@ -43,8 +43,8 @@ final class SleepStartEndGraph extends BorderPane {
         Log.enter();
         var periods = db.getAllSleepPeriods();
         
-        var start = new SeriesBuilder("Start Time");
-        var end = new SeriesBuilder("End Time");
+        var start = new SeriesBuilder("Start Time", true);
+        var end = new SeriesBuilder("End Time", false);
         
         for (var p : periods) {
             start.add(p.getStart());
@@ -73,15 +73,23 @@ final class SleepStartEndGraph extends BorderPane {
     private static final class SeriesBuilder {
         private final Series<Number, Number> series = new Series<>();
         
+        private final boolean isPM;
+        
         private BigInteger totalTime = BigInteger.ZERO;
         
-        private SeriesBuilder(String name) {
+        private SeriesBuilder(String name, boolean isPM) {
             series.setName(name);
+            this.isPM = isPM;
         }
         
         private void add(Instant i) {
             var date = getStartOfDay(i);
             var time = getSecondOfDay(i);
+            
+            if (isPM && time < (60 * 60 * 12)) {
+                date = getStartOfPreviousDay(i);
+                time += 60 * 60 * 24;
+            }
             
             series.getData().add(new Data<>(date, time));
             
@@ -115,6 +123,10 @@ final class SleepStartEndGraph extends BorderPane {
         
         private static long getStartOfDay(Instant i) {
             return Tools.toStartOfDay(i).getEpochSecond();
+        }
+        
+        private static long getStartOfPreviousDay(Instant i) {
+            return Tools.toStartOfPreviousDay(i).getEpochSecond();
         }
         
         private static int getSecondOfDay(Instant i) {
