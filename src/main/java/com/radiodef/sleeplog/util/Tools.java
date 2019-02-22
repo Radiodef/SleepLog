@@ -82,6 +82,11 @@ public final class Tools {
         return LocalDate.ofInstant(i, zone).atStartOfDay(zone).toInstant();
     }
     
+    public static Instant toStartOfPreviousDay(Instant i) {
+        var zone = ZoneId.systemDefault();
+        return LocalDate.ofInstant(i, zone).minusDays(1).atStartOfDay(zone).toInstant();
+    }
+    
     public static boolean isMac() {
         // https://developer.apple.com/library/content/technotes/tn2002/tn2110.html
         // http://archive.is/w6JC0
